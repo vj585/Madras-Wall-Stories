@@ -1,0 +1,151 @@
+"use client";
+import { motion } from 'framer-motion';
+import Link from 'next/link';
+import Image from 'next/image';
+import { ArrowRight, Star, Truck, ShieldCheck } from 'lucide-react';
+
+export default function Hero() {
+  const headingText = "Turn Your Walls";
+  
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: { staggerChildren: 0.05, delayChildren: 0.1 }
+    }
+  };
+
+  const letterVariants = {
+    hidden: { opacity: 0, y: 50, filter: 'blur(10px)', rotateX: -90 },
+    visible: { 
+      opacity: 1, 
+      y: 0, 
+      filter: 'blur(0px)',
+      rotateX: 0,
+      transition: { type: 'spring', damping: 12, stiffness: 150 }
+    }
+  };
+
+  const glowVariants = {
+    hidden: { opacity: 0, filter: 'blur(20px)', scale: 0.8 },
+    visible: { 
+      opacity: 1, 
+      filter: 'blur(0px)',
+      scale: 1,
+      transition: { duration: 1.5, ease: "easeOut", delay: 0.8 }
+    }
+  };
+
+  return (
+    <section className="relative w-full min-h-[100svh] lg:min-h-[90vh] flex items-center justify-center overflow-hidden bg-surface-alt text-foreground pt-20">
+      {/* Background Soft Gradients */}
+      <div className="absolute top-[-10%] right-[-5%] w-[40rem] h-[40rem] bg-accent-yellow/10 rounded-full blur-[100px] pointer-events-none"></div>
+      <div className="absolute bottom-[-10%] left-[-5%] w-[40rem] h-[40rem] bg-accent-blue/5 rounded-full blur-[100px] pointer-events-none"></div>
+
+      <div className="container relative z-10 px-4 mx-auto grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+        
+        {/* Left: Text Content */}
+        <div className="max-w-2xl text-center lg:text-left pt-10 perspective-[1000px]">
+          <motion.h1 
+            variants={containerVariants}
+            initial="hidden"
+            animate="visible"
+            className="text-[2.5rem] sm:text-[3rem] md:text-[4.5rem] lg:text-[5.5rem] font-heading font-black tracking-tighter mb-4 md:mb-6 leading-[1] md:leading-[0.95] text-gray-900"
+          >
+            <div className="flex flex-wrap justify-center lg:justify-start">
+              {headingText.split("").map((char, index) => (
+                <motion.span 
+                  key={index} 
+                  variants={letterVariants}
+                  className={char === " " ? "w-3 sm:w-4 md:w-6 lg:w-8" : "inline-block"}
+                >
+                  {char}
+                </motion.span>
+              ))}
+            </div>
+            
+            <motion.span 
+              variants={glowVariants}
+              className="inline-block mt-2 text-transparent bg-clip-text bg-gradient-to-r from-accent-blue via-purple-500 to-accent-yellow italic font-medium pr-2 animate-gradient-text font-fancy"
+            >
+              Into Stories.
+            </motion.span>
+          </motion.h1>
+          
+          <motion.p 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.4, duration: 0.8 }}
+            className="text-lg md:text-xl text-gray-500 mb-10 max-w-xl mx-auto lg:mx-0 leading-relaxed font-light"
+          >
+            Aesthetic posters, custom polaroids, and minimalist frames crafted to make your space feel perfectly yours.
+          </motion.p>
+
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.6, duration: 0.6 }}
+            className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4"
+          >
+            <Link href="/shop" className="w-full sm:w-auto px-8 py-4 bg-black text-white font-semibold rounded-2xl hover:bg-gray-900 transition-all shadow-[0_8px_30px_rgb(0,0,0,0.12)] hover:shadow-[0_8px_30px_rgb(0,0,0,0.2)] hover:-translate-y-1 flex items-center justify-center gap-2">
+              Shop Collection <ArrowRight className="w-4 h-4" />
+            </Link>
+            <Link href="/custom" className="w-full sm:w-auto px-8 py-4 bg-white/50 backdrop-blur-md border border-gray-200/80 text-black font-semibold rounded-2xl hover:bg-white transition-all shadow-sm flex items-center justify-center hover:-translate-y-1">
+              Create Custom Print
+            </Link>
+          </motion.div>
+
+          <motion.div 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.8, duration: 0.6 }}
+            className="mt-8 flex flex-wrap items-center justify-center lg:justify-start gap-6 text-sm text-gray-500 font-medium"
+          >
+            <div className="flex items-center gap-2"><Truck className="w-4 h-4 text-accent-blue" /> Pan-India Delivery</div>
+            <div className="flex items-center gap-2"><Star className="w-4 h-4 fill-accent-yellow text-accent-yellow" /> 4.9/5 Rating</div>
+            <div className="flex items-center gap-2"><ShieldCheck className="w-4 h-4 text-green-500" /> Secure Checkout</div>
+          </motion.div>
+        </div>
+
+        {/* Right: Floating Images */}
+        <div className="relative h-[400px] md:h-[500px] mt-8 lg:mt-0 w-full max-w-lg mx-auto block">
+          {/* Main Frame */}
+          <motion.div 
+            initial={{ opacity: 0, scale: 0.9, y: 50 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            transition={{ duration: 0.8 }}
+            className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-48 sm:w-72 h-64 sm:h-96 bg-white p-2 sm:p-3 rounded-2xl shadow-2xl border border-gray-100 z-20"
+          >
+            <div className="w-full h-full relative rounded-xl overflow-hidden">
+              <Image src="/images/batman.jpg" fill sizes="(max-width: 768px) 100vw, 400px" priority className="object-cover" alt="Batman Poster" />
+            </div>
+          </motion.div>
+
+          {/* Floating Polaroid 1 */}
+          <motion.div 
+            animate={{ y: [0, -15, 0], rotate: [-10, -12, -10] }}
+            transition={{ repeat: Infinity, duration: 5, ease: "easeInOut" }}
+            className="absolute top-4 sm:top-10 left-0 sm:left-10 w-28 sm:w-40 p-2 sm:p-3 bg-white rounded-xl shadow-xl border border-gray-100 z-30"
+          >
+            <div className="w-full aspect-[3/4] relative mb-2 sm:mb-3 rounded-lg overflow-hidden">
+              <Image src="/images/pennywise.jpg" fill sizes="200px" priority className="object-cover" alt="Pennywise Vintage" />
+            </div>
+            <p className="text-center font-heading font-medium text-xs">Vintage</p>
+          </motion.div>
+
+          {/* Floating Poster 2 */}
+          <motion.div 
+            animate={{ y: [0, 15, 0], rotate: [12, 15, 12] }}
+            transition={{ repeat: Infinity, duration: 6, ease: "easeInOut", delay: 1 }}
+            className="absolute bottom-4 sm:bottom-10 right-0 sm:right-10 w-32 sm:w-48 p-2 bg-white rounded-xl shadow-xl border border-gray-100 z-10"
+          >
+            <div className="w-full h-40 sm:h-64 relative rounded-lg overflow-hidden">
+              <Image src="/images/michael.jpg" fill sizes="300px" priority className="object-cover" alt="Michael Jackson Print" />
+            </div>
+          </motion.div>
+        </div>
+
+      </div>
+    </section>
+  );
+}

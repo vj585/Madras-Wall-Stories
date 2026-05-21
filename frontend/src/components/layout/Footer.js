@@ -1,0 +1,94 @@
+"use client";
+import Link from 'next/link';
+import Image from 'next/image';
+import { Globe, Link as LinkIcon, Mail, Phone } from 'lucide-react';
+
+export default function Footer() {
+  return (
+    <footer className="bg-[#111111] text-white pt-20 pb-10">
+      <div className="container mx-auto px-4 md:px-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-16">
+          {/* Brand */}
+          <div className="space-y-6">
+            <Link href="/" className="inline-block">
+              <div className="relative h-14 w-48">
+                <Image
+                  src="/images/logo mws.png"
+                  alt="Madras Wall Stories"
+                  fill
+                  sizes="192px"
+                  className="object-contain"
+                />
+              </div>
+            </Link>
+            <p className="text-gray-400 text-sm leading-relaxed max-w-xs">
+              Premium posters, polaroids, and aesthetic prints crafted to turn your blank walls into emotional stories.
+            </p>
+            <div className="flex space-x-4">
+              <a href="#" className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center hover:bg-accent-blue transition-colors">
+                <Globe className="w-5 h-5" />
+              </a>
+              <a href="#" className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center hover:bg-accent-blue transition-colors">
+                <LinkIcon className="w-5 h-5" />
+              </a>
+              <a href="#" className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center hover:bg-accent-blue transition-colors">
+                <Phone className="w-5 h-5" />
+              </a>
+            </div>
+          </div>
+
+          {/* Quick Links */}
+          <div>
+            <h3 className="font-heading font-semibold text-lg mb-6">Shop</h3>
+            <ul className="space-y-4">
+              <li><Link href="/category/anime" className="text-gray-400 hover:text-white transition-colors">Anime Posters</Link></li>
+              <li><Link href="/category/movies" className="text-gray-400 hover:text-white transition-colors">Movie Posters</Link></li>
+              <li><Link href="/polaroids" className="text-gray-400 hover:text-white transition-colors">Polaroid Prints</Link></li>
+              <li><Link href="/custom" className="text-gray-400 hover:text-white transition-colors">Custom Prints</Link></li>
+              <li><Link href="/frames" className="text-gray-400 hover:text-white transition-colors">Photo Frames</Link></li>
+            </ul>
+          </div>
+
+          {/* Help */}
+          <div>
+            <h3 className="font-heading font-semibold text-lg mb-6">Help & Info</h3>
+            <ul className="space-y-4">
+              <li><Link href="/track" className="text-gray-400 hover:text-white transition-colors">Track Order</Link></li>
+              <li><Link href="/shipping" className="text-gray-400 hover:text-white transition-colors">Shipping Policy</Link></li>
+              <li><Link href="/returns" className="text-gray-400 hover:text-white transition-colors">Returns & Refunds</Link></li>
+              <li><Link href="/faq" className="text-gray-400 hover:text-white transition-colors">FAQ</Link></li>
+              <li><Link href="/contact" className="text-gray-400 hover:text-white transition-colors">Contact Us</Link></li>
+              <li><Link href="/admin" className="text-accent-yellow hover:text-white transition-colors mt-2 block font-medium">Admin Portal</Link></li>
+            </ul>
+          </div>
+
+          {/* Newsletter */}
+          <div>
+            <h3 className="font-heading font-semibold text-lg mb-6">Stay in the loop</h3>
+            <p className="text-gray-400 text-sm mb-4">Subscribe for exclusive drops, offers, and aesthetic inspiration.</p>
+            <form className="flex" onSubmit={(e) => e.preventDefault()}>
+              <input 
+                type="email" 
+                placeholder="Enter your email" 
+                className="bg-white/5 border border-white/10 rounded-l-lg px-4 py-3 w-full focus:outline-none focus:border-accent-blue text-sm"
+              />
+              <button className="bg-accent-blue hover:bg-blue-600 px-4 py-3 rounded-r-lg transition-colors flex items-center justify-center">
+                <Mail className="w-5 h-5" />
+              </button>
+            </form>
+          </div>
+        </div>
+
+        <div className="border-t border-white/10 pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
+          <p className="text-gray-500 text-sm">
+            © {new Date().getFullYear()} Madras Wall Stories. All rights reserved.
+          </p>
+          <div className="flex space-x-6 text-sm text-gray-500">
+            <Link href="/privacy" className="hover:text-white transition-colors">Privacy Policy</Link>
+            <Link href="/terms" className="hover:text-white transition-colors">Terms of Service</Link>
+          </div>
+        </div>
+      </div>
+    </footer>
+  );
+}
