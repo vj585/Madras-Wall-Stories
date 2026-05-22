@@ -25,14 +25,8 @@ export default function Footer() {
               Premium posters, polaroids, and aesthetic prints crafted to turn your blank walls into emotional stories.
             </p>
             <div className="flex space-x-4">
-              <a href="https://instagram.com/madras.wall" target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center hover:bg-accent-blue transition-colors">
+              <a href="https://www.instagram.com/madras.wallstories/?utm_source=ig_web_button_share_sheet" target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center hover:bg-accent-blue transition-colors">
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect width="20" height="20" x="2" y="2" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" x2="17.51" y1="6.5" y2="6.5"/></svg>
-              </a>
-              <a href="#" onClick={(e) => e.preventDefault()} className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center hover:bg-accent-blue transition-colors">
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>
-              </a>
-              <a href="#" onClick={(e) => e.preventDefault()} className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center hover:bg-accent-blue transition-colors">
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M22 4.01c-1 .49-1.98.68-3 .99-1.12-1.26-2.7-1.5-4.5-.5-1.55 1.05-2.05 3.3-1.5 5.5-4.5-.48-8.5-2.5-11-5.5-.5 1.5.5 3.5 2.5 4.5-1 .11-2-.1-3-.5v.1c0 2 1.5 4 3.5 4.5-1 .5-2 .5-3 .5 1 2 3.5 3.5 6 3.5-2 1.5-4.5 2.5-7.5 2.5 7 4.5 15 1.5 15-9.5V8.5c1-.99 2-2 3-3z"/></svg>
               </a>
             </div>
           </div>
