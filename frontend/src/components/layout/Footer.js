@@ -1,7 +1,7 @@
 "use client";
 import Link from 'next/link';
 import Image from 'next/image';
-import { Globe, Link as LinkIcon, Mail, Phone } from 'lucide-react';
+import { Globe, Link as LinkIcon, Mail, Phone, Instagram, Facebook, Twitter } from 'lucide-react';
 
 export default function Footer() {
   return (
@@ -25,14 +25,14 @@ export default function Footer() {
               Premium posters, polaroids, and aesthetic prints crafted to turn your blank walls into emotional stories.
             </p>
             <div className="flex space-x-4">
-              <a href="#" className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center hover:bg-accent-blue transition-colors">
-                <Globe className="w-5 h-5" />
+              <a href="https://instagram.com/madras.wall" target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center hover:bg-accent-blue transition-colors">
+                <Instagram className="w-5 h-5" />
               </a>
-              <a href="#" className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center hover:bg-accent-blue transition-colors">
-                <LinkIcon className="w-5 h-5" />
+              <a href="#" onClick={(e) => e.preventDefault()} className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center hover:bg-accent-blue transition-colors">
+                <Facebook className="w-5 h-5" />
               </a>
-              <a href="#" className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center hover:bg-accent-blue transition-colors">
-                <Phone className="w-5 h-5" />
+              <a href="#" onClick={(e) => e.preventDefault()} className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center hover:bg-accent-blue transition-colors">
+                <Twitter className="w-5 h-5" />
               </a>
             </div>
           </div>

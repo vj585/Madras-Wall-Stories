@@ -133,7 +133,7 @@ export default function Login() {
                 <div>
                   <div className="flex items-center justify-between mb-1">
                     <label className="block text-sm font-medium text-gray-700">Password</label>
-                    <a href="#" className="text-xs font-medium text-accent-blue hover:text-blue-700">Forgot?</a>
+                    <button type="button" onClick={() => alert('Password reset will be available soon.')} className="text-xs font-medium text-accent-blue hover:text-blue-700">Forgot?</button>
                   </div>
                   <div className="relative">
                     <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-gray-400">

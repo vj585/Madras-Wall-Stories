@@ -8,12 +8,14 @@ import {
 } from 'lucide-react';
 import Link from 'next/link';
 import Script from 'next/script';
+import { useRouter } from 'next/navigation';
 
 const inputClass =
   "w-full px-4 py-3.5 bg-gray-50 border border-gray-200 rounded-xl focus:bg-white focus:border-accent-blue focus:ring-1 focus:ring-accent-blue outline-none transition-all text-sm";
 
 export default function Checkout() {
-  const { cartItems, cartTotal, clearCart } = useCart();
+  const router = useRouter();
+  const { cartItems, cartTotal, clearCart, setIsCartOpen } = useCart();
   const [step, setStep] = useState(0); // 0: Contact, 1: Address, 2: Delivery, 3: Payment, 4: Success
   const [paymentMethod, setPaymentMethod] = useState('upi');
   const [guestEmail, setGuestEmail] = useState('');
@@ -256,9 +258,15 @@ export default function Checkout() {
 
         {/* Header */}
         <div className="mb-8">
-          <Link href="/cart" className="inline-flex items-center text-sm font-medium text-gray-500 hover:text-black mb-6 transition-colors">
+          <button 
+            onClick={() => {
+              router.push('/shop');
+              setTimeout(() => setIsCartOpen(true), 100);
+            }} 
+            className="inline-flex items-center text-sm font-medium text-gray-500 hover:text-black mb-6 transition-colors"
+          >
             <ArrowLeft className="w-4 h-4 mr-1" /> Back to Cart
-          </Link>
+          </button>
           <h1 className="text-3xl md:text-4xl font-heading font-bold">Checkout</h1>
           <p className="text-gray-400 text-sm mt-1">No account needed — just fill your details and go.</p>
         </div>
