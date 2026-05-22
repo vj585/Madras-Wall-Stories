@@ -1,5 +1,6 @@
 "use client";
-import { IndianRupee, ShoppingBag, Users, TrendingUp, Package, FileImage, ShoppingCart } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { IndianRupee, ShoppingBag, Users, TrendingUp, Package, FileImage, ShoppingCart, Loader2 } from 'lucide-react';
 
 // Indian formatting helper
 const formatINR = (amount) => {
@@ -15,19 +16,61 @@ const formatINR = (amount) => {
 };
 
 export default function AdminDashboard() {
+  const [data, setData] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    const fetchDashboardData = async () => {
+      try {
+        const res = await fetch('/api/admin/dashboard');
+        const json = await res.json();
+        if (json.success) {
+          setData(json.data);
+        } else {
+          setError(json.error);
+        }
+      } catch (err) {
+        setError('Failed to fetch dashboard data');
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    fetchDashboardData();
+  }, []);
+
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center min-h-[50vh]">
+        <Loader2 className="w-8 h-8 animate-spin text-gray-400" />
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="p-4 bg-red-50 text-red-600 rounded-xl">
+        Error: {error}
+      </div>
+    );
+  }
+
+  const d = data || {};
+
   const stats = [
-    { title: 'Total Revenue', value: formatINR(0), icon: IndianRupee, trend: '0%' },
-    { title: 'Total Orders', value: '0', icon: ShoppingBag, trend: '0%' },
-    { title: 'Pending Orders', value: '0', icon: ShoppingCart, trend: '0%' },
-    { title: 'Delivered Orders', value: '0', icon: Package, trend: '0%' },
-    { title: 'Products Listed', value: '0', icon: Package, trend: '0%' },
-    { title: 'Custom Print Orders', value: '0', icon: FileImage, trend: '0%' },
-    { title: 'Average Order Value', value: formatINR(0), icon: IndianRupee, trend: '0%' },
-    { title: 'Conversion Rate', value: '0%', icon: TrendingUp, trend: '0%' },
-    { title: 'Cart Abandonment', value: '0%', icon: Users, trend: '0%' },
+    { title: 'Total Revenue', value: formatINR(d.totalRevenue || 0), icon: IndianRupee, trend: '0%' },
+    { title: 'Total Orders', value: d.totalOrders || '0', icon: ShoppingBag, trend: '0%' },
+    { title: 'Pending Orders', value: d.pendingOrders || '0', icon: ShoppingCart, trend: '0%' },
+    { title: 'Delivered Orders', value: d.deliveredOrders || '0', icon: Package, trend: '0%' },
+    { title: 'Products Listed', value: d.productsListed || '0', icon: Package, trend: '0%' },
+    { title: 'Custom Print Orders', value: d.customPrintOrders || '0', icon: FileImage, trend: '0%' },
+    { title: 'Average Order Value', value: formatINR(d.averageOrderValue || 0), icon: IndianRupee, trend: '0%' },
+    { title: 'Conversion Rate', value: '0%', icon: TrendingUp, trend: '0%' }, // Keep static for now
+    { title: 'Cart Abandonment', value: '0%', icon: Users, trend: '0%' }, // Keep static for now
   ];
 
-  const recentOrders = []; // Empty array for startup state
+  const recentOrders = d.recentOrders || [];
+  const topCategories = d.topCategories || [];
 
   return (
     <div className="space-y-8 pb-10">
@@ -113,11 +156,22 @@ export default function AdminDashboard() {
         {/* Top Categories */}
         <div className="bg-white p-6 rounded-3xl shadow-sm border border-gray-100 flex flex-col">
           <h2 className="font-bold text-lg mb-6">Top Categories</h2>
-          <div className="flex-1 flex flex-col items-center justify-center py-8 text-center">
-            <Package className="w-12 h-12 text-gray-200 mb-3" />
-            <h3 className="font-bold text-gray-900 text-sm mb-1">No data available</h3>
-            <p className="text-xs text-gray-500">Revenue data will appear after sales.</p>
-          </div>
+          {topCategories.length === 0 ? (
+            <div className="flex-1 flex flex-col items-center justify-center py-8 text-center">
+              <Package className="w-12 h-12 text-gray-200 mb-3" />
+              <h3 className="font-bold text-gray-900 text-sm mb-1">No data available</h3>
+              <p className="text-xs text-gray-500">Sales data will appear here.</p>
+            </div>
+          ) : (
+            <div className="flex-1 flex flex-col gap-4">
+              {topCategories.map((cat, idx) => (
+                <div key={idx} className="flex justify-between items-center p-3 hover:bg-gray-50 rounded-xl transition-colors">
+                  <span className="font-medium">{cat.name}</span>
+                  <span className="bg-gray-100 px-3 py-1 rounded-full text-sm font-bold">{cat.count} sold</span>
+                </div>
+              ))}
+            </div>
+          )}
         </div>
 
       </div>
