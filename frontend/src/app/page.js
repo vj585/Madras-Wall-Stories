@@ -1,10 +1,12 @@
+import nextDynamic from 'next/dynamic';
 import Hero from '@/components/home/Hero';
 import Categories from '@/components/home/Categories';
 import Trending from '@/components/home/Trending';
-import Inspiration from '@/components/home/Inspiration';
-import Testimonials from '@/components/home/Testimonials';
 import Memories from '@/components/home/Memories';
-import CustomHighlight from '@/components/home/CustomHighlight';
+
+const Inspiration = nextDynamic(() => import('@/components/home/Inspiration'));
+const Testimonials = nextDynamic(() => import('@/components/home/Testimonials'));
+const CustomHighlight = nextDynamic(() => import('@/components/home/CustomHighlight'));
 import { getStorefrontProducts } from '@/lib/products';
 
 export const dynamic = 'force-dynamic';

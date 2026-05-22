@@ -15,8 +15,13 @@ for (const env of requiredEnvs) {
 
 const nextConfig = {
   images: {
-    // unoptimized allows local /public images without sharp
-    unoptimized: true,
+    formats: ['image/avif', 'image/webp'],
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'res.cloudinary.com',
+      },
+    ],
   },
   // Allow local network IP to load JS chunks in dev
   allowedDevOrigins: ['192.168.31.248', 'localhost', '127.0.0.1'],

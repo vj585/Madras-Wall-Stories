@@ -4,10 +4,12 @@ import { motion, AnimatePresence } from 'framer-motion';
 import Link from 'next/link';
 import Image from 'next/image';
 import { ArrowRight, Star, Truck, ShieldCheck } from 'lucide-react';
+import { useMobileAdaptive } from '@/hooks/useMobileAdaptive';
 
 export default function Hero() {
   const [banners, setBanners] = useState([]);
   const [currentSlide, setCurrentSlide] = useState(0);
+  const { isMobile, getValue, getVariant } = useMobileAdaptive();
 
   // Fetch banners
   useEffect(() => {
@@ -41,23 +43,23 @@ export default function Hero() {
   };
 
   const letterVariants = {
-    hidden: { opacity: 0, y: 50, filter: 'blur(10px)', rotateX: -90 },
+    hidden: { opacity: 0, y: 50, filter: isMobile ? 'none' : 'blur(10px)', rotateX: -90 },
     visible: { 
       opacity: 1, 
       y: 0, 
-      filter: 'blur(0px)',
+      filter: isMobile ? 'none' : 'blur(0px)',
       rotateX: 0,
-      transition: { type: 'spring', damping: 12, stiffness: 150 }
+      transition: { type: 'spring', damping: 12, stiffness: isMobile ? 100 : 150 }
     }
   };
 
   const glowVariants = {
-    hidden: { opacity: 0, filter: 'blur(20px)', scale: 0.8 },
+    hidden: { opacity: 0, filter: isMobile ? 'none' : 'blur(20px)', scale: 0.8 },
     visible: { 
       opacity: 1, 
-      filter: 'blur(0px)',
+      filter: isMobile ? 'none' : 'blur(0px)',
       scale: 1,
-      transition: { duration: 1.5, ease: "easeOut", delay: 0.8 }
+      transition: { duration: isMobile ? 1.0 : 1.5, ease: "easeOut", delay: 0.8 }
     }
   };
 
@@ -96,7 +98,7 @@ export default function Hero() {
             
             <motion.span 
               variants={glowVariants}
-              className="inline-block mt-2 text-transparent bg-clip-text bg-gradient-to-r from-accent-blue via-purple-500 to-accent-yellow italic font-medium pr-2 animate-gradient-text font-fancy"
+              className="inline-block mt-2 text-transparent bg-clip-text bg-gradient-to-r from-accent-blue via-purple-500 to-accent-yellow italic font-medium pr-2 animate-gradient-text font-fancy will-change-transform will-change-opacity"
             >
               Into Stories.
             </motion.span>
@@ -145,42 +147,59 @@ export default function Hero() {
             initial={{ opacity: 0, scale: 0.9, y: 50 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             transition={{ duration: 0.8 }}
-            className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-48 sm:w-72 h-64 sm:h-96 bg-white p-2 sm:p-3 rounded-2xl shadow-2xl border border-gray-100 z-20"
+            className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-48 sm:w-72 h-64 sm:h-96 bg-white p-2 sm:p-3 rounded-2xl shadow-2xl border border-gray-100 z-20 will-change-transform"
           >
             <div className="w-full h-full relative rounded-xl overflow-hidden">
               <AnimatePresence mode="popLayout">
-                <motion.img 
+                <motion.div 
                   key={img1}
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   exit={{ opacity: 0 }}
                   transition={{ duration: 0.5 }}
-                  src={img1} 
-                  className="absolute inset-0 w-full h-full object-cover" 
-                  alt="Main Display" 
-                />
+                  className="absolute inset-0 w-full h-full"
+                >
+                  <Image 
+                    src={img1} 
+                    fill 
+                    priority
+                    sizes="(max-width: 768px) 100vw, 50vw"
+                    className="object-cover" 
+                    alt="Main Display" 
+                  />
+                </motion.div>
               </AnimatePresence>
             </div>
           </motion.div>
 
           {/* Floating Polaroid 1 */}
           <motion.div 
-            animate={{ y: [0, -15, 0], rotate: [-10, -12, -10] }}
-            transition={{ repeat: Infinity, duration: 5, ease: "easeInOut" }}
-            className="absolute top-8 sm:top-16 left-6 sm:left-20 w-28 sm:w-40 p-2 sm:p-3 bg-white rounded-xl shadow-xl border border-gray-100 z-30"
+            animate={{ 
+              y: [0, getValue(-15, -6), 0], 
+              rotate: [-10, getValue(-12, -11), -10] 
+            }}
+            transition={{ repeat: Infinity, duration: getValue(5, 7), ease: "easeInOut" }}
+            className="absolute top-8 sm:top-16 left-6 sm:left-20 w-28 sm:w-40 p-2 sm:p-3 bg-white rounded-xl shadow-xl border border-gray-100 z-30 will-change-transform"
           >
             <div className="w-full aspect-[3/4] relative mb-2 sm:mb-3 rounded-lg overflow-hidden bg-gray-100">
               <AnimatePresence mode="popLayout">
-                <motion.img 
+                <motion.div 
                   key={img2}
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   exit={{ opacity: 0 }}
                   transition={{ duration: 0.5 }}
-                  src={img2} 
-                  className="absolute inset-0 w-full h-full object-cover" 
-                  alt="Polaroid Display" 
-                />
+                  className="absolute inset-0 w-full h-full"
+                >
+                  <Image 
+                    src={img2} 
+                    fill 
+                    priority
+                    sizes="(max-width: 768px) 33vw, 20vw"
+                    className="object-cover" 
+                    alt="Polaroid Display" 
+                  />
+                </motion.div>
               </AnimatePresence>
             </div>
             <p className="text-center font-heading font-medium text-xs">Vintage</p>
@@ -188,22 +207,32 @@ export default function Hero() {
 
           {/* Floating Poster 2 */}
           <motion.div 
-            animate={{ y: [0, 15, 0], rotate: [12, 15, 12] }}
-            transition={{ repeat: Infinity, duration: 6, ease: "easeInOut", delay: 1 }}
-            className="absolute bottom-8 sm:bottom-16 right-4 sm:right-16 w-32 sm:w-48 p-2 bg-white rounded-xl shadow-xl border border-gray-100 z-10"
+            animate={{ 
+              y: [0, getValue(15, 8), 0], 
+              rotate: [12, getValue(15, 13), 12] 
+            }}
+            transition={{ repeat: Infinity, duration: getValue(6, 8), ease: "easeInOut", delay: 1 }}
+            className="absolute bottom-8 sm:bottom-16 right-4 sm:right-16 w-32 sm:w-48 p-2 bg-white rounded-xl shadow-xl border border-gray-100 z-10 will-change-transform"
           >
             <div className="w-full h-40 sm:h-64 relative rounded-lg overflow-hidden bg-gray-100">
               <AnimatePresence mode="popLayout">
-                <motion.img 
+                <motion.div 
                   key={img3}
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   exit={{ opacity: 0 }}
                   transition={{ duration: 0.5 }}
-                  src={img3} 
-                  className="absolute inset-0 w-full h-full object-cover" 
-                  alt="Secondary Poster" 
-                />
+                  className="absolute inset-0 w-full h-full"
+                >
+                  <Image 
+                    src={img3} 
+                    fill 
+                    priority
+                    sizes="(max-width: 768px) 33vw, 20vw"
+                    className="object-cover" 
+                    alt="Secondary Poster" 
+                  />
+                </motion.div>
               </AnimatePresence>
             </div>
           </motion.div>

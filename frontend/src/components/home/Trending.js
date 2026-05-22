@@ -1,12 +1,12 @@
 "use client";
+import React from 'react';
 import { motion } from 'framer-motion';
-import { Heart, ShoppingBag, Star } from 'lucide-react';
+import { Heart, ShoppingBag, Star, PackageOpen } from 'lucide-react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { useWishlist } from '@/context/WishlistContext';
-import { PackageOpen } from 'lucide-react';
 
-export default function Trending({ products = [] }) {
+export default React.memo(function Trending({ products = [] }) {
   const { wishlistItems, toggleWishlist, isInWishlist } = useWishlist();
   
   // Show first 4 products from the central store
@@ -52,7 +52,7 @@ export default function Trending({ products = [] }) {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: idx * 0.1 }}
-                className="group relative bg-white rounded-2xl md:rounded-3xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-500 flex flex-col"
+                className="group relative bg-white rounded-2xl md:rounded-3xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-500 flex flex-col will-change-transform"
               >
                 <div className="relative aspect-[3/4] overflow-hidden bg-gray-50">
                   {product.stock <= 0 ? (
@@ -116,4 +116,4 @@ export default function Trending({ products = [] }) {
       </div>
     </section>
   );
-}
+});
