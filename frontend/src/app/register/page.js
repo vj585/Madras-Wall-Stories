@@ -85,6 +85,7 @@ export default function Register() {
         </div>
 
         <button 
+          type="button"
           onClick={() => signIn('google')}
           className="w-full flex items-center justify-center gap-3 bg-white border border-gray-200 text-gray-700 hover:bg-gray-50 px-4 py-3.5 rounded-xl font-medium transition-colors mb-6 shadow-sm"
         >
