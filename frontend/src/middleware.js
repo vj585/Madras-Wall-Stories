@@ -20,9 +20,21 @@ export async function middleware(req) {
     }
   }
 
+  const customerRoutes = ['/profile', '/orders', '/account', '/wishlist'];
+  const isCustomerRoute = customerRoutes.some(route => pathname.startsWith(route));
+
+  if (isCustomerRoute) {
+    if (!token) {
+      const url = new URL('/login', req.url);
+      url.searchParams.set('callbackUrl', encodeURI(req.url));
+      return NextResponse.redirect(url);
+    }
+    // Any logged in user (ADMIN or customer) can access their own profile/orders
+  }
+
   return NextResponse.next();
 }
 
 export const config = {
-  matcher: ['/admin/:path*'],
+  matcher: ['/admin/:path*', '/profile/:path*', '/orders/:path*', '/account/:path*', '/wishlist/:path*'],
 };

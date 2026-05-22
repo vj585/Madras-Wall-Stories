@@ -18,10 +18,38 @@ const CustomerSchema = new mongoose.Schema(
       type: String,
       trim: true,
     },
+    password: {
+      type: String,
+      // Optional because Google OAuth users won't have a password
+    },
+    role: {
+      type: String,
+      enum: ['customer'],
+      default: 'customer',
+    },
+    authProvider: {
+      type: String,
+      enum: ['email', 'google'],
+      required: true,
+      default: 'email',
+    },
+    emailVerified: {
+      type: Boolean,
+      default: false,
+    },
+    avatar: {
+      type: String,
+    },
     orders: [
       {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Order',
+      }
+    ],
+    wishlist: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Product', // Assuming wishlist references Products
       }
     ],
   },
