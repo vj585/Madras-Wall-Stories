@@ -10,6 +10,7 @@ import { useWishlist } from '@/context/WishlistContext';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
+import StarRatingForm from '@/components/product/StarRatingForm';
 
 const btnClass = "py-3 px-4 rounded-xl border text-sm font-medium transition-all";
 const activeBtn = "border-accent-blue bg-accent-blue/10 text-accent-blue";
@@ -137,11 +138,11 @@ export default function ProductClient({ product, related = [] }) {
               <div className="flex items-center gap-2 mb-3">
                 <div className="flex text-accent-yellow">
                   {[...Array(5)].map((_, i) => (
-                    <Star key={i} className={`w-4 h-4 ${i < Math.floor(product.rating) ? 'fill-current' : ''}`} />
+                    <Star key={i} className={`w-4 h-4 ${i < Math.round(product.rating || 0) ? 'fill-current' : ''}`} />
                   ))}
                 </div>
-                <span className="text-sm font-semibold">{product.rating}</span>
-                <span className="text-sm text-gray-400">({product.reviews} reviews)</span>
+                <span className="text-sm font-semibold">{product.rating || 0}</span>
+                <span className="text-sm text-gray-400">({product.numReviews || 0} reviews)</span>
               </div>
 
               <p className="text-xs font-semibold text-gray-400 uppercase tracking-widest mb-2">{product.category}</p>
@@ -246,6 +247,9 @@ export default function ProductClient({ product, related = [] }) {
                 </div>
               ))}
             </div>
+
+            {/* Star Rating Submission Component */}
+            <StarRatingForm productId={product._id} />
           </div>
         </div>
 
