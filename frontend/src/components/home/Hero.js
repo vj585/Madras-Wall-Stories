@@ -1,10 +1,35 @@
 "use client";
-import { motion } from 'framer-motion';
+import { useState, useEffect } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import Link from 'next/link';
 import Image from 'next/image';
 import { ArrowRight, Star, Truck, ShieldCheck } from 'lucide-react';
 
 export default function Hero() {
+  const [banners, setBanners] = useState([]);
+  const [currentSlide, setCurrentSlide] = useState(0);
+
+  // Fetch banners
+  useEffect(() => {
+    fetch('/api/banners')
+      .then(res => res.json())
+      .then(data => {
+        if (data.success && data.data.length > 0) {
+          setBanners(data.data);
+        }
+      })
+      .catch(console.error);
+  }, []);
+
+  // Slowly cycle through banners if there are many
+  useEffect(() => {
+    if (banners.length <= 1) return;
+    const interval = setInterval(() => {
+      setCurrentSlide((prev) => (prev + 1) % banners.length);
+    }, 6000);
+    return () => clearInterval(interval);
+  }, [banners.length]);
+
   const headingText = "Turn Your Walls";
   
   const containerVariants = {
@@ -35,6 +60,11 @@ export default function Hero() {
       transition: { duration: 1.5, ease: "easeOut", delay: 0.8 }
     }
   };
+
+  // Determine images to show based on banners or fallbacks
+  const img1 = banners.length > 0 ? banners[currentSlide % banners.length]?.image : "/images/batman.jpg";
+  const img2 = banners.length > 1 ? banners[(currentSlide + 1) % banners.length]?.image : (banners.length === 1 ? banners[0]?.image : "/images/pennywise.jpg");
+  const img3 = banners.length > 2 ? banners[(currentSlide + 2) % banners.length]?.image : (banners.length > 0 ? banners[0]?.image : "/images/michael.jpg");
 
   return (
     <section className="relative w-full min-h-[100svh] lg:min-h-[90vh] flex items-center justify-center overflow-hidden bg-surface-alt text-foreground pt-20">
@@ -109,6 +139,7 @@ export default function Hero() {
 
         {/* Right: Floating Images */}
         <div className="relative h-[400px] md:h-[500px] mt-8 lg:mt-0 w-full max-w-lg mx-auto block">
+          
           {/* Main Frame */}
           <motion.div 
             initial={{ opacity: 0, scale: 0.9, y: 50 }}
@@ -117,7 +148,18 @@ export default function Hero() {
             className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-48 sm:w-72 h-64 sm:h-96 bg-white p-2 sm:p-3 rounded-2xl shadow-2xl border border-gray-100 z-20"
           >
             <div className="w-full h-full relative rounded-xl overflow-hidden">
-              <Image src="/images/batman.jpg" fill sizes="(max-width: 768px) 100vw, 400px" priority className="object-cover" alt="Batman Poster" />
+              <AnimatePresence mode="popLayout">
+                <motion.img 
+                  key={img1}
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  transition={{ duration: 0.5 }}
+                  src={img1} 
+                  className="absolute inset-0 w-full h-full object-cover" 
+                  alt="Main Display" 
+                />
+              </AnimatePresence>
             </div>
           </motion.div>
 
@@ -125,10 +167,21 @@ export default function Hero() {
           <motion.div 
             animate={{ y: [0, -15, 0], rotate: [-10, -12, -10] }}
             transition={{ repeat: Infinity, duration: 5, ease: "easeInOut" }}
-            className="absolute top-4 sm:top-10 left-0 sm:left-10 w-28 sm:w-40 p-2 sm:p-3 bg-white rounded-xl shadow-xl border border-gray-100 z-30"
+            className="absolute top-8 sm:top-16 left-6 sm:left-20 w-28 sm:w-40 p-2 sm:p-3 bg-white rounded-xl shadow-xl border border-gray-100 z-30"
           >
-            <div className="w-full aspect-[3/4] relative mb-2 sm:mb-3 rounded-lg overflow-hidden">
-              <Image src="/images/pennywise.jpg" fill sizes="200px" priority className="object-cover" alt="Pennywise Vintage" />
+            <div className="w-full aspect-[3/4] relative mb-2 sm:mb-3 rounded-lg overflow-hidden bg-gray-100">
+              <AnimatePresence mode="popLayout">
+                <motion.img 
+                  key={img2}
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  transition={{ duration: 0.5 }}
+                  src={img2} 
+                  className="absolute inset-0 w-full h-full object-cover" 
+                  alt="Polaroid Display" 
+                />
+              </AnimatePresence>
             </div>
             <p className="text-center font-heading font-medium text-xs">Vintage</p>
           </motion.div>
@@ -137,10 +190,21 @@ export default function Hero() {
           <motion.div 
             animate={{ y: [0, 15, 0], rotate: [12, 15, 12] }}
             transition={{ repeat: Infinity, duration: 6, ease: "easeInOut", delay: 1 }}
-            className="absolute bottom-4 sm:bottom-10 right-0 sm:right-10 w-32 sm:w-48 p-2 bg-white rounded-xl shadow-xl border border-gray-100 z-10"
+            className="absolute bottom-8 sm:bottom-16 right-4 sm:right-16 w-32 sm:w-48 p-2 bg-white rounded-xl shadow-xl border border-gray-100 z-10"
           >
-            <div className="w-full h-40 sm:h-64 relative rounded-lg overflow-hidden">
-              <Image src="/images/michael.jpg" fill sizes="300px" priority className="object-cover" alt="Michael Jackson Print" />
+            <div className="w-full h-40 sm:h-64 relative rounded-lg overflow-hidden bg-gray-100">
+              <AnimatePresence mode="popLayout">
+                <motion.img 
+                  key={img3}
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  transition={{ duration: 0.5 }}
+                  src={img3} 
+                  className="absolute inset-0 w-full h-full object-cover" 
+                  alt="Secondary Poster" 
+                />
+              </AnimatePresence>
             </div>
           </motion.div>
         </div>

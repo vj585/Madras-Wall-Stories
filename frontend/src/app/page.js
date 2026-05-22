@@ -16,7 +16,7 @@ export default async function Home() {
     <>
       <Hero />
       <Memories />
-      <Categories />
+      <Categories products={products} />
       <Trending products={products} />
       <CustomHighlight />
       <Testimonials />

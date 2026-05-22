@@ -10,9 +10,14 @@ const BannerSchema = new mongoose.Schema(
       type: String,
       trim: true,
     },
-    active: {
-      type: Boolean,
-      default: true,
+    targetUrl: {
+      type: String,
+      trim: true,
+    },
+    status: {
+      type: String,
+      enum: ['Active', 'Draft'],
+      default: 'Active',
     },
     order: {
       type: Number,

@@ -4,17 +4,17 @@ import Link from 'next/link';
 import Image from 'next/image';
 
 const categories = [
-  { name: 'Pop Culture', image: '/images/michael.jpg', link: '/category/pop-culture' },
-  { name: 'Movies', image: '/images/batman.jpg', link: '/category/movies' },
-  { name: 'Room Aesthetic', image: '/images/master.jpg', link: '/category/aesthetic' },
-  { name: 'Horror Prints', image: '/images/pennywise.jpg', link: '/category/horror' },
-  { name: 'Gifting Sets', image: '/images/michael.jpg', link: '/category/gifts' },
-  { name: 'Pop Art', image: '/images/spiderman.jpg', link: '/category/pop-art' },
-  { name: 'Kollywood', image: '/images/master.jpg', link: '/category/kollywood' },
-  { name: 'View All', image: '/images/batman.jpg', link: '/shop' },
+  { name: 'Anime', fallbackImage: '/images/master.jpg', link: '/category/anime' },
+  { name: 'Superhero', fallbackImage: '/images/batman.jpg', link: '/category/superhero' },
+  { name: 'Movies', fallbackImage: '/images/pennywise.jpg', link: '/category/movies' },
+  { name: 'Music', fallbackImage: '/images/michael.jpg', link: '/category/music' },
+  { name: 'Cars & F1', fallbackImage: '/images/batman.jpg', link: '/category/cars' },
+  { name: 'Sports', fallbackImage: '/images/master.jpg', link: '/category/sports' },
+  { name: 'Video Games', fallbackImage: '/images/spiderman.jpg', link: '/category/gaming' },
+  { name: 'Custom Prints', fallbackImage: '/images/michael.jpg', link: '/custom' },
 ];
 
-export default function Categories() {
+export default function Categories({ products = [] }) {
   return (
     <section className="py-24 bg-white text-foreground overflow-hidden">
       <div className="container mx-auto px-4">
@@ -34,7 +34,15 @@ export default function Categories() {
         </motion.div>
 
         <div className="flex overflow-x-auto pb-8 hide-scrollbar gap-8 snap-x">
-          {categories.map((cat, idx) => (
+          {categories.map((cat, idx) => {
+            // Find a product that matches this category to use as thumbnail
+            const categoryProduct = products.find(p => 
+              p.category.toLowerCase().includes(cat.name.toLowerCase()) || 
+              cat.name.toLowerCase().includes(p.category.toLowerCase())
+            );
+            const imageSrc = (categoryProduct?.images && categoryProduct.images.length > 0) ? categoryProduct.images[0] : cat.fallbackImage;
+
+            return (
             <Link key={cat.name} href={cat.link} className="snap-start shrink-0 group">
               <motion.div 
                 initial={{ opacity: 0, scale: 0.95 }}
@@ -46,7 +54,7 @@ export default function Categories() {
                 <div className="w-40 h-40 md:w-56 md:h-56 rounded-[2.5rem] overflow-hidden relative border border-gray-100 transition-all duration-500 shadow-sm group-hover:shadow-xl group-hover:-translate-y-2">
                   <div className="absolute inset-0 bg-black/5 group-hover:bg-transparent transition-colors z-10"></div>
                   <Image 
-                    src={cat.image} 
+                    src={imageSrc} 
                     alt={cat.name} 
                     fill
                     sizes="(max-width: 768px) 160px, 224px"
@@ -58,7 +66,8 @@ export default function Categories() {
                 </h3>
               </motion.div>
             </Link>
-          ))}
+            );
+          })}
         </div>
       </div>
     </section>

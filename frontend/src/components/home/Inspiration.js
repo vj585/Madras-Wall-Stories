@@ -1,6 +1,7 @@
 "use client";
 import { motion } from 'framer-motion';
 import Image from 'next/image';
+import Link from 'next/link';
 
 const inspirations = [
   { id: 1, image: '/images/michael.jpg', height: 'h-64' },
@@ -48,9 +49,9 @@ export default function Inspiration() {
                 />
               </div>
               <div className="absolute inset-0 bg-white/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center backdrop-blur-[2px]">
-                <button className="bg-white text-black px-8 py-3 rounded-full font-semibold shadow-xl transform translate-y-4 group-hover:translate-y-0 transition-all duration-300">
+                <Link href="/shop" className="bg-white text-black px-8 py-3 rounded-full font-semibold shadow-xl transform translate-y-4 group-hover:translate-y-0 transition-all duration-300 hover:bg-gray-50">
                   Shop the Look
-                </button>
+                </Link>
               </div>
             </motion.div>
           ))}

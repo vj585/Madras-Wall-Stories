@@ -365,6 +365,17 @@ export default function AddProductDrawer({ isOpen, onClose, editingProduct = nul
                       <option>Posters</option>
                       <option>Polaroids</option>
                       <option>Custom Prints</option>
+                      <option>Anime</option>
+                      <option>Superhero</option>
+                      <option>Movies</option>
+                      <option>TV-Series</option>
+                      <option>Music</option>
+                      <option>Cars</option>
+                      <option>Video Games</option>
+                      <option>Motivate</option>
+                      <option>Cricket</option>
+                      <option>Football</option>
+                      <option>F1</option>
                     </select>
                   </div>
                   <div>

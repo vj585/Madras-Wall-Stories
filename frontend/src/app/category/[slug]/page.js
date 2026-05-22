@@ -10,14 +10,21 @@ export default async function CategoryPage({ params }) {
 
   // Map slugs to display names
   const categoryNames = {
-    'anime': 'Anime Posters',
-    'movies': 'Movie Posters',
+    'anime': 'Anime',
+    'superhero': 'Superhero Collections',
+    'movies': 'Movie Collections',
+    'tv-series': 'TV-Series Collections',
+    'music': 'Music Collections',
+    'cars': 'Car Collections',
+    'gaming': 'Video Game Collections',
+    'motivate': 'Motivate Collections',
+    'cricket': 'Cricket Collections',
+    'football': 'Football Collections',
+    'f1': 'F1 Collections',
     'pop-culture': 'Pop Culture',
-    'horror': 'Horror Prints',
-    'pop-art': 'Pop Art',
-    'kollywood': 'Kollywood',
     'aesthetic': 'Room Aesthetic',
     'gifts': 'Gifting Sets',
+    'sports': 'Sports Collections',
   };
 
   const displayName = categoryNames[slug] || slug?.replace(/-/g, ' ');

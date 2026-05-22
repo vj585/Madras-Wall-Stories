@@ -55,7 +55,7 @@ export default function CustomPricingAdmin() {
       ...prev,
       [category]: {
         ...prev[category],
-        [key]: Number(value)
+        [key]: value === '' ? '' : Number(value)
       }
     }));
   };
@@ -72,7 +72,7 @@ export default function CustomPricingAdmin() {
             <label className="block text-sm font-medium text-gray-700 mb-1">{key} (₹)</label>
             <input 
               type="number" 
-              value={val}
+              value={val === '' ? '' : Number(val).toString()}
               onChange={(e) => handleChange(category, key, e.target.value)}
               className="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-xl focus:border-black outline-none"
             />
