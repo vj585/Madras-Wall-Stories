@@ -22,12 +22,14 @@ export async function getStorefrontProducts(options = {}) {
     .exec();
     
   // Convert _id to string for Next.js Client Component props serialization
-  return products.map(p => ({
-    ...p,
-    _id: p._id.toString(),
-    createdAt: p.createdAt ? p.createdAt.toISOString() : null,
-    updatedAt: p.updatedAt ? p.updatedAt.toISOString() : null,
-  }));
+  return JSON.parse(JSON.stringify(products)).map(p => {
+    if (p.variants && p.variants.length > 0) {
+      p.stock = p.variants.reduce((acc, v) => acc + (v.stock || 0), 0);
+      p.price = p.variants[0].price;
+      p.salePrice = p.variants[0].salePrice || p.variants[0].price;
+    }
+    return p;
+  });
 }
 
 export async function getProductBySlug(slug) {
@@ -37,12 +39,11 @@ export async function getProductBySlug(slug) {
   
   if (!product) return null;
   
-  return {
-    ...product,
-    _id: product._id.toString(),
-    createdAt: product.createdAt ? product.createdAt.toISOString() : null,
-    updatedAt: product.updatedAt ? product.updatedAt.toISOString() : null,
-  };
+  const parsedProduct = JSON.parse(JSON.stringify(product));
+  if (parsedProduct.variants && parsedProduct.variants.length > 0) {
+    parsedProduct.stock = parsedProduct.variants.reduce((acc, v) => acc + (v.stock || 0), 0);
+  }
+  return parsedProduct;
 }
 
 export async function getRelatedProducts(currentSlug, category, limit = 4) {
@@ -58,10 +59,12 @@ export async function getRelatedProducts(currentSlug, category, limit = 4) {
     .lean()
     .exec();
     
-  return products.map(p => ({
-    ...p,
-    _id: p._id.toString(),
-    createdAt: p.createdAt ? p.createdAt.toISOString() : null,
-    updatedAt: p.updatedAt ? p.updatedAt.toISOString() : null,
-  }));
+  return JSON.parse(JSON.stringify(products)).map(p => {
+    if (p.variants && p.variants.length > 0) {
+      p.stock = p.variants.reduce((acc, v) => acc + (v.stock || 0), 0);
+      p.price = p.variants[0].price;
+      p.salePrice = p.variants[0].salePrice || p.variants[0].price;
+    }
+    return p;
+  });
 }

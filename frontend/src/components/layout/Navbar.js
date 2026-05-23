@@ -7,6 +7,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useCart } from '@/context/CartContext';
 import { useWishlist } from '@/context/WishlistContext';
 import { useRouter } from 'next/navigation';
+import { useSession } from 'next-auth/react';
 
 export default function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -16,6 +17,7 @@ export default function Navbar() {
   const router = useRouter();
   const { cartItems, setIsCartOpen } = useCart();
   const { wishlistItems } = useWishlist();
+  const { data: session } = useSession();
 
   useEffect(() => {
     let ticking = false;
@@ -122,8 +124,11 @@ export default function Navbar() {
           <Link href="/search" aria-label="Search" className="md:hidden hover:text-accent-blue transition-colors">
             <Search className="w-5 h-5" />
           </Link>
-          <Link href="/login" aria-label="Profile" className="hover:text-accent-blue transition-colors hidden md:block">
+          <Link href={session?.user ? (session.user.role === 'admin' ? '/admin' : '/account') : '/login'} aria-label="Profile" className="hover:text-accent-blue transition-colors hidden md:block relative">
             <User className="w-5 h-5" />
+            {session?.user && (
+              <span className="absolute -top-1 -right-1 bg-green-500 border-2 border-white w-3 h-3 rounded-full"></span>
+            )}
           </Link>
           <Link href="/wishlist" aria-label="Wishlist" className="hover:text-accent-blue transition-colors hidden md:block relative">
             <Heart className="w-5 h-5" />

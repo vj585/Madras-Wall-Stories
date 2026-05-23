@@ -16,8 +16,36 @@ export async function GET(request, { params }) {
     if (!product) {
       return NextResponse.json({ success: false, error: 'Product not found' }, { status: 404 });
     }
+    let prod = product.toObject();
+    
+    // Migration fallback for legacy product
+    if (!prod.variants || prod.variants.length === 0) {
+      if (prod.price && prod.sizes && prod.sizes.length > 0) {
+         prod.variants = prod.sizes.map(size => ({
+           size: size,
+           price: prod.price,
+           salePrice: prod.salePrice || prod.price,
+           costPrice: 0,
+           stock: prod.stock || 0,
+           gst: 18,
+           frames: prod.frameOptions || [],
+           enabled: true
+         }));
+      } else if (prod.price) {
+         prod.variants = [{
+           size: 'Standard',
+           price: prod.price,
+           salePrice: prod.salePrice || prod.price,
+           costPrice: 0,
+           stock: prod.stock || 0,
+           gst: 18,
+           frames: prod.frameOptions || [],
+           enabled: true
+         }];
+      }
+    }
 
-    return NextResponse.json({ success: true, data: product }, { status: 200 });
+    return NextResponse.json({ success: true, data: prod }, { status: 200 });
   } catch (error) {
     return NextResponse.json({ success: false, error: error.message }, { status: 500 });
   }

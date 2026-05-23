@@ -6,7 +6,39 @@ export async function GET() {
   try {
     await connectDB();
     const products = await Product.find({}).sort({ createdAt: -1 });
-    return NextResponse.json({ success: true, data: products }, { status: 200 });
+    
+    // Migration fallback for legacy products
+    const mappedProducts = products.map(p => {
+      const prod = p.toObject();
+      if (!prod.variants || prod.variants.length === 0) {
+        if (prod.price && prod.sizes && prod.sizes.length > 0) {
+           prod.variants = prod.sizes.map(size => ({
+             size: size,
+             price: prod.price,
+             salePrice: prod.salePrice || prod.price,
+             costPrice: 0,
+             stock: prod.stock || 0,
+             gst: 18,
+             frames: prod.frameOptions || [],
+             enabled: true
+           }));
+        } else if (prod.price) {
+           prod.variants = [{
+             size: 'Standard',
+             price: prod.price,
+             salePrice: prod.salePrice || prod.price,
+             costPrice: 0,
+             stock: prod.stock || 0,
+             gst: 18,
+             frames: prod.frameOptions || [],
+             enabled: true
+           }];
+        }
+      }
+      return prod;
+    });
+
+    return NextResponse.json({ success: true, data: mappedProducts }, { status: 200 });
   } catch (error) {
     return NextResponse.json({ success: false, error: error.message }, { status: 500 });
   }
@@ -17,12 +49,17 @@ export async function POST(request) {
     await connectDB();
     const body = await request.json();
 
-    const requiredFields = ['title', 'slug', 'price', 'category', 'stock'];
+    const requiredFields = ['title', 'slug', 'category'];
     for (const field of requiredFields) {
       if (body[field] === undefined || body[field] === null || body[field] === '') {
         return NextResponse.json({ success: false, error: `Missing required field: ${field}` }, { status: 400 });
       }
     }
+    
+    if (!body.variants || !Array.isArray(body.variants) || body.variants.length === 0) {
+      return NextResponse.json({ success: false, error: 'At least one variant is required' }, { status: 400 });
+    }
+    
     // Sanitize slug
     if (body.slug) {
       body.slug = body.slug.toLowerCase().replace(/[^a-z0-9-]+/g, '-');

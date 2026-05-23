@@ -3,17 +3,29 @@ import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { signIn } from 'next-auth/react';
+import { signIn, useSession } from 'next-auth/react';
 import { Mail, Lock, Phone, ArrowRight, Loader2 } from 'lucide-react';
+import { useEffect } from 'react';
 
 export default function Login() {
   const router = useRouter();
+  const { data: session, status } = useSession();
   const [loginMethod, setLoginMethod] = useState('email'); // 'email' or 'phone'
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [rememberMe, setRememberMe] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
+
+  useEffect(() => {
+    if (status === 'authenticated') {
+      if (session?.user?.role === 'admin') {
+        router.push('/admin');
+      } else {
+        router.push('/account');
+      }
+    }
+  }, [status, session, router]);
 
   const handleEmailLogin = async (e) => {
     e.preventDefault();
@@ -31,7 +43,8 @@ export default function Login() {
         setError('Invalid email or password');
         setIsLoading(false);
       } else {
-        router.push('/admin');
+        // We rely on the useEffect to do the redirect, but we can also trigger a router.refresh() 
+        // to fast-track the session status update.
         router.refresh();
       }
     } catch (err) {

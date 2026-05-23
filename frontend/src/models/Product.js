@@ -21,15 +21,6 @@ const ProductSchema = new mongoose.Schema(
       type: String,
       maxLength: 250,
     },
-    price: {
-      type: Number,
-      required: [true, 'Please provide a product price'],
-      min: 0,
-    },
-    salePrice: {
-      type: Number,
-      min: 0,
-    },
     category: {
       type: String,
       required: [true, 'Please provide a product category'],
@@ -41,6 +32,15 @@ const ProductSchema = new mongoose.Schema(
       type: [String],
       default: [],
     },
+    // --- DEPRECATED FIELDS (Keep for legacy support, but no longer required) ---
+    price: {
+      type: Number,
+      min: 0,
+    },
+    salePrice: {
+      type: Number,
+      min: 0,
+    },
     sizes: {
       type: [String],
       default: [],
@@ -51,10 +51,25 @@ const ProductSchema = new mongoose.Schema(
     },
     stock: {
       type: Number,
-      required: [true, 'Please provide product stock quantity'],
       min: 0,
       default: 0,
     },
+    // ----------------------------------------------------------------------------
+    
+    // --- NEW VARIANTS ARCHITECTURE ---
+    variants: [
+      {
+        size: { type: String, required: true },
+        price: { type: Number, required: true, min: 0 },
+        salePrice: { type: Number, min: 0 },
+        costPrice: { type: Number, min: 0 },
+        stock: { type: Number, default: 0, min: 0 },
+        gst: { type: Number, default: 18 },
+        frames: { type: [String], default: [] },
+        enabled: { type: Boolean, default: true }
+      }
+    ],
+
     featured: {
       type: Boolean,
       default: false,

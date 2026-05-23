@@ -23,17 +23,11 @@ export default function AddProductDrawer({ isOpen, onClose, editingProduct = nul
     subcategory: '',
     tags: '',
     seoKeywords: '',
-    price: '',
-    salePrice: '',
-    costPrice: '',
-    stock: '',
-    outOfStock: false,
-    lowStockAlert: '',
-    gst: '18',
+    variants: [
+      { size: 'A4', price: '', salePrice: '', costPrice: '', stock: '', gst: '18', frames: [], enabled: true }
+    ],
     status: 'Draft',
     orientation: 'Portrait',
-    sizes: [],
-    frames: [],
     finish: 'Matte',
     featured: false,
     trending: false,
@@ -71,14 +65,9 @@ export default function AddProductDrawer({ isOpen, onClose, editingProduct = nul
           category: editingProduct.category || 'Posters',
           subcategory: editingProduct.subcategory || '',
           tags: editingProduct.tags?.join(', ') || '',
-          price: editingProduct.price || '',
-          salePrice: editingProduct.salePrice || '',
-          stock: editingProduct.stock || '',
-          outOfStock: editingProduct.stock === 0,
+          variants: editingProduct.variants?.length > 0 ? editingProduct.variants : initialFormState.variants,
           status: editingProduct.status || 'Draft',
           orientation: editingProduct.orientation || 'Portrait',
-          sizes: editingProduct.sizes || [],
-          frames: editingProduct.frameOptions || [],
           finish: editingProduct.printFinish || 'Matte',
           featured: editingProduct.featured || false,
           trending: editingProduct.trending || false,
@@ -135,14 +124,44 @@ export default function AddProductDrawer({ isOpen, onClose, editingProduct = nul
     }
   };
 
-  const handleCheckboxGroup = (field, value) => {
+  const handleVariantChange = (index, field, value) => {
     setFormData(prev => {
-      const current = prev[field];
-      if (current.includes(value)) {
-        return { ...prev, [field]: current.filter(item => item !== value) };
-      }
-      return { ...prev, [field]: [...current, value] };
+      const newVariants = [...prev.variants];
+      newVariants[index] = { ...newVariants[index], [field]: value };
+      return { ...prev, variants: newVariants };
     });
+  };
+
+  const handleVariantFrameToggle = (index, frame) => {
+    setFormData(prev => {
+      const newVariants = [...prev.variants];
+      const variant = { ...newVariants[index] };
+      const frames = variant.frames || [];
+      if (frames.includes(frame)) {
+        variant.frames = frames.filter(f => f !== frame);
+      } else {
+        variant.frames = [...frames, frame];
+      }
+      newVariants[index] = variant;
+      return { ...prev, variants: newVariants };
+    });
+  };
+
+  const addVariant = () => {
+    setFormData(prev => ({
+      ...prev,
+      variants: [
+        ...prev.variants,
+        { size: 'A3', price: '', salePrice: '', costPrice: '', stock: '', gst: '18', frames: [], enabled: true }
+      ]
+    }));
+  };
+
+  const removeVariant = (index) => {
+    setFormData(prev => ({
+      ...prev,
+      variants: prev.variants.filter((_, i) => i !== index)
+    }));
   };
 
   const handleImageUpload = async (e) => {
@@ -232,9 +251,12 @@ export default function AddProductDrawer({ isOpen, onClose, editingProduct = nul
   const validate = () => {
     const newErrors = {};
     if (!formData.name) newErrors.name = "Product Name required";
-    if (!formData.price) newErrors.price = "Price required";
     if (!formData.category) newErrors.category = "Category required";
     if (!primaryImage) newErrors.primaryImage = "Primary Image required";
+    if (formData.variants.length === 0) newErrors.variants = "At least one variant is required";
+    formData.variants.forEach((v, i) => {
+      if (!v.price) newErrors[`variant_${i}_price`] = "Price required";
+    });
     
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -252,14 +274,17 @@ export default function AddProductDrawer({ isOpen, onClose, editingProduct = nul
         slug: formData.slug,
         description: formData.fullDescription,
         shortDescription: formData.shortDescription,
-        price: Number(formData.price),
-        salePrice: formData.salePrice ? Number(formData.salePrice) : undefined,
         category: formData.category,
         subcategory: formData.subcategory,
         images: primaryImage ? [primaryImage, ...galleryImages] : galleryImages,
-        sizes: formData.sizes,
-        frameOptions: formData.frames,
-        stock: formData.outOfStock ? 0 : (Number(formData.stock) || 0),
+        variants: formData.variants.map(v => ({
+          ...v,
+          price: Number(v.price),
+          salePrice: v.salePrice ? Number(v.salePrice) : undefined,
+          costPrice: v.costPrice ? Number(v.costPrice) : undefined,
+          stock: Number(v.stock) || 0,
+          gst: Number(v.gst) || 18,
+        })),
         featured: formData.featured,
         trending: formData.trending,
         newArrival: formData.newArrival,
@@ -389,59 +414,114 @@ export default function AddProductDrawer({ isOpen, onClose, editingProduct = nul
                 </div>
               </Section>
 
-              <Section title="2. Pricing & Inventory">
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <label className="block text-xs font-medium text-gray-700 mb-1">Price (₹) *</label>
-                    <input type="number" name="price" value={formData.price} onChange={handleChange} className={`w-full px-3 py-2 bg-white border ${errors.price ? 'border-red-300 focus:ring-red-500' : 'border-gray-200 focus:ring-accent-blue'} rounded-lg text-sm outline-none focus:ring-1`} />
-                    {errors.price && <p className="text-red-500 text-xs mt-1">{errors.price}</p>}
-                  </div>
-                  <div>
-                    <label className="block text-xs font-medium text-gray-700 mb-1">Sale Price (₹)</label>
-                    <input type="number" name="salePrice" value={formData.salePrice} onChange={handleChange} className="w-full px-3 py-2 bg-white border border-gray-200 rounded-lg text-sm outline-none focus:ring-1 focus:ring-accent-blue" />
-                  </div>
-                  <div>
-                    <label className="block text-xs font-medium text-gray-700 mb-1">Cost Price (₹)</label>
-                    <input type="number" name="costPrice" value={formData.costPrice} onChange={handleChange} className="w-full px-3 py-2 bg-white border border-gray-200 rounded-lg text-sm outline-none focus:ring-1 focus:ring-accent-blue" />
-                  </div>
-                  <div>
-                    <label className="block text-xs font-medium text-gray-700 mb-1">GST %</label>
-                    <select name="gst" value={formData.gst} onChange={handleChange} className="w-full px-3 py-2 bg-white border border-gray-200 rounded-lg text-sm outline-none focus:ring-1 focus:ring-accent-blue">
-                      <option value="18">18% (Standard)</option>
-                      <option value="12">12%</option>
-                      <option value="5">5%</option>
-                      <option value="0">0%</option>
-                    </select>
-                  </div>
-                    <div>
-                      <label className="block text-xs font-medium text-gray-700 mb-1">Stock Quantity</label>
-                      <input 
-                        type="number" 
-                        name="stock" 
-                        value={formData.stock || ''} 
-                        onChange={handleChange} 
-                        disabled={formData.outOfStock}
-                        className={`w-full px-3 py-2 border border-gray-200 rounded-lg text-sm outline-none focus:ring-1 focus:ring-accent-blue ${formData.outOfStock ? 'bg-gray-100 text-gray-400' : 'bg-white'}`} 
-                      />
-                      <div className="flex items-center gap-3 mt-3">
-                        <button
-                          type="button"
-                          onClick={() => setFormData(prev => ({ ...prev, outOfStock: !prev.outOfStock }))}
-                          className={`relative inline-flex h-5 w-9 shrink-0 cursor-pointer items-center rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-accent-blue focus:ring-offset-2 ${formData.outOfStock ? 'bg-red-500' : 'bg-gray-300'}`}
+              <Section title="2. Pricing & Variants">
+                {errors.variants && <p className="text-red-500 text-xs mb-3 flex items-center gap-1"><AlertCircle className="w-3 h-3"/> {errors.variants}</p>}
+                
+                <div className="space-y-4">
+                  {formData.variants.map((variant, index) => (
+                    <div key={index} className="p-4 bg-gray-50 border border-gray-200 rounded-xl relative">
+                      {formData.variants.length > 1 && (
+                        <button 
+                          type="button" 
+                          onClick={() => removeVariant(index)}
+                          className="absolute top-3 right-3 text-red-400 hover:text-red-600 transition-colors"
                         >
-                          <span className="sr-only">Toggle Out of Stock</span>
-                          <span
-                            aria-hidden="true"
-                            className={`pointer-events-none inline-block h-4 w-4 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out ${formData.outOfStock ? 'translate-x-4' : 'translate-x-0'}`}
-                          />
+                          <X className="w-4 h-4" />
                         </button>
-                        <span className="text-sm font-medium text-gray-700">Mark as Out of Stock</span>
+                      )}
+                      
+                      <div className="grid grid-cols-2 gap-4 mb-4 pr-6">
+                        <div>
+                          <label className="block text-xs font-medium text-gray-700 mb-1">Size *</label>
+                          <select 
+                            value={variant.size} 
+                            onChange={(e) => handleVariantChange(index, 'size', e.target.value)}
+                            className="w-full px-3 py-2 bg-white border border-gray-200 rounded-lg text-sm outline-none focus:ring-1 focus:ring-accent-blue"
+                          >
+                            <option>A4</option>
+                            <option>A3</option>
+                            <option>A2</option>
+                            <option>13x19</option>
+                            <option>Custom</option>
+                          </select>
+                        </div>
+                        <div>
+                          <label className="block text-xs font-medium text-gray-700 mb-1">Base Price (MRP) ₹ *</label>
+                          <input 
+                            type="number" 
+                            value={variant.price} 
+                            onChange={(e) => handleVariantChange(index, 'price', e.target.value)}
+                            className={`w-full px-3 py-2 bg-white border ${errors[`variant_${index}_price`] ? 'border-red-300' : 'border-gray-200'} rounded-lg text-sm outline-none focus:ring-1`} 
+                          />
+                        </div>
+                        <div>
+                          <label className="block text-xs font-medium text-gray-700 mb-1">Sale Price ₹</label>
+                          <input 
+                            type="number" 
+                            value={variant.salePrice || ''} 
+                            onChange={(e) => handleVariantChange(index, 'salePrice', e.target.value)}
+                            className="w-full px-3 py-2 bg-white border border-gray-200 rounded-lg text-sm outline-none focus:ring-1 focus:ring-accent-blue" 
+                          />
+                        </div>
+                        <div>
+                          <label className="block text-xs font-medium text-gray-700 mb-1">Cost Price ₹</label>
+                          <input 
+                            type="number" 
+                            value={variant.costPrice || ''} 
+                            onChange={(e) => handleVariantChange(index, 'costPrice', e.target.value)}
+                            className="w-full px-3 py-2 bg-white border border-gray-200 rounded-lg text-sm outline-none focus:ring-1 focus:ring-accent-blue" 
+                          />
+                        </div>
+                        <div>
+                          <label className="block text-xs font-medium text-gray-700 mb-1">Stock</label>
+                          <input 
+                            type="number" 
+                            value={variant.stock || ''} 
+                            onChange={(e) => handleVariantChange(index, 'stock', e.target.value)}
+                            className="w-full px-3 py-2 bg-white border border-gray-200 rounded-lg text-sm outline-none focus:ring-1 focus:ring-accent-blue" 
+                          />
+                        </div>
+                        <div>
+                          <label className="block text-xs font-medium text-gray-700 mb-1">GST %</label>
+                          <select 
+                            value={variant.gst} 
+                            onChange={(e) => handleVariantChange(index, 'gst', e.target.value)}
+                            className="w-full px-3 py-2 bg-white border border-gray-200 rounded-lg text-sm outline-none focus:ring-1 focus:ring-accent-blue"
+                          >
+                            <option value="18">18%</option>
+                            <option value="12">12%</option>
+                            <option value="5">5%</option>
+                            <option value="0">0%</option>
+                          </select>
+                        </div>
+                      </div>
+
+                      <div className="border-t border-gray-200 pt-3 mt-1">
+                        <label className="block text-xs font-medium text-gray-700 mb-2">Frames Available</label>
+                        <div className="flex flex-wrap gap-2">
+                          {['Black', 'White', 'Wood', 'No Frame'].map(frame => (
+                            <label key={frame} className="flex items-center gap-1.5 px-3 py-1.5 border border-gray-200 bg-white rounded-lg text-xs cursor-pointer hover:bg-gray-50 transition-colors">
+                              <input 
+                                type="checkbox" 
+                                checked={(variant.frames || []).includes(frame)} 
+                                onChange={() => handleVariantFrameToggle(index, frame)} 
+                                className="rounded text-accent-blue" 
+                              />
+                              {frame}
+                            </label>
+                          ))}
+                        </div>
                       </div>
                     </div>
-                  <div>
-                    <label className="block text-xs font-medium text-gray-700 mb-1">Low Stock Alert</label>
-                    <input type="number" name="lowStockAlert" value={formData.lowStockAlert} onChange={handleChange} className="w-full px-3 py-2 bg-white border border-gray-200 rounded-lg text-sm outline-none focus:ring-1 focus:ring-accent-blue" placeholder="e.g. 5" />
-                  </div>
+                  ))}
+                  
+                  <button 
+                    type="button" 
+                    onClick={addVariant}
+                    className="w-full py-3 border-2 border-dashed border-gray-200 rounded-xl text-sm font-medium text-gray-600 hover:border-accent-blue hover:text-accent-blue hover:bg-blue-50/50 transition-colors flex items-center justify-center gap-2"
+                  >
+                    <Plus className="w-4 h-4" /> Add Size Variant
+                  </button>
                 </div>
               </Section>
 
@@ -518,29 +598,6 @@ export default function AddProductDrawer({ isOpen, onClose, editingProduct = nul
                   </div>
                 </div>
                 
-                <div>
-                  <label className="block text-xs font-medium text-gray-700 mb-2">Available Sizes</label>
-                  <div className="flex flex-wrap gap-2">
-                    {['A4', 'A3', 'A2', '13x19', 'Custom'].map(size => (
-                      <label key={size} className="flex items-center gap-1.5 px-3 py-1.5 border border-gray-200 rounded-lg text-xs cursor-pointer hover:bg-gray-50">
-                        <input type="checkbox" checked={formData.sizes.includes(size)} onChange={() => handleCheckboxGroup('sizes', size)} className="rounded text-accent-blue" />
-                        {size}
-                      </label>
-                    ))}
-                  </div>
-                </div>
-
-                <div>
-                  <label className="block text-xs font-medium text-gray-700 mb-2">Frame Options</label>
-                  <div className="flex flex-wrap gap-2">
-                    {['Black', 'White', 'Wood', 'No Frame'].map(frame => (
-                      <label key={frame} className="flex items-center gap-1.5 px-3 py-1.5 border border-gray-200 rounded-lg text-xs cursor-pointer hover:bg-gray-50">
-                        <input type="checkbox" checked={formData.frames.includes(frame)} onChange={() => handleCheckboxGroup('frames', frame)} className="rounded text-accent-blue" />
-                        {frame}
-                      </label>
-                    ))}
-                  </div>
-                </div>
               </Section>
 
               <Section title="5. Visibility Flags">

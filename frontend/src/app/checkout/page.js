@@ -9,6 +9,8 @@ import {
 import Link from 'next/link';
 import Script from 'next/script';
 import { useRouter } from 'next/navigation';
+import { useSession } from 'next-auth/react';
+import { useEffect } from 'react';
 
 const inputClass =
   "w-full px-4 py-3.5 bg-gray-50 border border-gray-200 rounded-xl focus:bg-white focus:border-accent-blue focus:ring-1 focus:ring-accent-blue outline-none transition-all text-sm";
@@ -23,6 +25,31 @@ export default function Checkout() {
   const [saveAccount, setSaveAccount] = useState(false);
   const [isPlacingOrder, setIsPlacingOrder] = useState(false);
   const [paymentError, setPaymentError] = useState('');
+  
+  const { data: session } = useSession();
+  const [savedAddresses, setSavedAddresses] = useState([]);
+  const [selectedSavedAddress, setSelectedSavedAddress] = useState(null);
+  const [isAddingNewAddress, setIsAddingNewAddress] = useState(false);
+
+  useEffect(() => {
+    if (session?.user) {
+      setGuestEmail(session.user.email);
+      fetch('/api/account/addresses')
+        .then(res => res.json())
+        .then(data => {
+          if (data.success && data.data.savedAddresses.length > 0) {
+            setSavedAddresses(data.data.savedAddresses);
+            const defaultAddress = data.data.savedAddresses.find(a => a._id === data.data.defaultAddress);
+            setSelectedSavedAddress(defaultAddress || data.data.savedAddresses[0]);
+          } else {
+            setIsAddingNewAddress(true);
+          }
+        })
+        .catch(console.error);
+    } else {
+      setIsAddingNewAddress(true);
+    }
+  }, [session]);
 
   const [address, setAddress] = useState({
     firstName: '',
@@ -57,13 +84,38 @@ export default function Checkout() {
   const handlePlaceOrder = async () => {
     setIsPlacingOrder(true);
     try {
+      const customerName = selectedSavedAddress ? selectedSavedAddress.fullName : `${address.firstName} ${address.lastName}`.trim() || guestEmail.split('@')[0] || 'Guest';
+      const customerPhone = selectedSavedAddress ? selectedSavedAddress.phone : guestPhone || '0000000000';
+      
       const orderData = {
-        customerName: `${address.firstName} ${address.lastName}`.trim() || guestEmail.split('@')[0] || 'Guest',
+        customerName,
         email: guestEmail || 'guest@example.com',
-        phone: guestPhone || '0000000000',
+        phone: customerPhone,
         amount: total,
         paymentStatus: 'Pending',
-        shippingAddress: address,
+        shippingAddress: address, // Keep legacy format
+        addressSnapshot: selectedSavedAddress ? {
+          fullName: selectedSavedAddress.fullName,
+          phone: selectedSavedAddress.phone,
+          houseOrApartment: selectedSavedAddress.houseOrApartment,
+          street: selectedSavedAddress.street,
+          areaOrLocality: selectedSavedAddress.areaOrLocality,
+          landmark: selectedSavedAddress.landmark,
+          city: selectedSavedAddress.city,
+          state: selectedSavedAddress.state,
+          pincode: selectedSavedAddress.pincode,
+          addressType: selectedSavedAddress.addressType
+        } : {
+          fullName: customerName,
+          phone: customerPhone,
+          houseOrApartment: address.address1,
+          street: address.address1,
+          areaOrLocality: address.address2,
+          city: address.city,
+          state: address.state,
+          pincode: address.pincode,
+          addressType: 'Home'
+        },
         products: cartItems.map(item => ({
           productId: item.id?.startsWith('custom-') ? null : (item._id || null),
           title: item.name,
@@ -349,7 +401,7 @@ export default function Checkout() {
 
                   <button
                     onClick={() => {
-                      if (!guestEmail || !guestPhone) {
+                      if (!guestEmail || (!guestPhone && !session)) {
                         alert("Please provide both email and phone number.");
                         return;
                       }
@@ -372,56 +424,85 @@ export default function Checkout() {
                   exit={{ opacity: 0, x: 20 }}
                   className="bg-white p-6 sm:p-8 rounded-3xl shadow-sm border border-gray-100"
                 >
-                  <h2 className="text-xl font-bold mb-6">Shipping Address</h2>
-                  <form className="space-y-4">
-                    <div className="grid grid-cols-2 gap-4">
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">First Name</label>
-                        <input type="text" value={address.firstName} onChange={e => setAddress({...address, firstName: e.target.value})} className={inputClass} placeholder="Riya" />
+                  <div className="flex justify-between items-center mb-6">
+                    <h2 className="text-xl font-bold">Shipping Address</h2>
+                    {savedAddresses.length > 0 && (
+                      <button onClick={() => setIsAddingNewAddress(!isAddingNewAddress)} className="text-accent-blue text-sm font-bold hover:underline">
+                        {isAddingNewAddress ? 'Use Saved Address' : '+ Add New Address'}
+                      </button>
+                    )}
+                  </div>
+                  
+                  {!isAddingNewAddress && savedAddresses.length > 0 ? (
+                    <div className="space-y-4">
+                      {savedAddresses.map(addr => (
+                        <label key={addr._id} className={`flex items-start p-4 border-2 rounded-xl cursor-pointer transition-colors ${selectedSavedAddress?._id === addr._id ? 'border-accent-blue bg-blue-50/20' : 'border-gray-100 hover:border-gray-200'}`}>
+                          <input type="radio" name="savedAddress" checked={selectedSavedAddress?._id === addr._id} onChange={() => setSelectedSavedAddress(addr)} className="mt-1 w-4 h-4 accent-accent-blue mr-3 flex-shrink-0" />
+                          <div className="text-sm">
+                            <p className="font-bold text-gray-900">{addr.fullName} <span className="ml-2 bg-gray-100 text-gray-600 text-[10px] uppercase px-2 py-0.5 rounded-full">{addr.addressType}</span></p>
+                            <p className="text-gray-600 mt-1">{addr.houseOrApartment}, {addr.street}</p>
+                            <p className="text-gray-600">{addr.city}, {addr.state} {addr.pincode}</p>
+                            <p className="text-gray-500 mt-1">Phone: {addr.phone}</p>
+                          </div>
+                        </label>
+                      ))}
+                    </div>
+                  ) : (
+                    <form className="space-y-4">
+                      <div className="grid grid-cols-2 gap-4">
+                        <div>
+                          <label className="block text-sm font-medium text-gray-700 mb-1">First Name</label>
+                          <input type="text" value={address.firstName} onChange={e => setAddress({...address, firstName: e.target.value})} className={inputClass} placeholder="Riya" />
+                        </div>
+                        <div>
+                          <label className="block text-sm font-medium text-gray-700 mb-1">Last Name</label>
+                          <input type="text" value={address.lastName} onChange={e => setAddress({...address, lastName: e.target.value})} className={inputClass} placeholder="Kumar" />
+                        </div>
                       </div>
                       <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">Last Name</label>
-                        <input type="text" value={address.lastName} onChange={e => setAddress({...address, lastName: e.target.value})} className={inputClass} placeholder="Kumar" />
-                      </div>
-                    </div>
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">Address Line 1</label>
-                      <input type="text" value={address.address1} onChange={e => setAddress({...address, address1: e.target.value})} className={inputClass} placeholder="Flat 12, Rose Apartments" />
-                    </div>
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">Address Line 2 <span className="text-gray-400 font-normal">(optional)</span></label>
-                      <input type="text" value={address.address2} onChange={e => setAddress({...address, address2: e.target.value})} className={inputClass} placeholder="Near Metro Station" />
-                    </div>
-                    <div className="grid grid-cols-2 gap-4">
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">City</label>
-                        <input type="text" value={address.city} onChange={e => setAddress({...address, city: e.target.value})} className={inputClass} placeholder="Chennai" />
+                        <label className="block text-sm font-medium text-gray-700 mb-1">Address Line 1</label>
+                        <input type="text" value={address.address1} onChange={e => setAddress({...address, address1: e.target.value})} className={inputClass} placeholder="Flat 12, Rose Apartments" />
                       </div>
                       <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">Pincode</label>
-                        <input type="text" value={address.pincode} onChange={e => setAddress({...address, pincode: e.target.value})} className={inputClass} placeholder="600001" />
+                        <label className="block text-sm font-medium text-gray-700 mb-1">Address Line 2 <span className="text-gray-400 font-normal">(optional)</span></label>
+                        <input type="text" value={address.address2} onChange={e => setAddress({...address, address2: e.target.value})} className={inputClass} placeholder="Near Metro Station" />
                       </div>
-                    </div>
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">State</label>
-                      <select value={address.state} onChange={e => setAddress({...address, state: e.target.value})} className={inputClass}>
-                        <option>Tamil Nadu</option>
-                        <option>Maharashtra</option>
-                        <option>Karnataka</option>
-                        <option>Delhi</option>
-                        <option>Gujarat</option>
-                        <option>Other</option>
-                      </select>
-                    </div>
-                  </form>
+                      <div className="grid grid-cols-2 gap-4">
+                        <div>
+                          <label className="block text-sm font-medium text-gray-700 mb-1">City</label>
+                          <input type="text" value={address.city} onChange={e => setAddress({...address, city: e.target.value})} className={inputClass} placeholder="Chennai" />
+                        </div>
+                        <div>
+                          <label className="block text-sm font-medium text-gray-700 mb-1">Pincode</label>
+                          <input type="text" value={address.pincode} onChange={e => setAddress({...address, pincode: e.target.value})} className={inputClass} placeholder="600001" />
+                        </div>
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">State</label>
+                        <select value={address.state} onChange={e => setAddress({...address, state: e.target.value})} className={inputClass}>
+                          <option>Tamil Nadu</option>
+                          <option>Maharashtra</option>
+                          <option>Karnataka</option>
+                          <option>Delhi</option>
+                          <option>Gujarat</option>
+                          <option>Other</option>
+                        </select>
+                      </div>
+                    </form>
+                  )}
                   <div className="flex gap-4 mt-6">
                     <button onClick={() => setStep(0)} className="w-1/3 py-4 bg-gray-100 text-black rounded-xl font-bold hover:bg-gray-200 transition-colors flex items-center justify-center gap-2">
                       <ArrowLeft className="w-5 h-5 stroke-[2.5]" /> Back
                     </button>
                     <button onClick={() => {
-                      if (!address.firstName || !address.address1 || !address.city || !address.pincode) {
-                        alert("Please fill out all required address fields.");
-                        return;
+                      if (isAddingNewAddress) {
+                        if (!address.firstName || !address.address1 || !address.city || !address.pincode) {
+                          alert("Please fill out all required address fields.");
+                          return;
+                        }
+                      } else if (!selectedSavedAddress) {
+                         alert("Please select a shipping address.");
+                         return;
                       }
                       setStep(2);
                     }} className="w-2/3 py-4 bg-black text-white rounded-xl font-bold flex items-center justify-center gap-2 hover:bg-gray-800 transition-all shadow-md">

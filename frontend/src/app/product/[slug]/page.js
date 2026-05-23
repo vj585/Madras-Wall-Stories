@@ -2,6 +2,8 @@ export const dynamic = 'force-dynamic';
 import { getProductBySlug, getRelatedProducts } from '@/lib/products';
 import ProductClient from './ProductClient';
 import Link from 'next/link';
+import { connectDB } from '@/lib/mongodb';
+import StoreSettings from '@/models/StoreSettings';
 
 export default async function ProductPage({ params }) {
   const resolvedParams = await params;
@@ -27,5 +29,9 @@ export default async function ProductPage({ params }) {
 
   const related = await getRelatedProducts(slug, product.category);
 
-  return <ProductClient product={product} related={related} />;
+  await connectDB();
+  const settings = await StoreSettings.findOne({ singletonId: 'global_settings' }).lean().exec();
+  const framePricing = JSON.parse(JSON.stringify(settings?.framePricing || []));
+
+  return <ProductClient product={product} related={related} framePricing={framePricing} />;
 }

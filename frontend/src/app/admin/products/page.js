@@ -41,12 +41,22 @@ export default function ProductsPage() {
   };
 
   const handleToggleStock = async (product) => {
-    const newStock = product.stock > 0 ? 0 : 10;
+    const displayStock = product.variants?.length > 0 
+      ? product.variants.reduce((acc, v) => acc + (v.stock || 0), 0) 
+      : product.stock;
+      
+    const newStockValue = displayStock > 0 ? 0 : 10;
+    
+    const updatedVariants = (product.variants || []).map(v => ({
+      ...v,
+      stock: newStockValue
+    }));
+
     try {
       const res = await fetch(`/api/products/${product._id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ stock: newStock })
+        body: JSON.stringify({ variants: updatedVariants })
       });
       if (res.ok) {
         fetchProducts();
@@ -153,7 +163,11 @@ export default function ProductsPage() {
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-100">
-                {products.map((product) => (
+                {products.map((product) => {
+                  const displayPrice = product.variants?.length > 0 ? product.variants[0].price : product.price;
+                  const displayStock = product.variants?.length > 0 ? product.variants.reduce((acc, v) => acc + (v.stock || 0), 0) : product.stock;
+                  
+                  return (
                   <tr key={product._id} className="hover:bg-gray-50/30 transition-colors">
                     <td className="px-6 py-4">
                       <div className="flex items-center gap-3">
@@ -171,23 +185,23 @@ export default function ProductsPage() {
                       </div>
                     </td>
                     <td className="px-6 py-4 text-gray-600">{product.category}</td>
-                    <td className="px-6 py-4 text-gray-900 font-medium">₹{product.price}</td>
+                    <td className="px-6 py-4 text-gray-900 font-medium">₹{displayPrice}{product.variants?.length > 1 ? '+' : ''}</td>
                     <td className="px-6 py-4">
-                      <span className={`px-2.5 py-1 rounded-full text-xs font-medium ${product.stock > 0 ? 'bg-green-50 text-green-700' : 'bg-red-50 text-red-700'}`}>
-                        {product.stock > 0 ? `${product.stock} in stock` : 'Out of stock'}
+                      <span className={`px-2.5 py-1 rounded-full text-xs font-medium ${displayStock > 0 ? 'bg-green-50 text-green-700' : 'bg-red-50 text-red-700'}`}>
+                        {displayStock > 0 ? `${displayStock} in stock` : 'Out of stock'}
                       </span>
                     </td>
                     <td className="px-6 py-4 text-right">
                       <div className="flex justify-end gap-3">
                         <button 
                           onClick={() => handleToggleStock(product)}
-                          className={`relative inline-flex h-5 w-9 shrink-0 cursor-pointer items-center rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-accent-blue focus:ring-offset-2 ${product.stock > 0 ? 'bg-green-500' : 'bg-gray-300'}`}
-                          title={product.stock > 0 ? 'In Stock (Click to Mark OOS)' : 'Out of Stock (Click to Restock)'}
+                          className={`relative inline-flex h-5 w-9 shrink-0 cursor-pointer items-center rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-accent-blue focus:ring-offset-2 ${displayStock > 0 ? 'bg-green-500' : 'bg-gray-300'}`}
+                          title={displayStock > 0 ? 'In Stock (Click to Mark OOS)' : 'Out of Stock (Click to Restock)'}
                         >
                           <span className="sr-only">Toggle stock</span>
                           <span
                             aria-hidden="true"
-                            className={`pointer-events-none inline-block h-4 w-4 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out ${product.stock > 0 ? 'translate-x-4' : 'translate-x-0'}`}
+                            className={`pointer-events-none inline-block h-4 w-4 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out ${displayStock > 0 ? 'translate-x-4' : 'translate-x-0'}`}
                           />
                         </button>
                         <button 
@@ -208,7 +222,8 @@ export default function ProductsPage() {
                       </div>
                     </td>
                   </tr>
-                ))}
+                  );
+                })}
               </tbody>
             </table>
           </div>

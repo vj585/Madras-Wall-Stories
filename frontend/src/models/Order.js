@@ -57,6 +57,18 @@ const OrderSchema = new mongoose.Schema(
       pincode: String,
       country: { type: String, default: 'India' },
     },
+    addressSnapshot: {
+      fullName: String,
+      phone: String,
+      houseOrApartment: String,
+      street: String,
+      areaOrLocality: String,
+      landmark: String,
+      city: String,
+      state: String,
+      pincode: String,
+      addressType: String
+    },
     paymentMethod: {
       type: String,
       enum: ['Razorpay', 'COD'],
@@ -72,6 +84,17 @@ const OrderSchema = new mongoose.Schema(
       enum: ['Pending', 'Processing', 'Printed', 'Packed', 'Shipped', 'Delivered', 'Cancelled'],
       default: 'Pending',
     },
+    shippingStatus: {
+      type: String,
+      enum: ['Pending', 'Packed', 'Shipped', 'Out For Delivery', 'Delivered', 'Cancelled'],
+      default: 'Pending',
+    },
+    statusTimeline: [
+      {
+        status: String,
+        timestamp: { type: Date, default: Date.now }
+      }
+    ],
     razorpayOrderId: {
       type: String,
       unique: true,
@@ -87,6 +110,15 @@ const OrderSchema = new mongoose.Schema(
     },
     trackingNumber: {
       type: String,
+    },
+    trackingId: {
+      type: String, // Future placeholder
+    },
+    deliveryPartner: {
+      type: String, // Future placeholder
+    },
+    estimatedDelivery: {
+      type: Date, // Future placeholder
     },
   },
   {

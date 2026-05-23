@@ -3,16 +3,18 @@ import { Home, Search, Heart, ShoppingBag, User } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useCart } from '@/context/CartContext';
+import { useSession } from 'next-auth/react';
 
 export default function BottomNav() {
   const pathname = usePathname();
   const { cartItems, setIsCartOpen } = useCart();
+  const { data: session } = useSession();
 
   const navItems = [
     { icon: Home, label: 'Home', href: '/' },
     { icon: Search, label: 'Search', href: '/search' },
     { icon: Heart, label: 'Wishlist', href: '/wishlist' },
-    { icon: User, label: 'Profile', href: '/login' },
+    { icon: User, label: 'Profile', href: session?.user ? (session.user.role === 'admin' ? '/admin' : '/account') : '/login' },
   ];
 
   // Don't show on admin or checkout
