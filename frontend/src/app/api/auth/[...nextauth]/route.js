@@ -104,7 +104,7 @@ export const authOptions = {
           await connectDB();
           let customer = await Customer.findOne({ email: user.email.toLowerCase() });
           if (!customer) {
-            customer = await Customer.create({
+            await Customer.create({
               name: user.name,
               email: user.email.toLowerCase(),
               authProvider: 'google',
@@ -113,8 +113,6 @@ export const authOptions = {
               avatar: user.image
             });
           }
-          user.id = customer._id.toString();
-          user.role = customer.role || 'customer';
           return true;
         } catch (error) {
           console.error('Google SignIn Error:', error);
@@ -123,25 +121,25 @@ export const authOptions = {
       }
       return true;
     },
-    async jwt({ token, user, trigger, session }) {
+    async jwt({ token, user, account }) {
+      // user object is only present on initial sign-in
       if (user) {
-        token.id = user.id;
-        token.role = user.role;
-      }
-      
-      // Role Revalidation: Ensure role from DB is strictly enforced on session update
-      if (token.id) {
-        try {
-          await connectDB();
-          let dbUser = await AdminUser.findById(token.id).select('role');
-          if (!dbUser) {
-             dbUser = await Customer.findById(token.id).select('role');
+        if (account?.provider === 'google') {
+          try {
+            await connectDB();
+            // Fetch the real ObjectId and role from DB for Google users
+            let dbUser = await Customer.findOne({ email: user.email.toLowerCase() }).select('_id role');
+            if (dbUser) {
+              token.id = dbUser._id.toString();
+              token.role = dbUser.role || 'customer';
+            }
+          } catch (err) {
+            console.error("JWT Google User Fetch Error:", err);
           }
-          if (dbUser) {
-             token.role = dbUser.role; // Force DB role overriding anything else
-          }
-        } catch (error) {
-          console.error("JWT Revalidation Error:", error);
+        } else {
+          // For Credentials provider, user has id and role from authorize()
+          token.id = user.id;
+          token.role = user.role;
         }
       }
       return token;
