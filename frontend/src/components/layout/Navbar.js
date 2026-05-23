@@ -48,7 +48,7 @@ export default function Navbar() {
       </div>
       <header 
         className={`fixed left-0 right-0 z-50 transition-all duration-300 ${
-          isScrolled ? 'top-0 glass-dark py-4 shadow-lg' : 'top-8 bg-transparent py-6'
+          isScrolled ? 'top-0 glass-dark py-4 shadow-lg' : 'top-8 bg-transparent py-5'
         }`}
       >
       <div className="container mx-auto px-4 md:px-8 flex items-center justify-between">
@@ -69,7 +69,7 @@ export default function Navbar() {
               alt="Madras Wall Stories"
               fill
               sizes="176px"
-              className="object-contain"
+              className="object-contain transition-transform duration-300"
               priority
             />
           </div>
@@ -93,7 +93,7 @@ export default function Navbar() {
         </nav>
 
         {/* Icons */}
-        <div className={`flex items-center space-x-4 md:space-x-6 z-10 ${isScrolled ? 'text-white' : 'text-black'}`}>
+        <div className={`flex items-center space-x-4 md:space-x-6 z-10 ${isScrolled ? 'text-white' : 'text-gray-900'}`}>
           <form 
             onSubmit={(e) => {
               e.preventDefault();
@@ -109,8 +109,8 @@ export default function Navbar() {
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Search posters..." 
-              className={`w-full lg:w-48 xl:w-64 py-1.5 pl-4 pr-10 text-sm rounded-full outline-none focus:ring-1 focus:ring-accent-blue transition-all border-none shadow-sm ${
-                isScrolled ? 'bg-white/20 text-white placeholder-gray-200' : 'bg-gray-100 text-black placeholder-gray-500'
+              className={`w-full lg:w-48 xl:w-64 py-1.5 pl-4 pr-10 text-sm rounded-full outline-none focus:ring-1 focus:ring-accent-blue transition-all border shadow-sm ${
+                isScrolled ? 'bg-white/10 border-white/20 text-white placeholder-gray-300' : 'bg-white/80 border-gray-200 text-black placeholder-gray-500'
               }`}
             />
             <button type="submit" aria-label="Search" className="absolute right-3 text-gray-400 hover:text-accent-blue">

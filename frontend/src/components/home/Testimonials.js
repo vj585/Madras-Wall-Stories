@@ -8,7 +8,7 @@ export default function Testimonials() {
   if (testimonials.length === 0) return null;
 
   return (
-    <section className="py-24 bg-surface-warm relative overflow-hidden">
+    <section className="py-12 md:py-20 bg-surface-warm relative overflow-hidden">
       {/* Soft gradient backgrounds */}
       <div className="absolute top-0 left-0 w-96 h-96 bg-accent-yellow/10 rounded-full blur-[100px] pointer-events-none"></div>
       <div className="absolute bottom-0 right-0 w-96 h-96 bg-accent-blue/5 rounded-full blur-[100px] pointer-events-none"></div>

@@ -6,7 +6,7 @@ import { ArrowRight, Wand2, Frame, Upload } from 'lucide-react';
 
 export default function CustomHighlight() {
   return (
-    <section className="py-24 bg-surface-warm text-foreground overflow-hidden">
+    <section className="py-12 md:py-20 bg-surface-warm text-foreground overflow-hidden">
       <div className="container mx-auto px-4">
         <div className="bg-white rounded-[3rem] overflow-hidden shadow-sm border border-gray-100 flex flex-col lg:flex-row">
           

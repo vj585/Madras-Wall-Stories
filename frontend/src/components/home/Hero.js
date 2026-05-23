@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Link from 'next/link';
 import Image from 'next/image';
-import { ArrowRight, Star, Truck, ShieldCheck } from 'lucide-react';
+import { ArrowRight, Star, Truck, ShieldCheck, ChevronDown } from 'lucide-react';
 import { useMobileAdaptive } from '@/hooks/useMobileAdaptive';
 
 export default function Hero() {
@@ -69,12 +69,18 @@ export default function Hero() {
   const img3 = banners.length > 2 ? banners[(currentSlide + 2) % banners.length]?.image : (banners.length > 0 ? banners[0]?.image : "/images/michael.jpg");
 
   return (
-    <section className="relative w-full min-h-[100svh] lg:min-h-[90vh] flex items-center justify-center overflow-hidden bg-surface-alt text-foreground pt-20">
+    <motion.section 
+      animate={{ 
+        backgroundColor: ["#fff0d4", "#e3efff", "#ffe3ea", "#eafaf1", "#fff0d4"] 
+      }}
+      transition={{ duration: 12, repeat: Infinity, ease: "linear" }}
+      className="relative w-full min-h-[100svh] lg:min-h-[90vh] flex items-center justify-center overflow-hidden text-foreground pt-20"
+    >
       {/* Background Soft Gradients */}
       <div className="absolute top-[-10%] right-[-5%] w-[40rem] h-[40rem] bg-accent-yellow/10 rounded-full blur-[100px] pointer-events-none"></div>
       <div className="absolute bottom-[-10%] left-[-5%] w-[40rem] h-[40rem] bg-accent-blue/5 rounded-full blur-[100px] pointer-events-none"></div>
 
-      <div className="container relative z-10 px-4 mx-auto grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+      <div className="container relative z-10 px-4 mx-auto grid grid-cols-1 lg:grid-cols-2 gap-4 lg:gap-12 items-center">
         
         {/* Left: Text Content */}
         <div className="max-w-2xl text-center lg:text-left pt-10 perspective-[1000px]">
@@ -98,7 +104,7 @@ export default function Hero() {
             
             <motion.span 
               variants={glowVariants}
-              className="inline-block mt-2 text-transparent bg-clip-text bg-gradient-to-r from-accent-blue via-purple-500 to-accent-yellow italic font-medium pr-2 animate-gradient-text font-fancy will-change-transform will-change-opacity"
+              className="inline-block mt-2 text-transparent bg-clip-text bg-gradient-to-r from-accent-blue via-purple-500 to-accent-yellow italic font-bold pr-2 animate-gradient-text font-fancy will-change-transform will-change-opacity"
             >
               Into Stories.
             </motion.span>
@@ -133,14 +139,30 @@ export default function Hero() {
             transition={{ delay: 0.8, duration: 0.6 }}
             className="mt-8 flex flex-wrap items-center justify-center lg:justify-start gap-6 text-sm text-gray-500 font-medium"
           >
-            <div className="flex items-center gap-2"><Truck className="w-4 h-4 text-accent-blue" /> Pan-India Delivery</div>
+            <div className="flex items-center gap-2"><Truck className="w-4 h-4 text-accent-blue" /> Fast Chennai Delivery</div>
             <div className="flex items-center gap-2"><Star className="w-4 h-4 fill-accent-yellow text-accent-yellow" /> 4.9/5 Rating</div>
             <div className="flex items-center gap-2"><ShieldCheck className="w-4 h-4 text-green-500" /> Secure Checkout</div>
+          </motion.div>
+
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 1.2, duration: 1 }}
+            className="mt-10 flex flex-col items-center lg:items-start cursor-pointer group"
+            onClick={() => window.scrollTo({ top: window.innerHeight - 80, behavior: 'smooth' })}
+          >
+            <span className="text-2xl font-fancy italic font-bold text-gray-500 group-hover:text-black transition-colors mb-1">Discover The Collections</span>
+            <motion.div 
+              animate={{ y: [0, 5, 0] }} 
+              transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
+            >
+              <ChevronDown className="w-5 h-5 text-gray-300 group-hover:text-accent-blue transition-colors" />
+            </motion.div>
           </motion.div>
         </div>
 
         {/* Right: Floating Images */}
-        <div className="relative h-[400px] md:h-[500px] mt-8 lg:mt-0 w-full max-w-lg mx-auto block">
+        <div className="relative h-[400px] md:h-[500px] mt-2 lg:mt-0 w-full max-w-lg mx-auto block">
           
           {/* Main Frame */}
           <motion.div 
@@ -239,6 +261,6 @@ export default function Hero() {
         </div>
 
       </div>
-    </section>
+    </motion.section>
   );
 }

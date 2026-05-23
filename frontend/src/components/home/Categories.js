@@ -16,7 +16,7 @@ const categories = [
 
 export default function Categories({ products = [] }) {
   return (
-    <section className="py-24 bg-white text-foreground overflow-hidden">
+    <section className="py-12 md:py-20 bg-white text-foreground overflow-hidden">
       <div className="container mx-auto px-4">
         <motion.div 
           initial={{ opacity: 0, y: 20 }}
