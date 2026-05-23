@@ -3,6 +3,7 @@ import Product from '@/models/Product';
 import cloudinary from '@/lib/cloudinary';
 import { sendOrderConfirmationEmail } from '@/lib/email';
 import { sendOrderSMS } from '@/lib/sms';
+import Customer from '@/models/Customer';
 
 export async function processAndSaveOrder(orderData) {
   // 1. Process custom images to Cloudinary
@@ -25,6 +26,29 @@ export async function processAndSaveOrder(orderData) {
   console.log('Creating order in MongoDB with data:', { customerName: orderData.customerName, email: orderData.email, amount: orderData.amount, paymentMethod: orderData.paymentMethod });
   const newOrder = await Order.create(orderData);
   console.log('Order created successfully in MongoDB. Order ID:', newOrder._id.toString());
+
+  // 2.5 Auto-update or create Customer for this order
+  try {
+    let customer = await Customer.findOne({ email: orderData.email.toLowerCase() });
+    if (customer) {
+      customer.orders.push(newOrder._id);
+      if (!customer.phone && orderData.phone) {
+        customer.phone = orderData.phone;
+      }
+      await customer.save();
+    } else {
+      await Customer.create({
+        name: orderData.customerName,
+        email: orderData.email.toLowerCase(),
+        phone: orderData.phone,
+        role: 'customer',
+        authProvider: 'email',
+        orders: [newOrder._id],
+      });
+    }
+  } catch (err) {
+    console.error("Error auto-updating customer during order processing:", err);
+  }
 
   // 3. Decrement stock for non-custom products
   if (newOrder.products && Array.isArray(newOrder.products)) {
