@@ -9,7 +9,7 @@ export async function GET(request) {
   try {
     const session = await getServerSession(authOptions);
 
-    if (!session || session.user?.role !== 'admin') {
+    if (!session || session.user?.role?.toUpperCase() !== 'ADMIN') {
       return NextResponse.json({ success: false, error: 'Unauthorized' }, { status: 401 });
     }
 
