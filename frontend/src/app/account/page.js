@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { Package, MapPin, Heart, LogOut, User as UserIcon, ChevronRight } from 'lucide-react';
 import Customer from '@/models/Customer';
 import { connectDB } from '@/lib/mongodb';
+import AccountLogoutButton from './AccountLogoutButton';
 
 export const metadata = {
   title: 'My Account | Madras Wall Stories',
@@ -94,6 +95,3 @@ export default async function AccountPage() {
     </div>
   );
 }
-
-// Inline Client Component for Logout to keep page.js clean
-import AccountLogoutButton from './AccountLogoutButton';
