@@ -25,7 +25,16 @@ export async function GET(request) {
           { name: 'White', markup: 0 },
           { name: 'Wood', markup: 0 },
           { name: 'No Frame', markup: 0 }
-        ]
+        ],
+        freeShippingThreshold: 599,
+        lowCartDeliveryFee: 49,
+        mediumCartDeliveryFee: 29,
+        sameDayChennaiFee: 99,
+        serviceableCities: ['Chennai'],
+        pickupCoordinates: {
+          latitude: 13.0827,
+          longitude: 80.2707
+        }
       });
     }
 
@@ -46,7 +55,15 @@ export async function PUT(request) {
     }
 
     const body = await request.json();
-    const { framePricing } = body;
+    const { 
+      framePricing, 
+      freeShippingThreshold,
+      lowCartDeliveryFee,
+      mediumCartDeliveryFee,
+      sameDayChennaiFee,
+      serviceableCities,
+      pickupCoordinates 
+    } = body;
 
     await connectDB();
 
@@ -59,6 +76,12 @@ export async function PUT(request) {
     if (framePricing && Array.isArray(framePricing)) {
       settings.framePricing = framePricing;
     }
+    if (freeShippingThreshold !== undefined) settings.freeShippingThreshold = freeShippingThreshold;
+    if (lowCartDeliveryFee !== undefined) settings.lowCartDeliveryFee = lowCartDeliveryFee;
+    if (mediumCartDeliveryFee !== undefined) settings.mediumCartDeliveryFee = mediumCartDeliveryFee;
+    if (sameDayChennaiFee !== undefined) settings.sameDayChennaiFee = sameDayChennaiFee;
+    if (serviceableCities !== undefined) settings.serviceableCities = serviceableCities;
+    if (pickupCoordinates !== undefined) settings.pickupCoordinates = pickupCoordinates;
 
     await settings.save();
 

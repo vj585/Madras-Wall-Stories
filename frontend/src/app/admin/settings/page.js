@@ -4,6 +4,15 @@ import { Settings, Save, AlertCircle } from 'lucide-react';
 
 export default function SettingsPage() {
   const [framePricing, setFramePricing] = useState([]);
+  const [deliverySettings, setDeliverySettings] = useState({
+    freeShippingThreshold: 599,
+    lowCartDeliveryFee: 49,
+    mediumCartDeliveryFee: 29,
+    sameDayChennaiFee: 99,
+    serviceableCities: 'Chennai',
+    pickupLat: 13.0827,
+    pickupLng: 80.2707
+  });
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
   const [message, setMessage] = useState('');
@@ -18,6 +27,15 @@ export default function SettingsPage() {
       const data = await res.json();
       if (data.success && data.data) {
         setFramePricing(data.data.framePricing || []);
+        setDeliverySettings({
+          freeShippingThreshold: data.data.freeShippingThreshold || 599,
+          lowCartDeliveryFee: data.data.lowCartDeliveryFee || 49,
+          mediumCartDeliveryFee: data.data.mediumCartDeliveryFee || 29,
+          sameDayChennaiFee: data.data.sameDayChennaiFee || 99,
+          serviceableCities: (data.data.serviceableCities || ['Chennai']).join(', '),
+          pickupLat: data.data.pickupCoordinates?.latitude || 13.0827,
+          pickupLng: data.data.pickupCoordinates?.longitude || 80.2707,
+        });
       }
     } catch (error) {
       console.error("Failed to fetch settings", error);
@@ -39,7 +57,18 @@ export default function SettingsPage() {
       const res = await fetch('/api/admin/settings', {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ framePricing })
+        body: JSON.stringify({ 
+          framePricing,
+          freeShippingThreshold: Number(deliverySettings.freeShippingThreshold),
+          lowCartDeliveryFee: Number(deliverySettings.lowCartDeliveryFee),
+          mediumCartDeliveryFee: Number(deliverySettings.mediumCartDeliveryFee),
+          sameDayChennaiFee: Number(deliverySettings.sameDayChennaiFee),
+          serviceableCities: deliverySettings.serviceableCities.split(',').map(c => c.trim()).filter(Boolean),
+          pickupCoordinates: {
+            latitude: Number(deliverySettings.pickupLat),
+            longitude: Number(deliverySettings.pickupLng)
+          }
+        })
       });
       const data = await res.json();
       if (data.success) {
@@ -145,17 +174,37 @@ export default function SettingsPage() {
             </div>
           </div>
 
-          {/* Shipping & Payment (Static Mockup Restored) */}
+          {/* Delivery Configuration */}
           <div className="bg-white p-6 rounded-3xl shadow-sm border border-gray-100">
-            <h2 className="text-lg font-bold mb-4">Shipping & Payments</h2>
+            <h2 className="text-lg font-bold mb-4">Delivery Configuration</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
               <div className="space-y-1">
-                <label className="text-xs font-medium text-gray-500">Shipping Charge (₹)</label>
-                <input type="number" defaultValue="0" className="w-full px-4 py-2 border border-gray-200 rounded-xl outline-none focus:ring-1 focus:ring-accent-blue" />
+                <label className="text-xs font-medium text-gray-500">Free Shipping Threshold (₹)</label>
+                <input type="number" value={deliverySettings.freeShippingThreshold} onChange={(e) => setDeliverySettings({...deliverySettings, freeShippingThreshold: e.target.value})} className="w-full px-4 py-2 border border-gray-200 rounded-xl outline-none focus:ring-1 focus:ring-accent-blue" />
               </div>
               <div className="space-y-1">
-                <label className="text-xs font-medium text-gray-500">Free Shipping Threshold (₹)</label>
-                <input type="number" defaultValue="1000" className="w-full px-4 py-2 border border-gray-200 rounded-xl outline-none focus:ring-1 focus:ring-accent-blue" />
+                <label className="text-xs font-medium text-gray-500">Low Cart Fee (Cart &lt; ₹299)</label>
+                <input type="number" value={deliverySettings.lowCartDeliveryFee} onChange={(e) => setDeliverySettings({...deliverySettings, lowCartDeliveryFee: e.target.value})} className="w-full px-4 py-2 border border-gray-200 rounded-xl outline-none focus:ring-1 focus:ring-accent-blue" />
+              </div>
+              <div className="space-y-1">
+                <label className="text-xs font-medium text-gray-500">Medium Cart Fee (Cart ₹299-₹599)</label>
+                <input type="number" value={deliverySettings.mediumCartDeliveryFee} onChange={(e) => setDeliverySettings({...deliverySettings, mediumCartDeliveryFee: e.target.value})} className="w-full px-4 py-2 border border-gray-200 rounded-xl outline-none focus:ring-1 focus:ring-accent-blue" />
+              </div>
+              <div className="space-y-1">
+                <label className="text-xs font-medium text-gray-500">Same Day Chennai Base Fee (₹)</label>
+                <input type="number" value={deliverySettings.sameDayChennaiFee} onChange={(e) => setDeliverySettings({...deliverySettings, sameDayChennaiFee: e.target.value})} className="w-full px-4 py-2 border border-gray-200 rounded-xl outline-none focus:ring-1 focus:ring-accent-blue" />
+              </div>
+              <div className="space-y-1 md:col-span-2">
+                <label className="text-xs font-medium text-gray-500">Serviceable Cities (Comma separated)</label>
+                <input type="text" value={deliverySettings.serviceableCities} onChange={(e) => setDeliverySettings({...deliverySettings, serviceableCities: e.target.value})} className="w-full px-4 py-2 border border-gray-200 rounded-xl outline-none focus:ring-1 focus:ring-accent-blue" placeholder="Chennai" />
+              </div>
+              <div className="space-y-1">
+                <label className="text-xs font-medium text-gray-500">Pickup Latitude</label>
+                <input type="number" step="any" value={deliverySettings.pickupLat} onChange={(e) => setDeliverySettings({...deliverySettings, pickupLat: e.target.value})} className="w-full px-4 py-2 border border-gray-200 rounded-xl outline-none focus:ring-1 focus:ring-accent-blue" />
+              </div>
+              <div className="space-y-1">
+                <label className="text-xs font-medium text-gray-500">Pickup Longitude</label>
+                <input type="number" step="any" value={deliverySettings.pickupLng} onChange={(e) => setDeliverySettings({...deliverySettings, pickupLng: e.target.value})} className="w-full px-4 py-2 border border-gray-200 rounded-xl outline-none focus:ring-1 focus:ring-accent-blue" />
               </div>
             </div>
             

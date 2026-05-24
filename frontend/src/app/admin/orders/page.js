@@ -185,6 +185,70 @@ function OrderDrawer({ order, onClose, onStatusChange }) {
               </div>
             </div>
 
+            {/* Logistics & Delivery */}
+            <div className="bg-blue-50/50 rounded-2xl p-4 border border-blue-100">
+              <div className="flex justify-between items-center mb-4">
+                <p className="text-xs font-semibold text-blue-800 uppercase tracking-wider flex items-center gap-2">
+                  <Truck className="w-4 h-4" /> Logistics Hub
+                </p>
+                <span className="text-[10px] font-bold bg-white text-blue-700 px-2 py-0.5 rounded-full border border-blue-200 uppercase">
+                  {order.deliveryMode || 'Standard'}
+                </span>
+              </div>
+              
+              <div className="grid grid-cols-2 gap-4 mb-4">
+                <div>
+                  <p className="text-xs text-gray-500">Partner</p>
+                  <p className="font-semibold text-gray-900">{order.deliveryPartner || 'Shiprocket'}</p>
+                </div>
+                <div>
+                  <p className="text-xs text-gray-500">Courier Cost</p>
+                  <p className="font-semibold text-gray-900">₹{order.courierCost || 0}</p>
+                </div>
+                <div>
+                  <p className="text-xs text-gray-500">Shipment ID</p>
+                  <p className="font-semibold text-gray-900">{order.shipmentId || '—'}</p>
+                </div>
+                <div>
+                  <p className="text-xs text-gray-500">Tracking Number</p>
+                  <p className="font-semibold text-gray-900">{order.trackingId || '—'}</p>
+                </div>
+              </div>
+
+              {order.statusTimeline && order.statusTimeline.length > 0 && (
+                <div className="mb-4 bg-white p-3 rounded-xl border border-blue-100">
+                  <p className="text-xs font-semibold text-gray-500 mb-2">Delivery Timeline</p>
+                  <div className="space-y-2">
+                    {order.statusTimeline.map((tl, i) => (
+                      <div key={i} className="flex justify-between items-center text-xs">
+                        <span className="font-medium text-gray-800">{tl.status}</span>
+                        <span className="text-gray-400">{new Date(tl.timestamp).toLocaleString('en-IN', { dateStyle: 'short', timeStyle: 'short' })}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              <div className="flex flex-wrap gap-2">
+                {!order.shipmentId && (
+                  <button 
+                    onClick={() => alert('Mock: Generating Shipment...')}
+                    className="flex-1 px-4 py-2.5 bg-blue-600 text-white rounded-xl text-xs font-semibold hover:bg-blue-700 transition-colors text-center"
+                  >
+                    {order.deliveryPartner === 'Porter' ? 'Book Porter Task' : 'Create Shiprocket AWB'}
+                  </button>
+                )}
+                {order.shipmentId && (
+                  <button 
+                    onClick={() => alert('Mock: Refreshing Tracking...')}
+                    className="flex-1 px-4 py-2.5 bg-white text-blue-700 border border-blue-200 rounded-xl text-xs font-semibold hover:bg-blue-50 transition-colors text-center"
+                  >
+                    Refresh Tracking
+                  </button>
+                )}
+              </div>
+            </div>
+
             {/* Products — Detailed */}
             <div>
               <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-3">Products Ordered</p>

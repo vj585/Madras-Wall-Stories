@@ -61,8 +61,52 @@ export default function Checkout() {
     state: 'Tamil Nadu',
   });
 
+  const [deliveryOptions, setDeliveryOptions] = useState({
+    standard: { available: true, fee: 0, partner: 'Shiprocket', estimatedDays: '3-5 Business Days' },
+    sameDay: { available: false, fee: 0, partner: 'Porter' }
+  });
+  const [selectedDelivery, setSelectedDelivery] = useState('standard');
+  const [isCalculatingDelivery, setIsCalculatingDelivery] = useState(false);
+
+  const fetchDeliveryOptions = async (targetCity) => {
+    setIsCalculatingDelivery(true);
+    try {
+      const res = await fetch('/api/shipping/calculate', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ 
+          cartTotal, 
+          city: targetCity 
+        })
+      });
+      const data = await res.json();
+      if (data.success) {
+        setDeliveryOptions({
+          standard: data.standard,
+          sameDay: data.sameDay
+        });
+        if (!data.sameDay.available && selectedDelivery === 'sameDay') {
+          setSelectedDelivery('standard');
+        }
+      } else {
+        throw new Error('Failed to fetch delivery options');
+      }
+    } catch (error) {
+      console.error('Failed to calculate delivery. Using fallback.', error);
+      // Fallback if the API completely fails
+      setDeliveryOptions({
+        standard: { available: true, fee: cartTotal >= 599 ? 0 : 49, partner: 'Shiprocket', estimatedDays: '3-5 Business Days' },
+        sameDay: { available: false, fee: 0, partner: 'Porter' }
+      });
+      setSelectedDelivery('standard');
+    } finally {
+      setIsCalculatingDelivery(false);
+    }
+  };
+
+  const deliveryFee = deliveryOptions[selectedDelivery]?.fee || 0;
   const taxes = Math.round(cartTotal * 0.18);
-  const total = cartTotal + taxes;
+  const total = cartTotal + taxes + deliveryFee;
 
   const steps = [
     { id: 0, title: 'Contact', icon: User },
@@ -126,7 +170,10 @@ export default function Checkout() {
           image: item.image,
           isCustom: item.id?.startsWith('custom-'),
           customDetails: item.customDetails
-        }))
+        })),
+        deliveryMode: selectedDelivery === 'sameDay' ? 'Same Day' : 'Standard',
+        deliveryPartner: deliveryOptions[selectedDelivery]?.partner || 'Shiprocket',
+        courierCost: deliveryFee
       };
 
       if (paymentMethod === 'cod') {
@@ -500,13 +547,17 @@ export default function Checkout() {
                           alert("Please fill out all required address fields.");
                           return;
                         }
+                        await fetchDeliveryOptions(address.city);
                       } else if (!selectedSavedAddress) {
                          alert("Please select a shipping address.");
                          return;
+                      } else {
+                         await fetchDeliveryOptions(selectedSavedAddress.city);
                       }
                       setStep(2);
-                    }} className="w-2/3 py-4 bg-black text-white rounded-xl font-bold flex items-center justify-center gap-2 hover:bg-gray-800 transition-all shadow-md">
-                      Continue to Delivery <ArrowRight className="w-5 h-5" />
+                    }} className="w-2/3 py-4 bg-black text-white rounded-xl font-bold flex items-center justify-center gap-2 hover:bg-gray-800 transition-all shadow-md disabled:opacity-50"
+                    disabled={isCalculatingDelivery}>
+                      {isCalculatingDelivery ? 'Calculating...' : 'Continue to Delivery'} <ArrowRight className="w-5 h-5" />
                     </button>
                   </div>
                 </motion.div>
@@ -523,26 +574,32 @@ export default function Checkout() {
                 >
                   <h2 className="text-xl font-bold mb-6">Delivery Method</h2>
                   <div className="space-y-4">
-                    <label className="flex items-center justify-between p-4 border-2 border-black rounded-xl cursor-pointer bg-gray-50">
-                      <div className="flex items-center gap-3">
-                        <input type="radio" name="delivery" defaultChecked className="w-4 h-4 accent-black" />
-                        <div>
-                          <p className="font-bold">Standard Delivery</p>
-                          <p className="text-xs text-gray-500">3–5 Business Days • Pan-India</p>
+                    {deliveryOptions.standard.available && (
+                      <label className={`flex items-center justify-between p-4 border-2 rounded-xl cursor-pointer transition-colors ${selectedDelivery === 'standard' ? 'border-black bg-gray-50' : 'border-gray-100 hover:border-gray-200'}`}>
+                        <div className="flex items-center gap-3">
+                          <input type="radio" name="delivery" checked={selectedDelivery === 'standard'} onChange={() => setSelectedDelivery('standard')} className="w-4 h-4 accent-black" />
+                          <div>
+                            <p className="font-bold">Standard Delivery</p>
+                            <p className="text-xs text-gray-500">{deliveryOptions.standard.estimatedDays} • Shiprocket</p>
+                          </div>
                         </div>
-                      </div>
-                      <span className="font-bold text-green-600">Free</span>
-                    </label>
-                    <label className="flex items-center justify-between p-4 border-2 border-gray-100 hover:border-gray-200 rounded-xl cursor-pointer transition-colors">
-                      <div className="flex items-center gap-3">
-                        <input type="radio" name="delivery" className="w-4 h-4 accent-black" />
-                        <div>
-                          <p className="font-bold">Express Delivery</p>
-                          <p className="text-xs text-gray-500">1–2 Business Days</p>
+                        <span className={`font-bold ${deliveryOptions.standard.fee === 0 ? 'text-green-600' : ''}`}>
+                          {deliveryOptions.standard.fee === 0 ? 'Free' : `₹${deliveryOptions.standard.fee}`}
+                        </span>
+                      </label>
+                    )}
+                    {deliveryOptions.sameDay.available && (
+                      <label className={`flex items-center justify-between p-4 border-2 rounded-xl cursor-pointer transition-colors ${selectedDelivery === 'sameDay' ? 'border-black bg-gray-50' : 'border-gray-100 hover:border-gray-200'}`}>
+                        <div className="flex items-center gap-3">
+                          <input type="radio" name="delivery" checked={selectedDelivery === 'sameDay'} onChange={() => setSelectedDelivery('sameDay')} className="w-4 h-4 accent-black" />
+                          <div>
+                            <p className="font-bold text-accent-blue flex items-center gap-1">Same Day Chennai <Sparkles className="w-3 h-3" /></p>
+                            <p className="text-xs text-gray-500">Delivered Today via Porter</p>
+                          </div>
                         </div>
-                      </div>
-                      <span className="font-bold">₹150</span>
-                    </label>
+                        <span className="font-bold">₹{deliveryOptions.sameDay.fee}</span>
+                      </label>
+                    )}
                   </div>
                   <div className="flex gap-4 mt-8">
                     <button onClick={() => setStep(1)} className="w-1/3 py-4 bg-gray-100 text-black rounded-xl font-bold hover:bg-gray-200 transition-colors flex items-center justify-center gap-2">
@@ -666,7 +723,9 @@ export default function Checkout() {
                 </div>
                 <div className="flex justify-between text-sm">
                   <span className="text-gray-500">Shipping</span>
-                  <span className="font-semibold text-green-600">Free</span>
+                  <span className={`font-semibold ${deliveryFee === 0 ? 'text-green-600' : ''}`}>
+                    {deliveryFee === 0 ? 'Free' : `₹${deliveryFee}`}
+                  </span>
                 </div>
                 <div className="flex justify-between text-sm">
                   <span className="text-gray-500">Tax (18% GST)</span>

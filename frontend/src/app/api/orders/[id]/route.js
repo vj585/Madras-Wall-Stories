@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { connectDB } from '@/lib/mongodb';
 import Order from '@/models/Order';
 import mongoose from 'mongoose';
+import { sendStatusUpdateNotification } from '@/lib/orderUtils';
 
 export async function GET(request, { params }) {
   try {
@@ -78,20 +79,35 @@ export async function PATCH(request, { params }) {
     await connectDB();
     const body = await request.json();
 
-    // Only allow safe partial updates via PATCH (e.g. orderStatus, trackingNumber)
-    const allowedFields = ['orderStatus', 'trackingNumber'];
+    // Only allow safe partial updates via PATCH (e.g. orderStatus, trackingId)
+    const allowedFields = ['orderStatus', 'shippingStatus', 'trackingId', 'shipmentId', 'deliveryPartner'];
     const updateData = {};
     for (const field of allowedFields) {
       if (body[field] !== undefined) updateData[field] = body[field];
     }
 
-    const order = await Order.findByIdAndUpdate(id, { $set: updateData }, {
+    const updateQuery = { $set: updateData };
+    let newTimelineStatus = null;
+
+    if (body.shippingStatus || body.orderStatus) {
+      newTimelineStatus = body.shippingStatus || body.orderStatus;
+      updateQuery.$push = {
+        statusTimeline: { status: newTimelineStatus, timestamp: new Date() }
+      };
+    }
+
+    const order = await Order.findByIdAndUpdate(id, updateQuery, {
       new: true,
       runValidators: true,
     });
 
     if (!order) {
       return NextResponse.json({ success: false, error: 'Order not found' }, { status: 404 });
+    }
+
+    // Trigger Notification asynchronously
+    if (newTimelineStatus && ['Packed', 'Shipped', 'Out For Delivery', 'Delivered'].includes(newTimelineStatus)) {
+      sendStatusUpdateNotification(order, newTimelineStatus);
     }
 
     return NextResponse.json({ success: true, data: order }, { status: 200 });
