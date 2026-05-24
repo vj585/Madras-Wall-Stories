@@ -61,12 +61,12 @@ export default function Navbar() {
 
         {/* Logo */}
         <Link href="/" className="flex-shrink-0 z-10">
-          <div className="relative h-14 w-44">
+          <div className="relative h-16 w-52 md:h-20 md:w-60">
             <Image
               src="/images/logo mws.png"
               alt="Madras Wall Stories"
               fill
-              sizes="176px"
+              sizes="(max-width: 768px) 208px, 240px"
               className="object-contain transition-transform duration-300"
               priority
             />
