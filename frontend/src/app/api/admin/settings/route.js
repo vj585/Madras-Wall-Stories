@@ -34,7 +34,15 @@ export async function GET(request) {
         pickupCoordinates: {
           latitude: 13.0827,
           longitude: 80.2707
-        }
+        },
+        businessName: 'Madras Wall Stories',
+        gstNumber: '',
+        supportEmail: 'support@madraswallstories.com',
+        phone: '+91 ',
+        businessAddress: '',
+        whatsappNumber: '',
+        instagramProfile: '',
+        returnPolicy: ''
       });
     }
 
@@ -62,7 +70,15 @@ export async function PUT(request) {
       mediumCartDeliveryFee,
       sameDayChennaiFee,
       serviceableCities,
-      pickupCoordinates 
+      pickupCoordinates,
+      businessName,
+      gstNumber,
+      supportEmail,
+      phone,
+      businessAddress,
+      whatsappNumber,
+      instagramProfile,
+      returnPolicy
     } = body;
 
     await connectDB();
@@ -82,6 +98,14 @@ export async function PUT(request) {
     if (sameDayChennaiFee !== undefined) settings.sameDayChennaiFee = sameDayChennaiFee;
     if (serviceableCities !== undefined) settings.serviceableCities = serviceableCities;
     if (pickupCoordinates !== undefined) settings.pickupCoordinates = pickupCoordinates;
+    if (businessName !== undefined) settings.businessName = businessName;
+    if (gstNumber !== undefined) settings.gstNumber = gstNumber;
+    if (supportEmail !== undefined) settings.supportEmail = supportEmail;
+    if (phone !== undefined) settings.phone = phone;
+    if (businessAddress !== undefined) settings.businessAddress = businessAddress;
+    if (whatsappNumber !== undefined) settings.whatsappNumber = whatsappNumber;
+    if (instagramProfile !== undefined) settings.instagramProfile = instagramProfile;
+    if (returnPolicy !== undefined) settings.returnPolicy = returnPolicy;
 
     await settings.save();
 

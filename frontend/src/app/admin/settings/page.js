@@ -13,6 +13,16 @@ export default function SettingsPage() {
     pickupLat: 13.0827,
     pickupLng: 80.2707
   });
+  const [businessDetails, setBusinessDetails] = useState({
+    businessName: 'Madras Wall Stories',
+    gstNumber: '',
+    supportEmail: 'support@madraswallstories.com',
+    phone: '+91 ',
+    businessAddress: '',
+    whatsappNumber: '',
+    instagramProfile: '',
+    returnPolicy: ''
+  });
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
   const [message, setMessage] = useState('');
@@ -35,6 +45,16 @@ export default function SettingsPage() {
           serviceableCities: (data.data.serviceableCities || ['Chennai']).join(', '),
           pickupLat: data.data.pickupCoordinates?.latitude || 13.0827,
           pickupLng: data.data.pickupCoordinates?.longitude || 80.2707,
+        });
+        setBusinessDetails({
+          businessName: data.data.businessName || 'Madras Wall Stories',
+          gstNumber: data.data.gstNumber || '',
+          supportEmail: data.data.supportEmail || 'support@madraswallstories.com',
+          phone: data.data.phone || '+91 ',
+          businessAddress: data.data.businessAddress || '',
+          whatsappNumber: data.data.whatsappNumber || '',
+          instagramProfile: data.data.instagramProfile || '',
+          returnPolicy: data.data.returnPolicy || ''
         });
       }
     } catch (error) {
@@ -67,7 +87,8 @@ export default function SettingsPage() {
           pickupCoordinates: {
             latitude: Number(deliverySettings.pickupLat),
             longitude: Number(deliverySettings.pickupLng)
-          }
+          },
+          ...businessDetails
         })
       });
       const data = await res.json();
@@ -155,23 +176,23 @@ export default function SettingsPage() {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="space-y-1">
                 <label className="text-xs font-medium text-gray-500">Business Name</label>
-                <input type="text" defaultValue="Madras Wall Stories" className="w-full px-4 py-2 border border-gray-200 rounded-xl outline-none focus:ring-1 focus:ring-accent-blue" />
+                <input type="text" value={businessDetails.businessName} onChange={(e) => setBusinessDetails({...businessDetails, businessName: e.target.value})} className="w-full px-4 py-2 border border-gray-200 rounded-xl outline-none focus:ring-1 focus:ring-accent-blue" />
               </div>
               <div className="space-y-1">
                 <label className="text-xs font-medium text-gray-500">GST Number</label>
-                <input type="text" placeholder="e.g. 33AAAAA0000A1Z5" className="w-full px-4 py-2 border border-gray-200 rounded-xl outline-none focus:ring-1 focus:ring-accent-blue" />
+                <input type="text" value={businessDetails.gstNumber} onChange={(e) => setBusinessDetails({...businessDetails, gstNumber: e.target.value})} placeholder="e.g. 33AAAAA0000A1Z5" className="w-full px-4 py-2 border border-gray-200 rounded-xl outline-none focus:ring-1 focus:ring-accent-blue" />
               </div>
               <div className="space-y-1">
                 <label className="text-xs font-medium text-gray-500">Support Email</label>
-                <input type="email" defaultValue="support@madraswallstories.com" className="w-full px-4 py-2 border border-gray-200 rounded-xl outline-none focus:ring-1 focus:ring-accent-blue" />
+                <input type="email" value={businessDetails.supportEmail} onChange={(e) => setBusinessDetails({...businessDetails, supportEmail: e.target.value})} className="w-full px-4 py-2 border border-gray-200 rounded-xl outline-none focus:ring-1 focus:ring-accent-blue" />
               </div>
               <div className="space-y-1">
                 <label className="text-xs font-medium text-gray-500">Phone</label>
-                <input type="text" defaultValue="+91 " className="w-full px-4 py-2 border border-gray-200 rounded-xl outline-none focus:ring-1 focus:ring-accent-blue" />
+                <input type="text" value={businessDetails.phone} onChange={(e) => setBusinessDetails({...businessDetails, phone: e.target.value})} className="w-full px-4 py-2 border border-gray-200 rounded-xl outline-none focus:ring-1 focus:ring-accent-blue" />
               </div>
               <div className="space-y-1 md:col-span-2">
                 <label className="text-xs font-medium text-gray-500">Business Address</label>
-                <textarea rows="2" placeholder="Enter full business address" className="w-full px-4 py-2 border border-gray-200 rounded-xl outline-none focus:ring-1 focus:ring-accent-blue resize-none"></textarea>
+                <textarea rows="2" value={businessDetails.businessAddress} onChange={(e) => setBusinessDetails({...businessDetails, businessAddress: e.target.value})} placeholder="Enter full business address" className="w-full px-4 py-2 border border-gray-200 rounded-xl outline-none focus:ring-1 focus:ring-accent-blue resize-none"></textarea>
               </div>
             </div>
           </div>
@@ -234,11 +255,11 @@ export default function SettingsPage() {
             <div className="space-y-4">
               <div className="space-y-1">
                 <label className="text-xs font-medium text-gray-500">WhatsApp Number</label>
-                <input type="text" placeholder="+91 " className="w-full px-4 py-2 border border-gray-200 rounded-xl outline-none focus:ring-1 focus:ring-accent-blue text-sm" />
+                <input type="text" value={businessDetails.whatsappNumber} onChange={(e) => setBusinessDetails({...businessDetails, whatsappNumber: e.target.value})} placeholder="+91 " className="w-full px-4 py-2 border border-gray-200 rounded-xl outline-none focus:ring-1 focus:ring-accent-blue text-sm" />
               </div>
               <div className="space-y-1">
                 <label className="text-xs font-medium text-gray-500">Instagram Profile</label>
-                <input type="text" placeholder="https://instagram.com/madraswallstories" className="w-full px-4 py-2 border border-gray-200 rounded-xl outline-none focus:ring-1 focus:ring-accent-blue text-sm" />
+                <input type="text" value={businessDetails.instagramProfile} onChange={(e) => setBusinessDetails({...businessDetails, instagramProfile: e.target.value})} placeholder="https://instagram.com/madraswallstories" className="w-full px-4 py-2 border border-gray-200 rounded-xl outline-none focus:ring-1 focus:ring-accent-blue text-sm" />
               </div>
             </div>
           </div>
@@ -249,7 +270,7 @@ export default function SettingsPage() {
             <div className="space-y-4">
               <div className="space-y-1">
                 <label className="text-xs font-medium text-gray-500">Return Policy</label>
-                <textarea rows="4" placeholder="Enter return policy details" className="w-full px-4 py-2 border border-gray-200 rounded-xl outline-none focus:ring-1 focus:ring-accent-blue resize-none text-sm"></textarea>
+                <textarea rows="4" value={businessDetails.returnPolicy} onChange={(e) => setBusinessDetails({...businessDetails, returnPolicy: e.target.value})} placeholder="Enter return policy details" className="w-full px-4 py-2 border border-gray-200 rounded-xl outline-none focus:ring-1 focus:ring-accent-blue resize-none text-sm"></textarea>
               </div>
             </div>
           </div>
