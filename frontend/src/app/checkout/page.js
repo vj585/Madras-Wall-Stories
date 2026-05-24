@@ -541,7 +541,7 @@ export default function Checkout() {
                     <button onClick={() => setStep(0)} className="w-1/3 py-4 bg-gray-100 text-black rounded-xl font-bold hover:bg-gray-200 transition-colors flex items-center justify-center gap-2">
                       <ArrowLeft className="w-5 h-5 stroke-[2.5]" /> Back
                     </button>
-                    <button onClick={() => {
+                    <button onClick={async () => {
                       if (isAddingNewAddress) {
                         if (!address.firstName || !address.address1 || !address.city || !address.pincode) {
                           alert("Please fill out all required address fields.");
