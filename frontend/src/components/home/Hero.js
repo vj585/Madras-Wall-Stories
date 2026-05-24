@@ -35,31 +35,40 @@ export default function Hero() {
   const headingText = "Turn Your Walls";
   
   const containerVariants = {
-    hidden: { opacity: 0 },
+    hidden: { 
+      opacity: 0, 
+      y: isMobile ? 20 : 0 
+    },
     visible: {
       opacity: 1,
-      transition: { staggerChildren: 0.05, delayChildren: 0.1 }
+      y: 0,
+      transition: { 
+        staggerChildren: isMobile ? 0 : 0.05, 
+        delayChildren: 0.1,
+        duration: isMobile ? 0.7 : undefined,
+        ease: isMobile ? "easeOut" : undefined
+      }
     }
   };
 
   const letterVariants = {
-    hidden: { opacity: 0, y: 50, filter: isMobile ? 'none' : 'blur(10px)', rotateX: -90 },
+    hidden: { opacity: 0, y: 50, filter: 'blur(10px)', rotateX: -90 },
     visible: { 
       opacity: 1, 
       y: 0, 
-      filter: isMobile ? 'none' : 'blur(0px)',
+      filter: 'blur(0px)',
       rotateX: 0,
-      transition: { type: 'spring', damping: 12, stiffness: isMobile ? 100 : 150 }
+      transition: { type: 'spring', damping: 12, stiffness: 150 }
     }
   };
 
   const glowVariants = {
-    hidden: { opacity: 0, filter: isMobile ? 'none' : 'blur(20px)', scale: 0.8 },
+    hidden: { opacity: 0, filter: 'blur(20px)', scale: 0.8 },
     visible: { 
       opacity: 1, 
-      filter: isMobile ? 'none' : 'blur(0px)',
+      filter: 'blur(0px)',
       scale: 1,
-      transition: { duration: isMobile ? 1.0 : 1.5, ease: "easeOut", delay: 0.8 }
+      transition: { duration: 1.5, ease: "easeOut", delay: 0.8 }
     }
   };
 
@@ -88,13 +97,13 @@ export default function Hero() {
             variants={containerVariants}
             initial="hidden"
             animate="visible"
-            className="text-[2.5rem] sm:text-[3rem] md:text-[4.5rem] lg:text-[5.5rem] font-heading font-black tracking-tighter mb-4 md:mb-6 leading-[1] md:leading-[0.95] text-gray-900"
+            className={`text-[2.5rem] sm:text-[3rem] md:text-[4.5rem] lg:text-[5.5rem] font-heading font-black tracking-tighter mb-4 md:mb-6 leading-[1] md:leading-[0.95] text-gray-900 ${isMobile ? 'will-change-transform will-change-opacity' : ''}`}
           >
             <div className="flex flex-wrap justify-center lg:justify-start">
               {headingText.split("").map((char, index) => (
                 <motion.span 
                   key={index} 
-                  variants={letterVariants}
+                  variants={isMobile ? undefined : letterVariants}
                   className={char === " " ? "w-3 sm:w-4 md:w-6 lg:w-8" : "inline-block"}
                 >
                   {char}
@@ -103,7 +112,7 @@ export default function Hero() {
             </div>
             
             <motion.span 
-              variants={glowVariants}
+              variants={isMobile ? undefined : glowVariants}
               className="inline-block mt-2 text-transparent bg-clip-text bg-gradient-to-r from-accent-blue via-purple-500 to-accent-yellow italic font-bold pr-2 animate-gradient-text font-fancy will-change-transform will-change-opacity"
             >
               Into Stories.
