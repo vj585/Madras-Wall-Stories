@@ -1,6 +1,17 @@
 import { connectDB } from '@/lib/mongodb';
 import Banner from '@/models/Banner';
 
+const defaultImages = [
+  '/images/master.jpg',
+  '/images/batman.jpg',
+  '/images/michael.jpg',
+  '/images/pennywise.jpg',
+  '/images/spiderman.jpg',
+  '/images/3.jpg',
+  '/images/anime.jpg',
+  '/images/music.jpg'
+];
+
 /**
  * Fetch banners directly from MongoDB for Server Components.
  */
@@ -11,6 +22,17 @@ export async function getStorefrontBanners() {
     .lean()
     .exec();
     
-  // Convert _id to string for Next.js Client Component props serialization
-  return JSON.parse(JSON.stringify(banners));
+  let parsedBanners = JSON.parse(JSON.stringify(banners));
+  
+  // Pad with default images to ensure at least 15 items. 
+  // This mathematically guarantees no components show duplicate images nearby.
+  if (parsedBanners.length < 15) {
+    let defaultIdx = 0;
+    while (parsedBanners.length < 15) {
+      parsedBanners.push({ image: defaultImages[defaultIdx % defaultImages.length] });
+      defaultIdx++;
+    }
+  }
+  
+  return parsedBanners;
 }
