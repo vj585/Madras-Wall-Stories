@@ -146,9 +146,6 @@ export default function Hero() {
             <Link href="/shop" className="w-full sm:w-auto px-8 py-4 bg-black text-white font-semibold rounded-2xl hover:bg-gray-900 transition-all shadow-[0_8px_30px_rgb(0,0,0,0.12)] hover:shadow-[0_8px_30px_rgb(0,0,0,0.2)] hover:-translate-y-1 flex items-center justify-center gap-2">
               Shop Collection <ArrowRight className="w-4 h-4" />
             </Link>
-            <Link href="/custom" className="w-full sm:w-auto px-8 py-4 bg-white/50 backdrop-blur-md border border-gray-200/80 text-black font-semibold rounded-2xl hover:bg-white transition-all shadow-sm flex items-center justify-center hover:-translate-y-1">
-              Create Custom Print
-            </Link>
           </motion.div>
 
           <motion.div 
