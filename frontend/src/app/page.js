@@ -8,21 +8,23 @@ const Inspiration = nextDynamic(() => import('@/components/home/Inspiration'));
 const Testimonials = nextDynamic(() => import('@/components/home/Testimonials'));
 const CustomHighlight = nextDynamic(() => import('@/components/home/CustomHighlight'));
 import { getStorefrontProducts } from '@/lib/products';
+import { getStorefrontBanners } from '@/lib/banners';
 
 export const dynamic = 'force-dynamic';
 
 export default async function Home() {
   const products = await getStorefrontProducts();
+  const banners = await getStorefrontBanners();
 
   return (
     <>
-      <Hero />
+      <Hero initialBanners={banners} />
       <Categories products={products} />
-      <Memories />
+      <Memories banners={banners} />
       <Trending products={products} />
-      <CustomHighlight />
+      <CustomHighlight banners={banners} />
       <Testimonials />
-      <Inspiration />
+      <Inspiration banners={banners} />
     </>
   );
 }

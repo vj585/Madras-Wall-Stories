@@ -6,24 +6,17 @@ import Image from 'next/image';
 import { ArrowRight, Star, Truck, ShieldCheck, ChevronDown } from 'lucide-react';
 import { useMobileAdaptive } from '@/hooks/useMobileAdaptive';
 
-export default function Hero() {
-  const [banners, setBanners] = useState([]);
+export default function Hero({ initialBanners = [] }) {
+  const [banners, setBanners] = useState(initialBanners);
   const [idx1, setIdx1] = useState(0);
   const [idx2, setIdx2] = useState(1);
   const [idx3, setIdx3] = useState(2);
   const { isMobile, getValue, getVariant } = useMobileAdaptive();
 
-  // Fetch banners
+  // Update banners if props change
   useEffect(() => {
-    fetch('/api/banners')
-      .then(res => res.json())
-      .then(data => {
-        if (data.success && data.data.length > 0) {
-          setBanners(data.data);
-        }
-      })
-      .catch(console.error);
-  }, []);
+    setBanners(initialBanners);
+  }, [initialBanners]);
 
   // Cycle banners independently for a more random/dynamic feel
   useEffect(() => {

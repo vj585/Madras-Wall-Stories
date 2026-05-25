@@ -4,7 +4,39 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { ArrowRight } from 'lucide-react';
 
-export default function Memories() {
+import { useState, useEffect } from 'react';
+
+export default function Memories({ banners = [] }) {
+  const [idx1, setIdx1] = useState(3);
+  const [idx2, setIdx2] = useState(4);
+  const [idx3, setIdx3] = useState(5);
+
+  useEffect(() => {
+    if (banners.length === 0) return;
+    
+    const int1 = setInterval(() => {
+      setIdx1(prev => (prev + 1) % banners.length);
+    }, 6000);
+
+    const int2 = setInterval(() => {
+      setIdx2(prev => (prev + 1) % banners.length);
+    }, 8500);
+
+    const int3 = setInterval(() => {
+      setIdx3(prev => (prev + 1) % banners.length);
+    }, 11000);
+
+    return () => {
+      clearInterval(int1);
+      clearInterval(int2);
+      clearInterval(int3);
+    };
+  }, [banners.length]);
+
+  const img1 = banners.length > 0 ? banners[idx1 % banners.length]?.image : "/images/master.jpg";
+  const img2 = banners.length > 0 ? banners[idx2 % banners.length]?.image : "/images/michael.jpg";
+  const img3 = banners.length > 0 ? banners[idx3 % banners.length]?.image : "/images/batman.jpg";
+
   return (
     <section className="py-12 md:py-20 bg-surface text-foreground overflow-hidden">
       <div className="container mx-auto px-4">
@@ -40,7 +72,7 @@ export default function Memories() {
             >
               <div className="w-full aspect-[4/5] relative rounded-xl overflow-hidden">
                 <Image 
-                  src="/images/master.jpg" 
+                  src={img1} 
                   alt="Master Poster" 
                   fill
                   sizes="(max-width: 768px) 100vw, 50vw"
@@ -59,7 +91,7 @@ export default function Memories() {
             >
               <div className="w-full aspect-square relative mb-4 rounded-lg overflow-hidden">
                 <Image 
-                  src="/images/michael.jpg" 
+                  src={img2} 
                   alt="Michael Jackson Polaroid" 
                   fill
                   sizes="200px"
@@ -78,7 +110,7 @@ export default function Memories() {
             >
               <div className="w-full aspect-square relative mb-3 rounded-lg overflow-hidden">
                 <Image 
-                  src="/images/batman.jpg" 
+                  src={img3} 
                   alt="Batman Polaroid" 
                   fill
                   sizes="160px"

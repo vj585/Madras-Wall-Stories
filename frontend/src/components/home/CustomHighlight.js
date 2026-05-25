@@ -4,7 +4,32 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { ArrowRight, Wand2, Frame, Upload } from 'lucide-react';
 
-export default function CustomHighlight() {
+import { useState, useEffect } from 'react';
+
+export default function CustomHighlight({ banners = [] }) {
+  const [idx1, setIdx1] = useState(6);
+  const [idx2, setIdx2] = useState(7);
+
+  useEffect(() => {
+    if (banners.length === 0) return;
+    
+    const int1 = setInterval(() => {
+      setIdx1(prev => (prev + 1) % banners.length);
+    }, 6500);
+
+    const int2 = setInterval(() => {
+      setIdx2(prev => (prev + 1) % banners.length);
+    }, 9500);
+
+    return () => {
+      clearInterval(int1);
+      clearInterval(int2);
+    };
+  }, [banners.length]);
+
+  const img1 = banners.length > 0 ? banners[idx1 % banners.length]?.image : "/images/spiderman.jpg";
+  const img2 = banners.length > 0 ? banners[idx2 % banners.length]?.image : "/images/pennywise.jpg";
+
   return (
     <section className="py-12 md:py-20 bg-surface-warm text-foreground overflow-hidden">
       <div className="container mx-auto px-4">
@@ -60,11 +85,11 @@ export default function CustomHighlight() {
               className="relative z-10 w-64 bg-white p-3 rounded-2xl shadow-2xl border border-gray-200"
             >
               <div className="w-full aspect-[3/4] relative rounded-xl overflow-hidden">
-                <Image src="/images/spiderman.jpg" fill sizes="256px" className="object-cover" alt="Preview" />
+                <Image src={img1} fill sizes="256px" className="object-cover" alt="Preview" />
               </div>
               <div className="absolute -bottom-6 -right-6 w-32 bg-white p-2 rounded-xl shadow-xl border border-gray-100">
                 <div className="w-full aspect-square relative mb-2">
-                  <Image src="/images/pennywise.jpg" fill sizes="128px" className="object-cover" alt="Polaroid" />
+                  <Image src={img2} fill sizes="128px" className="object-cover" alt="Polaroid" />
                 </div>
                 <p className="text-center text-[10px] font-heading font-medium">Float</p>
               </div>

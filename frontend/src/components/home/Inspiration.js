@@ -3,16 +3,34 @@ import { motion } from 'framer-motion';
 import Image from 'next/image';
 import Link from 'next/link';
 
-const inspirations = [
-  { id: 1, image: '/images/michael.jpg', height: 'h-64' },
-  { id: 2, image: '/images/batman.jpg', height: 'h-96' },
-  { id: 3, image: '/images/master.jpg', height: 'h-72' },
-  { id: 4, image: '/images/pennywise.jpg', height: 'h-80' },
-  { id: 5, image: '/images/spiderman.jpg', height: 'h-64' },
-  { id: 6, image: '/images/michael.jpg', height: 'h-96' },
-];
+import { useState, useEffect } from 'react';
 
-export default function Inspiration() {
+const layoutHeights = ['h-64', 'h-96', 'h-72', 'h-80', 'h-64', 'h-96'];
+
+export default function Inspiration({ banners = [] }) {
+  const [offset, setOffset] = useState(8);
+
+  useEffect(() => {
+    if (banners.length === 0) return;
+    
+    // Cycle the entire masonry grid slowly
+    const interval = setInterval(() => {
+      setOffset(prev => (prev + 1) % banners.length);
+    }, 12000);
+
+    return () => clearInterval(interval);
+  }, [banners.length]);
+
+  // Construct items matching the required layout heights
+  const items = layoutHeights.map((height, i) => {
+    const bannerIndex = (offset + i) % banners.length;
+    return {
+      id: i,
+      image: banners.length > 0 ? banners[bannerIndex]?.image : '/images/master.jpg',
+      height
+    };
+  });
+
   return (
     <section className="py-24 bg-surface text-foreground overflow-hidden">
       <div className="container mx-auto px-4">
@@ -30,7 +48,7 @@ export default function Inspiration() {
 
         {/* Masonry Layout approximation */}
         <div className="columns-2 md:columns-3 lg:columns-4 gap-4 space-y-4">
-          {inspirations.map((item, idx) => (
+          {items.map((item, idx) => (
             <motion.div 
               key={item.id}
               initial={{ opacity: 0, scale: 0.95 }}
