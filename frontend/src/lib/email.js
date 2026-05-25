@@ -48,8 +48,7 @@ function buildOrderEmailHTML({ order, isAdmin = false }) {
     </tr>
   `).join('');
 
-  const subtotal = Math.round(order.amount / 1.18);
-  const gst = order.amount - subtotal;
+  const subtotal = order.amount;
 
   return `
 <!DOCTYPE html>
@@ -129,10 +128,6 @@ function buildOrderEmailHTML({ order, isAdmin = false }) {
               <tr>
                 <td style="font-size:13px;color:#888;padding:4px 0;">Subtotal</td>
                 <td style="font-size:13px;color:#555;text-align:right;padding:4px 0;">${formatCurrency(subtotal)}</td>
-              </tr>
-              <tr>
-                <td style="font-size:13px;color:#888;padding:4px 0;">GST (18%)</td>
-                <td style="font-size:13px;color:#555;text-align:right;padding:4px 0;">${formatCurrency(gst)}</td>
               </tr>
               <tr>
                 <td style="font-size:16px;font-weight:800;color:#1a1a2e;padding:12px 0 0;border-top:2px solid #1a1a2e;">Total Paid</td>

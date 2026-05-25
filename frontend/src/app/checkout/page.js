@@ -105,8 +105,8 @@ export default function Checkout() {
   };
 
   const deliveryFee = deliveryOptions[selectedDelivery]?.fee || 0;
-  const taxes = Math.round(cartTotal * 0.18);
-  const total = cartTotal + taxes + deliveryFee;
+  const taxes = 0;
+  const total = cartTotal + deliveryFee;
 
   const steps = [
     { id: 0, title: 'Contact', icon: User },
@@ -726,10 +726,6 @@ export default function Checkout() {
                   <span className={`font-semibold ${deliveryFee === 0 ? 'text-green-600' : ''}`}>
                     {deliveryFee === 0 ? 'Free' : `₹${deliveryFee}`}
                   </span>
-                </div>
-                <div className="flex justify-between text-sm">
-                  <span className="text-gray-500">Tax (18% GST)</span>
-                  <span className="font-semibold">₹{taxes}</span>
                 </div>
               </div>
               <div className="border-t border-gray-100 pt-4 flex justify-between items-center mb-6">

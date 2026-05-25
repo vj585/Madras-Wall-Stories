@@ -24,7 +24,7 @@ export default function AddProductDrawer({ isOpen, onClose, editingProduct = nul
     tags: '',
     seoKeywords: '',
     variants: [
-      { size: 'A4', price: '', salePrice: '', costPrice: '', stock: '', gst: '18', frames: [], enabled: true }
+      { size: 'A4', price: '', salePrice: '', costPrice: '', stock: '', gst: '0', frames: [], enabled: true }
     ],
     status: 'Draft',
     orientation: 'Portrait',
@@ -152,7 +152,7 @@ export default function AddProductDrawer({ isOpen, onClose, editingProduct = nul
       ...prev,
       variants: [
         ...prev.variants,
-        { size: 'A3', price: '', salePrice: '', costPrice: '', stock: '', gst: '18', frames: [], enabled: true }
+        { size: 'A3', price: '', salePrice: '', costPrice: '', stock: '', gst: '0', frames: [], enabled: true }
       ]
     }));
   };
@@ -283,7 +283,7 @@ export default function AddProductDrawer({ isOpen, onClose, editingProduct = nul
           salePrice: v.salePrice ? Number(v.salePrice) : undefined,
           costPrice: v.costPrice ? Number(v.costPrice) : undefined,
           stock: Number(v.stock) || 0,
-          gst: Number(v.gst) || 18,
+          gst: 0,
         })),
         featured: formData.featured,
         trending: formData.trending,
@@ -481,19 +481,7 @@ export default function AddProductDrawer({ isOpen, onClose, editingProduct = nul
                             className="w-full px-3 py-2 bg-white border border-gray-200 rounded-lg text-sm outline-none focus:ring-1 focus:ring-accent-blue" 
                           />
                         </div>
-                        <div>
-                          <label className="block text-xs font-medium text-gray-700 mb-1">GST %</label>
-                          <select 
-                            value={variant.gst} 
-                            onChange={(e) => handleVariantChange(index, 'gst', e.target.value)}
-                            className="w-full px-3 py-2 bg-white border border-gray-200 rounded-lg text-sm outline-none focus:ring-1 focus:ring-accent-blue"
-                          >
-                            <option value="18">18%</option>
-                            <option value="12">12%</option>
-                            <option value="5">5%</option>
-                            <option value="0">0%</option>
-                          </select>
-                        </div>
+
                       </div>
 
                       <div className="border-t border-gray-200 pt-3 mt-1">

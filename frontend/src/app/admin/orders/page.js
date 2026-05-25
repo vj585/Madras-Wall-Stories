@@ -357,11 +357,7 @@ function OrderDrawer({ order, onClose, onStatusChange }) {
               <div className="space-y-2">
                 <div className="flex justify-between text-sm">
                   <span className="text-gray-500">Subtotal</span>
-                  <span className="font-medium">₹{Math.round(order.amount / 1.18).toLocaleString('en-IN')}</span>
-                </div>
-                <div className="flex justify-between text-sm">
-                  <span className="text-gray-500">GST (18%)</span>
-                  <span className="font-medium">₹{Math.round(order.amount - order.amount / 1.18).toLocaleString('en-IN')}</span>
+                  <span className="font-medium">₹{order.amount.toLocaleString('en-IN')}</span>
                 </div>
                 <div className="flex justify-between text-sm font-bold border-t border-gray-200 pt-2 mt-2">
                   <span>Total Paid</span>
