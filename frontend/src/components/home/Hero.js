@@ -52,7 +52,12 @@ export default function Hero() {
   };
 
   const letterVariants = {
-    hidden: { opacity: 0, y: 50, filter: 'blur(10px)', rotateX: -90 },
+    hidden: { 
+      opacity: isMobile ? 1 : 0, 
+      y: isMobile ? 0 : 50, 
+      filter: isMobile ? 'blur(0px)' : 'blur(10px)', 
+      rotateX: isMobile ? 0 : -90 
+    },
     visible: { 
       opacity: 1, 
       y: 0, 
@@ -63,7 +68,11 @@ export default function Hero() {
   };
 
   const glowVariants = {
-    hidden: { opacity: 0, filter: 'blur(20px)', scale: 0.8 },
+    hidden: { 
+      opacity: isMobile ? 1 : 0, 
+      filter: isMobile ? 'blur(0px)' : 'blur(20px)', 
+      scale: isMobile ? 1 : 0.8 
+    },
     visible: { 
       opacity: 1, 
       filter: 'blur(0px)',
@@ -103,7 +112,7 @@ export default function Hero() {
               {headingText.split("").map((char, index) => (
                 <motion.span 
                   key={index} 
-                  variants={isMobile ? undefined : letterVariants}
+                  variants={letterVariants}
                   className={char === " " ? "w-3 sm:w-4 md:w-6 lg:w-8" : "inline-block"}
                 >
                   {char}
@@ -112,7 +121,7 @@ export default function Hero() {
             </div>
             
             <motion.span 
-              variants={isMobile ? undefined : glowVariants}
+              variants={glowVariants}
               className="inline-block mt-2 text-transparent bg-clip-text bg-gradient-to-r from-accent-blue via-purple-500 to-accent-yellow italic font-bold pr-2 animate-gradient-text font-fancy will-change-transform will-change-opacity"
             >
               Into Stories.
