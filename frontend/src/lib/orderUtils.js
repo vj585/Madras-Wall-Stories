@@ -31,21 +31,73 @@ export async function processAndSaveOrder(orderData) {
   // 2.5 Auto-update or create Customer for this order
   try {
     let customer = await Customer.findOne({ email: orderData.email.toLowerCase() });
+    const addr = orderData.addressSnapshot;
+
     if (customer) {
       customer.orders.push(newOrder._id);
       if (!customer.phone && orderData.phone) {
         customer.phone = orderData.phone;
       }
+      
+      // Auto-save the address if not already present
+      if (addr && addr.street && addr.pincode) {
+        if (!customer.savedAddresses) customer.savedAddresses = [];
+        
+        const exists = customer.savedAddresses.some(a => 
+          a.street === addr.street && a.pincode === addr.pincode
+        );
+        if (!exists) {
+          customer.savedAddresses.push({
+            fullName: addr.fullName || customer.name,
+            phone: addr.phone || orderData.phone,
+            houseOrApartment: addr.houseOrApartment,
+            street: addr.street,
+            areaOrLocality: addr.areaOrLocality,
+            landmark: addr.landmark,
+            city: addr.city,
+            state: addr.state,
+            pincode: addr.pincode,
+            addressType: addr.addressType || 'Home'
+          });
+          if (!customer.defaultAddress) {
+            customer.defaultAddress = customer.savedAddresses[customer.savedAddresses.length - 1]._id;
+          }
+        }
+      }
+
       await customer.save();
     } else {
-      await Customer.create({
+      const newCustomerData = {
         name: orderData.customerName,
         email: orderData.email.toLowerCase(),
         phone: orderData.phone,
         role: 'customer',
         authProvider: 'email',
         orders: [newOrder._id],
-      });
+        savedAddresses: []
+      };
+
+      if (addr && addr.street && addr.pincode) {
+        newCustomerData.savedAddresses.push({
+          fullName: addr.fullName || orderData.customerName,
+          phone: addr.phone || orderData.phone,
+          houseOrApartment: addr.houseOrApartment,
+          street: addr.street,
+          areaOrLocality: addr.areaOrLocality,
+          landmark: addr.landmark,
+          city: addr.city,
+          state: addr.state,
+          pincode: addr.pincode,
+          addressType: addr.addressType || 'Home'
+        });
+      }
+
+      const createdCustomer = await Customer.create(newCustomerData);
+      
+      if (createdCustomer.savedAddresses && createdCustomer.savedAddresses.length > 0) {
+        createdCustomer.defaultAddress = createdCustomer.savedAddresses[0]._id;
+        await createdCustomer.save();
+      }
     }
   } catch (err) {
     console.error("Error auto-updating customer during order processing:", err);
