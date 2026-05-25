@@ -91,7 +91,6 @@ export default function CustomHighlight({ banners = [] }) {
                 <div className="w-full aspect-square relative mb-2">
                   <Image src={img2} fill sizes="128px" className="object-cover" alt="Polaroid" />
                 </div>
-                <p className="text-center text-[10px] font-heading font-medium">Float</p>
               </div>
             </motion.div>
           </div>

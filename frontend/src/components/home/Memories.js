@@ -98,7 +98,6 @@ export default function Memories({ banners = [] }) {
                   className="object-cover"
                 />
               </div>
-              <p className="text-center font-heading font-medium text-sm">Legend</p>
             </motion.div>
 
             <motion.div 
@@ -117,7 +116,6 @@ export default function Memories({ banners = [] }) {
                   className="object-cover"
                 />
               </div>
-              <p className="text-center font-heading font-medium text-xs">Vengeance</p>
             </motion.div>
           </div>
 

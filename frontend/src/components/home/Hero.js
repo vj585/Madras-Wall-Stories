@@ -248,7 +248,6 @@ export default function Hero({ initialBanners = [] }) {
                 </motion.div>
               </AnimatePresence>
             </div>
-            <p className="text-center font-heading font-medium text-xs">Vintage</p>
           </motion.div>
 
           {/* Floating Poster 2 */}
