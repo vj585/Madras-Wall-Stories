@@ -8,7 +8,9 @@ import { useMobileAdaptive } from '@/hooks/useMobileAdaptive';
 
 export default function Hero() {
   const [banners, setBanners] = useState([]);
-  const [currentSlide, setCurrentSlide] = useState(0);
+  const [idx1, setIdx1] = useState(0);
+  const [idx2, setIdx2] = useState(1);
+  const [idx3, setIdx3] = useState(2);
   const { isMobile, getValue, getVariant } = useMobileAdaptive();
 
   // Fetch banners
@@ -23,13 +25,27 @@ export default function Hero() {
       .catch(console.error);
   }, []);
 
-  // Slowly cycle through banners if there are many
+  // Cycle banners independently for a more random/dynamic feel
   useEffect(() => {
-    if (banners.length <= 1) return;
-    const interval = setInterval(() => {
-      setCurrentSlide((prev) => (prev + 1) % banners.length);
-    }, 6000);
-    return () => clearInterval(interval);
+    if (banners.length === 0) return;
+    
+    const int1 = setInterval(() => {
+      setIdx1(prev => (prev + 1) % banners.length);
+    }, 5000);
+
+    const int2 = setInterval(() => {
+      setIdx2(prev => (prev + 1) % banners.length);
+    }, 7500);
+
+    const int3 = setInterval(() => {
+      setIdx3(prev => (prev + 1) % banners.length);
+    }, 10000);
+
+    return () => {
+      clearInterval(int1);
+      clearInterval(int2);
+      clearInterval(int3);
+    };
   }, [banners.length]);
 
   const headingText = "Turn Your Walls";
@@ -82,9 +98,9 @@ export default function Hero() {
   };
 
   // Determine images to show based on banners or fallbacks
-  const img1 = banners.length > 0 ? banners[currentSlide % banners.length]?.image : "/images/batman.jpg";
-  const img2 = banners.length > 1 ? banners[(currentSlide + 1) % banners.length]?.image : (banners.length === 1 ? banners[0]?.image : "/images/pennywise.jpg");
-  const img3 = banners.length > 2 ? banners[(currentSlide + 2) % banners.length]?.image : (banners.length > 0 ? banners[0]?.image : "/images/michael.jpg");
+  const img1 = banners.length > 0 ? banners[idx1 % banners.length]?.image : "/images/batman.jpg";
+  const img2 = banners.length > 1 ? banners[idx2 % banners.length]?.image : (banners.length === 1 ? banners[0]?.image : "/images/pennywise.jpg");
+  const img3 = banners.length > 2 ? banners[idx3 % banners.length]?.image : (banners.length > 0 ? banners[0]?.image : "/images/michael.jpg");
 
   return (
     <motion.section 
@@ -166,7 +182,7 @@ export default function Hero() {
             className="mt-10 flex flex-col items-center lg:items-start cursor-pointer group"
             onClick={() => window.scrollTo({ top: window.innerHeight - 80, behavior: 'smooth' })}
           >
-            <span className="text-2xl font-fancy italic font-bold text-gray-500 group-hover:text-black transition-colors mb-1">Discover The Collections</span>
+            <span className="text-2xl font-fancy italic font-bold text-gray-800 group-hover:text-black transition-colors mb-1">Discover The Collections</span>
             <motion.div 
               animate={{ y: [0, 5, 0] }} 
               transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
