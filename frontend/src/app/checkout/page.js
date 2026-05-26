@@ -34,16 +34,34 @@ export default function Checkout() {
   useEffect(() => {
     if (session?.user) {
       setGuestEmail(session.user.email);
+      if (session.user.name) {
+        const nameParts = session.user.name.split(' ');
+        setAddress(prev => ({
+          ...prev,
+          firstName: prev.firstName || nameParts[0] || '',
+          lastName: prev.lastName || nameParts.slice(1).join(' ') || ''
+        }));
+      }
       fetch('/api/account/addresses')
         .then(res => res.json())
         .then(data => {
-          if (data.success && data.data.savedAddresses.length > 0) {
-            setSavedAddresses(data.data.savedAddresses);
-            const defaultAddress = data.data.savedAddresses.find(a => a._id === data.data.defaultAddress);
-            setSelectedSavedAddress(defaultAddress || data.data.savedAddresses[0]);
+          if (data.success) {
+            if (data.data.customerPhone) {
+              setGuestPhone(prev => prev || data.data.customerPhone);
+              setAddress(prev => ({ ...prev, phone: prev.phone || data.data.customerPhone }));
+            }
+            if (data.data.savedAddresses && data.data.savedAddresses.length > 0) {
+              setSavedAddresses(data.data.savedAddresses);
+              const defaultAddress = data.data.savedAddresses.find(a => a._id === data.data.defaultAddress);
+              setSelectedSavedAddress(defaultAddress || data.data.savedAddresses[0]);
+              setIsAddingNewAddress(false);
+            } else {
+              setIsAddingNewAddress(true);
+            }
           } else {
             setIsAddingNewAddress(true);
           }
+          setStep(1); // Skip Contact step for logged-in users
         })
         .catch(console.error);
     } else {
@@ -54,6 +72,7 @@ export default function Checkout() {
   const [address, setAddress] = useState({
     firstName: '',
     lastName: '',
+    phone: '',
     address1: '',
     address2: '',
     city: '',
@@ -142,7 +161,7 @@ export default function Checkout() {
     setIsPlacingOrder(true);
     try {
       const customerName = selectedSavedAddress ? selectedSavedAddress.fullName : `${address.firstName} ${address.lastName}`.trim() || guestEmail.split('@')[0] || 'Guest';
-      const customerPhone = selectedSavedAddress ? selectedSavedAddress.phone : guestPhone || '0000000000';
+      const customerPhone = selectedSavedAddress ? selectedSavedAddress.phone : (address.phone || guestPhone || '0000000000');
       
       const orderData = {
         customerName,
@@ -451,6 +470,7 @@ export default function Checkout() {
                         alert("Please provide both email and phone number.");
                         return;
                       }
+                      setAddress(prev => ({ ...prev, phone: prev.phone || guestPhone }));
                       setStep(1);
                     }}
                     className="w-full py-4 mt-6 bg-black text-white rounded-xl font-bold flex items-center justify-center gap-2 hover:bg-gray-800 transition-all shadow-md"
@@ -506,6 +526,10 @@ export default function Checkout() {
                         </div>
                       </div>
                       <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">Phone Number</label>
+                        <input type="tel" value={address.phone} onChange={e => setAddress({...address, phone: e.target.value})} className={inputClass} placeholder="98765 43210" />
+                      </div>
+                      <div>
                         <label className="block text-sm font-medium text-gray-700 mb-1">Address Line 1</label>
                         <input type="text" value={address.address1} onChange={e => setAddress({...address, address1: e.target.value})} className={inputClass} placeholder="Flat 12, Rose Apartments" />
                       </div>
@@ -542,8 +566,8 @@ export default function Checkout() {
                     </button>
                     <button onClick={async () => {
                       if (isAddingNewAddress) {
-                        if (!address.firstName || !address.address1 || !address.city || !address.pincode) {
-                          alert("Please fill out all required address fields.");
+                        if (!address.firstName || !address.address1 || !address.city || !address.pincode || !address.phone) {
+                          alert("Please fill out all required address fields, including phone number.");
                           return;
                         }
                         await fetchDeliveryOptions(address.city);

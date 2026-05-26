@@ -22,7 +22,8 @@ export async function GET(request) {
       success: true, 
       data: {
         savedAddresses: customer.savedAddresses || [],
-        defaultAddress: customer.defaultAddress || null
+        defaultAddress: customer.defaultAddress || null,
+        customerPhone: customer.phone || ''
       }
     }, { status: 200 });
   } catch (error) {
