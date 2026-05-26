@@ -14,7 +14,7 @@ export default function BottomNav() {
     { icon: Home, label: 'Home', href: '/' },
     { icon: Search, label: 'Search', href: '/search' },
     { icon: Heart, label: 'Wishlist', href: '/wishlist' },
-    { icon: User, label: 'Profile', href: session?.user ? (session.user.role === 'admin' ? '/admin' : '/account') : '/login' },
+    { icon: User, label: 'Profile', href: session?.user ? ((session.user.role === 'ADMIN' || session.user.role === 'admin') ? '/admin' : '/account') : '/login' },
   ];
 
   // Don't show on admin or checkout

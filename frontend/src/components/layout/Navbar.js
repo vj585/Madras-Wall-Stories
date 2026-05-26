@@ -120,7 +120,7 @@ export default function Navbar() {
           <Link href="/search" aria-label="Search" className="md:hidden hover:text-accent-blue transition-colors">
             <Search className="w-5 h-5" />
           </Link>
-          <Link href={session?.user ? (session.user.role === 'admin' ? '/admin' : '/account') : '/login'} aria-label="Profile" className="hover:text-accent-blue transition-colors hidden md:block relative">
+          <Link href={session?.user ? ((session.user.role === 'ADMIN' || session.user.role === 'admin') ? '/admin' : '/account') : '/login'} aria-label="Profile" className="hover:text-accent-blue transition-colors hidden md:block relative">
             <User className="w-5 h-5" />
             {session?.user && (
               <span className="absolute -top-1 -right-1 bg-green-500 border-2 border-white w-3 h-3 rounded-full"></span>

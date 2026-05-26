@@ -19,7 +19,7 @@ export default function Login() {
 
   useEffect(() => {
     if (status === 'authenticated') {
-      if (session?.user?.role === 'admin') {
+      if (session?.user?.role === 'ADMIN' || session?.user?.role === 'admin') {
         router.push('/admin');
       } else {
         router.push('/account');
