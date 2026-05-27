@@ -9,6 +9,7 @@ const CustomPricingSchema = new mongoose.Schema(
       'Photo Booth Strip': { type: Number, default: 29 },
     },
     sizes: {
+      'A5 (6x8")': { type: Number, default: 0 },
       'A4 (8x12")': { type: Number, default: 0 },
       'A3 (12x18")': { type: Number, default: 10 },
       'A2 (16x24")': { type: Number, default: 20 },

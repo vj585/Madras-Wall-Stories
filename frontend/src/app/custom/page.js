@@ -30,7 +30,7 @@ export default function CustomPrintBuilder() {
   // Options
   const productTypes = ['Poster', 'Polaroid', 'Mini Prints', 'Photo Booth Strip'];
   const sizes = {
-    'Poster': ['A4 (8x12")', 'A3 (12x18")', 'A2 (16x24")'],
+    'Poster': ['A5 (6x8")', 'A4 (8x12")', 'A3 (12x18")', 'A2 (16x24")'],
     'Polaroid': ['Standard (3.5x4.2")', 'Mini (2.1x3.4")'],
     'Mini Prints': ['Square (4x4")', 'Landscape (4x6")'],
     'Photo Booth Strip': ['Standard (2x6")']

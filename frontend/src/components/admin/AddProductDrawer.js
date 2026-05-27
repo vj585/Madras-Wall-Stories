@@ -438,6 +438,7 @@ export default function AddProductDrawer({ isOpen, onClose, editingProduct = nul
                             onChange={(e) => handleVariantChange(index, 'size', e.target.value)}
                             className="w-full px-3 py-2 bg-white border border-gray-200 rounded-lg text-sm outline-none focus:ring-1 focus:ring-accent-blue"
                           >
+                            <option>A5</option>
                             <option>A4</option>
                             <option>A3</option>
                             <option>A2</option>

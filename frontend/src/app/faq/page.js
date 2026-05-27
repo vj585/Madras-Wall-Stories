@@ -14,8 +14,8 @@ const faqs = [
     a: "Yes! You can upload your favorite photos or artwork through our Custom Prints section, and we'll transform them into beautiful wall pieces."
   },
   {
-    q: "What print sizes are available?",
-    a: "We offer multiple size options including Mini, Standard, A4, A3, A2, Square, Landscape, and other formats depending on the product."
+    q: "What sizes are available?",
+    a: "We offer multiple size options including Mini, Standard, A5, A4, A3, A2, Square, Landscape, and other formats depending on the product."
   },
   {
     q: "Do you provide frame options?",
