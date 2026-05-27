@@ -244,7 +244,7 @@ export default function ProductClient({ product, related = [], framePricing = []
             <div className="grid grid-cols-3 gap-3 mb-8 py-5 border-y border-gray-100 text-center">
               <div className="flex flex-col items-center gap-2">
                 <Truck className="w-5 h-5 text-accent-blue" />
-                <span className="text-xs font-medium text-gray-600">Free Delivery<br/>above ₹1000</span>
+                <span className="text-xs font-medium text-gray-600">Free Delivery<br/>above ₹299</span>
               </div>
               <div className="flex flex-col items-center gap-2 border-x border-gray-100 px-2">
                 <Shield className="w-5 h-5 text-green-500" />

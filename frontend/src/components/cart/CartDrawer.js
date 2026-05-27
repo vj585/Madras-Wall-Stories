@@ -6,7 +6,7 @@ import Link from 'next/link';
 
 export default function CartDrawer() {
   const { isCartOpen, setIsCartOpen, cartItems, removeFromCart, updateQuantity, cartTotal } = useCart();
-  const freeShippingThreshold = 1000;
+  const freeShippingThreshold = 299;
   const progress = Math.min((cartTotal / freeShippingThreshold) * 100, 100);
 
   return (

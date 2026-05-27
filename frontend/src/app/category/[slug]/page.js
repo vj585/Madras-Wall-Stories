@@ -51,33 +51,42 @@ export default async function CategoryPage({ params }) {
   const slug = decodeURIComponent(resolvedParams?.slug || '');
 
   // Map slugs to display names
-  const categoryNames = {
-    'anime': 'Anime',
-    'superhero': 'Superhero Collections',
-    'movies': 'Movie Collections',
-    'tv-series': 'TV-Series Collections',
-    'music': 'Music Collections',
-    'cars': 'Car Collections',
-    'gaming': 'Video Game Collections',
-    'motivate': 'Motivate Collections',
-    'cricket': 'Cricket Collections',
-    'football': 'Football Collections',
-    'f1': 'F1 Collections',
-    'pop-culture': 'Pop Culture',
-    'aesthetic': 'Room Aesthetic',
-    'gifts': 'Gifting Sets',
-    'sports': 'Sports Collections',
+  const categoryMap = {
+    'anime': { display: 'Anime', match: ['anime'] },
+    'superhero': { display: 'Superhero Collections', match: ['superhero'] },
+    'movies': { display: 'Movie Collections', match: ['movies', 'movie'] },
+    'tv-series': { display: 'TV-Series Collections', match: ['tv-series', 'tv'] },
+    'music': { display: 'Music Collections', match: ['music'] },
+    'cars': { display: 'Car Collections', match: ['cars', 'car'] },
+    'gaming': { display: 'Video Game Collections', match: ['video games', 'gaming'] },
+    'motivate': { display: 'Motivate Collections', match: ['motivate', 'motivation'] },
+    'cricket': { display: 'Cricket Collections', match: ['cricket'] },
+    'football': { display: 'Football Collections', match: ['football'] },
+    'f1': { display: 'F1 Collections', match: ['f1', 'formula 1', 'formula one'] },
+    'pop-culture': { display: 'Pop Culture', match: ['pop-culture', 'pop culture'] },
+    'aesthetic': { display: 'Room Aesthetic', match: ['aesthetic', 'room'] },
+    'gifts': { display: 'Gifting Sets', match: ['gifts', 'gifting'] },
+    'sports': { display: 'Sports Collections', match: ['sports', 'cricket', 'football', 'f1'] },
   };
 
-  const displayName = categoryNames[slug] || slug?.replace(/-/g, ' ');
+  const categoryInfo = categoryMap[slug] || { 
+    display: slug?.replace(/-/g, ' '), 
+    match: [slug?.replace(/-/g, ' ')] 
+  };
+  
+  const displayName = categoryInfo.display;
 
   const allProducts = await getStorefrontProducts();
 
-  // Filter products loosely by category name (case-insensitive)
-  const filtered = allProducts.filter(p =>
-    p.category.toLowerCase().includes(displayName?.toLowerCase()) ||
-    displayName?.toLowerCase().includes(p.category.toLowerCase())
-  );
+  // Filter products by checking if any of the allowed match strings exist in the product's category
+  const filtered = allProducts.filter(p => {
+    if (!p.category) return false;
+    const pCat = p.category.toLowerCase();
+    return categoryInfo.match.some(m => {
+      const matchStr = m.toLowerCase();
+      return pCat.includes(matchStr) || matchStr.includes(pCat);
+    });
+  });
 
   // Fallback to empty array if no match
   const display = filtered;
