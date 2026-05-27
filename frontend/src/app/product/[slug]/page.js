@@ -5,6 +5,37 @@ import Link from 'next/link';
 import { connectDB } from '@/lib/mongodb';
 import StoreSettings from '@/models/StoreSettings';
 
+export async function generateMetadata({ params }) {
+  const resolvedParams = await params;
+  const slug = decodeURIComponent(resolvedParams?.slug || '');
+  const product = await getProductBySlug(slug);
+
+  if (!product) {
+    return { title: 'Product Not Found | Madras Wall Stories' };
+  }
+
+  const title = `${product.title} | Madras Wall Stories`;
+  const description = product.shortDescription || product.description || `Buy ${product.title} premium poster at Madras Wall Stories.`;
+  const image = product.images?.[0] || '/images/og-default.jpg';
+
+  return {
+    title,
+    description,
+    openGraph: {
+      title,
+      description,
+      images: [{ url: image }],
+      type: 'website',
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title,
+      description,
+      images: [image],
+    },
+  };
+}
+
 export default async function ProductPage({ params }) {
   const resolvedParams = await params;
   const slug = decodeURIComponent(resolvedParams?.slug || '');

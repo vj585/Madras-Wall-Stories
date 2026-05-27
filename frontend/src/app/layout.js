@@ -24,6 +24,9 @@ export const metadata = {
     locale: 'en_IN',
     type: 'website',
   },
+};
+
+export const viewport = {
   themeColor: '#FFFDF7',
 };
 

@@ -163,7 +163,15 @@ export default function ProductsPage() {
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-100">
-                {products.map((product) => {
+                {products.filter(product => {
+                  const matchesSearch = product.title.toLowerCase().includes(searchQuery.toLowerCase()) || 
+                                        (product.slug && product.slug.toLowerCase().includes(searchQuery.toLowerCase()));
+                  const matchesCategory = categoryFilter === 'All' || product.category === categoryFilter;
+                  const displayStock = product.variants?.length > 0 ? product.variants.reduce((acc, v) => acc + (v.stock || 0), 0) : product.stock;
+                  const status = displayStock > 0 ? 'Active' : 'Out of Stock'; // Note: simplistic mapping for demo purposes
+                  const matchesStatus = statusFilter === 'All' || status === statusFilter || (statusFilter === 'Draft' && false); 
+                  return matchesSearch && matchesCategory && matchesStatus;
+                }).map((product) => {
                   const displayPrice = product.variants?.length > 0 ? product.variants[0].price : product.price;
                   const displayStock = product.variants?.length > 0 ? product.variants.reduce((acc, v) => acc + (v.stock || 0), 0) : product.stock;
                   

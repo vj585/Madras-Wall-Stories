@@ -4,6 +4,48 @@ import Image from 'next/image';
 
 export const dynamic = 'force-dynamic';
 
+export async function generateMetadata({ params }) {
+  const resolvedParams = await params;
+  const slug = decodeURIComponent(resolvedParams?.slug || '');
+  
+  const categoryNames = {
+    'anime': 'Anime',
+    'superhero': 'Superhero Collections',
+    'movies': 'Movie Collections',
+    'tv-series': 'TV-Series Collections',
+    'music': 'Music Collections',
+    'cars': 'Car Collections',
+    'gaming': 'Video Game Collections',
+    'motivate': 'Motivate Collections',
+    'cricket': 'Cricket Collections',
+    'football': 'Football Collections',
+    'f1': 'F1 Collections',
+    'pop-culture': 'Pop Culture',
+    'aesthetic': 'Room Aesthetic',
+    'gifts': 'Gifting Sets',
+    'sports': 'Sports Collections',
+  };
+
+  const displayName = categoryNames[slug] || slug?.replace(/-/g, ' ');
+  const title = `${displayName} Posters | Madras Wall Stories`;
+  const description = `Shop the best premium ${displayName} posters and prints at Madras Wall Stories. Upgrade your wall decor today!`;
+
+  return {
+    title,
+    description,
+    openGraph: {
+      title,
+      description,
+      type: 'website',
+    },
+    twitter: {
+      card: 'summary',
+      title,
+      description,
+    },
+  };
+}
+
 export default async function CategoryPage({ params }) {
   const resolvedParams = await params;
   const slug = decodeURIComponent(resolvedParams?.slug || '');
