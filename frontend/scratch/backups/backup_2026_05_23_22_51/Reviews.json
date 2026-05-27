@@ -1,0 +1,46 @@
+[
+  {
+    "_id": "6a109443a4978edaca64a5b4",
+    "product": "6a1013f9d81552426fb8365a",
+    "customer": "6a0f21613179988df0bf8af5",
+    "rating": 5,
+    "isVerifiedPurchase": false,
+    "status": "Approved",
+    "createdAt": "2026-05-22T17:37:07.480Z",
+    "updatedAt": "2026-05-22T17:37:07.480Z",
+    "__v": 0
+  },
+  {
+    "_id": "6a109511a4978edaca64a5b5",
+    "product": "6a0ee794bc1d5795cf4b9d6e",
+    "customer": "6a1094a6661988539d8fcfe5",
+    "rating": 4,
+    "isVerifiedPurchase": false,
+    "status": "Approved",
+    "createdAt": "2026-05-22T17:40:33.421Z",
+    "updatedAt": "2026-05-22T17:40:33.421Z",
+    "__v": 0
+  },
+  {
+    "_id": "6a11501460b22c6c98887849",
+    "product": "6a0f397e5323289b2a17302b",
+    "customer": "6a0f21613179988df0bf8af5",
+    "rating": 4,
+    "isVerifiedPurchase": false,
+    "status": "Approved",
+    "createdAt": "2026-05-23T06:58:28.485Z",
+    "updatedAt": "2026-05-23T06:58:28.485Z",
+    "__v": 0
+  },
+  {
+    "_id": "6a11c45d6d0baf90f9e7e0dc",
+    "product": "6a11529f6611274cd7af9c30",
+    "customer": "6a1094a6661988539d8fcfe5",
+    "rating": 5,
+    "isVerifiedPurchase": false,
+    "status": "Approved",
+    "createdAt": "2026-05-23T15:14:37.274Z",
+    "updatedAt": "2026-05-23T15:14:37.274Z",
+    "__v": 0
+  }
+]

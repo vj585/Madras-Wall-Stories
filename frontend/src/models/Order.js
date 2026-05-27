@@ -86,7 +86,7 @@ const OrderSchema = new mongoose.Schema(
     },
     shippingStatus: {
       type: String,
-      enum: ['Pending', 'Packed', 'Ready For Pickup', 'Shipped', 'Out For Delivery', 'Delivered', 'Cancelled'],
+      enum: ['Pending', 'Packing Started', 'Packed', 'Ready For Pickup', 'Shipped', 'Out For Delivery', 'Delivered', 'Cancelled'],
       default: 'Pending',
     },
     statusTimeline: [
@@ -125,7 +125,8 @@ const OrderSchema = new mongoose.Schema(
     },
     deliveryPartner: {
       type: String,
-      enum: ['Shiprocket', 'Porter'],
+      enum: ['Shiprocket'],
+      default: 'Shiprocket'
     },
     deliveryMode: {
       type: String,

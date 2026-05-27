@@ -1,0 +1,90 @@
+[
+  {
+    "_id": "6a0f326e5323289b2a173029",
+    "adminEmail": "admin@mws.com",
+    "action": "ADMIN_LOGIN",
+    "details": {
+      "ip": "tracked-by-session"
+    },
+    "createdAt": "2026-05-21T16:27:26.678Z",
+    "updatedAt": "2026-05-21T16:27:26.678Z",
+    "__v": 0
+  },
+  {
+    "_id": "6a0f473775745c9a0fdd579c",
+    "adminEmail": "admin@mws.com",
+    "action": "ADMIN_LOGIN",
+    "details": {
+      "ip": "tracked-by-session"
+    },
+    "createdAt": "2026-05-21T17:56:07.331Z",
+    "updatedAt": "2026-05-21T17:56:07.331Z",
+    "__v": 0
+  },
+  {
+    "_id": "6a1001282c45288c3994ead4",
+    "adminEmail": "admin@mws.com",
+    "action": "ADMIN_LOGIN",
+    "details": {
+      "ip": "tracked-by-session"
+    },
+    "createdAt": "2026-05-22T07:09:28.395Z",
+    "updatedAt": "2026-05-22T07:09:28.395Z",
+    "__v": 0
+  },
+  {
+    "_id": "6a1005b93da7866aee4fb59c",
+    "adminEmail": "vijaym0520@gmail.com",
+    "action": "ADMIN_LOGIN",
+    "details": {
+      "ip": "tracked-by-session"
+    },
+    "createdAt": "2026-05-22T07:28:57.894Z",
+    "updatedAt": "2026-05-22T07:28:57.894Z",
+    "__v": 0
+  },
+  {
+    "_id": "6a100b4cd81552426fb83652",
+    "adminEmail": "vijaym0520@gmail.com",
+    "action": "ADMIN_LOGIN",
+    "details": {
+      "ip": "tracked-by-session"
+    },
+    "createdAt": "2026-05-22T07:52:44.838Z",
+    "updatedAt": "2026-05-22T07:52:44.838Z",
+    "__v": 0
+  },
+  {
+    "_id": "6a11502d6c927f10d37db5ce",
+    "adminEmail": "vijaym0520@gmail.com",
+    "action": "ADMIN_LOGIN",
+    "details": {
+      "ip": "tracked-by-session"
+    },
+    "createdAt": "2026-05-23T06:58:53.176Z",
+    "updatedAt": "2026-05-23T06:58:53.176Z",
+    "__v": 0
+  },
+  {
+    "_id": "6a11506560b22c6c9888784a",
+    "adminEmail": "vijaym0520@gmail.com",
+    "action": "ADMIN_LOGIN",
+    "details": {
+      "ip": "tracked-by-session"
+    },
+    "createdAt": "2026-05-23T06:59:49.477Z",
+    "updatedAt": "2026-05-23T06:59:49.477Z",
+    "__v": 0
+  },
+  {
+    "_id": "6a115810d53fa9aeff20a519",
+    "adminEmail": "vijaym0520@gmail.com",
+    "action": "ADMIN_LOGIN",
+    "details": {
+      "ip": "tracked-by-session"
+    },
+    "createdAt": "2026-05-23T07:32:32.272Z",
+    "updatedAt": "2026-05-23T07:32:32.272Z",
+    "__v": 0
+  }
+]

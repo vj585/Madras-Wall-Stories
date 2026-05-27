@@ -5,7 +5,7 @@ import {
   Search, ShoppingCart, Eye, Package, X, Printer,
   MapPin, Phone, Mail, CreditCard, Truck, CheckCircle2,
   Clock, ExternalLink, Download, Tag, Frame, Maximize2,
-  ChevronDown, User, Calendar, Hash
+  ChevronDown, User, Calendar, Hash, CheckSquare
 } from 'lucide-react';
 
 // Safely download cross-origin images (Cloudinary etc.) without navigating away
@@ -80,6 +80,89 @@ function OrderDrawer({ order, onClose, onStatusChange }) {
   const [status, setStatus] = useState(order.orderStatus);
   const [isSaving, setIsSaving] = useState(false);
   const [fullscreenImg, setFullscreenImg] = useState(null);
+  
+  const [checklist, setChecklist] = useState({
+    printed: false,
+    sizeVerified: false,
+    qualityChecked: false,
+    packagingComplete: false,
+    ready: false
+  });
+  
+  const isChecklistComplete = Object.values(checklist).every(Boolean);
+
+  const toggleChecklist = (field) => {
+    setChecklist(prev => ({ ...prev, [field]: !prev[field] }));
+  };
+
+  const handleFulfillOrder = async () => {
+    if (!isChecklistComplete) return alert("Please complete the packing checklist first.");
+    setIsSaving(true);
+    try {
+      const res = await fetch(`/api/orders/${order._id}/shiprocket`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: 'create_shipment' }),
+      });
+      const data = await res.json();
+      if (data.success) {
+        alert("Shipment created and AWB generated!");
+        onStatusChange(order._id, 'Packed'); // Optionally trigger refresh of parent list
+        window.location.reload(); // Simple refresh for now to pull new order data
+      } else {
+        alert("Failed to fulfill: " + data.error);
+      }
+    } catch (e) {
+      console.error(e);
+      alert("Error fulfilling order.");
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
+  const handleRequestPickup = async () => {
+    setIsSaving(true);
+    try {
+      const res = await fetch(`/api/orders/${order._id}/shiprocket`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: 'request_pickup' }),
+      });
+      const data = await res.json();
+      if (data.success) {
+        alert("Pickup requested successfully!");
+        window.location.reload();
+      } else {
+        alert("Failed to request pickup: " + data.error);
+      }
+    } catch (e) {
+      console.error(e);
+      alert("Error requesting pickup.");
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
+  const handleDownloadLabel = async () => {
+    setIsSaving(true);
+    try {
+      const res = await fetch(`/api/orders/${order._id}/shiprocket`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: 'fetch_label' }),
+      });
+      const data = await res.json();
+      if (data.success && data.labelUrl) {
+        window.open(data.labelUrl, '_blank');
+      } else {
+        alert("Failed to fetch label: " + data.error);
+      }
+    } catch (e) {
+      console.error(e);
+    } finally {
+      setIsSaving(false);
+    }
+  };
 
   const handleStatusUpdate = async () => {
     setIsSaving(true);
@@ -229,22 +312,64 @@ function OrderDrawer({ order, onClose, onStatusChange }) {
                 </div>
               )}
 
-              <div className="flex flex-wrap gap-2">
-                {!order.shipmentId && (
+              {/* Packing Checklist */}
+              {!order.shipmentId && (
+                <div className="mb-4 bg-white p-4 rounded-xl border border-blue-200 shadow-sm">
+                  <p className="text-sm font-bold text-gray-800 mb-3 flex items-center gap-2">
+                    <CheckSquare className="w-4 h-4 text-blue-600" /> Packing Checklist
+                  </p>
+                  <div className="space-y-3">
+                    {[
+                      { id: 'printed', label: 'Poster Printed' },
+                      { id: 'sizeVerified', label: 'Correct Size Verified' },
+                      { id: 'qualityChecked', label: 'Quality Check Complete' },
+                      { id: 'packagingComplete', label: 'Packaging Complete' },
+                      { id: 'ready', label: 'Ready For Courier' }
+                    ].map(item => (
+                      <label key={item.id} className="flex items-center gap-3 cursor-pointer group">
+                        <input 
+                          type="checkbox" 
+                          checked={checklist[item.id]} 
+                          onChange={() => toggleChecklist(item.id)}
+                          className="w-4 h-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                        />
+                        <span className={`text-sm select-none transition-colors ${checklist[item.id] ? 'text-gray-400 line-through' : 'text-gray-700 group-hover:text-black'}`}>
+                          {item.label}
+                        </span>
+                      </label>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              <div className="flex flex-col gap-2">
+                {!order.shipmentId ? (
                   <button 
-                    onClick={() => alert('Mock: Generating Shipment...')}
-                    className="flex-1 px-4 py-2.5 bg-blue-600 text-white rounded-xl text-xs font-semibold hover:bg-blue-700 transition-colors text-center"
+                    onClick={handleFulfillOrder}
+                    disabled={!isChecklistComplete || isSaving}
+                    className="w-full px-4 py-3 bg-blue-600 text-white rounded-xl text-sm font-bold hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed shadow-md"
                   >
-                    {order.deliveryPartner === 'Porter' ? 'Book Porter Task' : 'Create Shiprocket AWB'}
+                    {isSaving ? 'Processing...' : 'Fulfill Order (Create Shipment & AWB)'}
                   </button>
-                )}
-                {order.shipmentId && (
-                  <button 
-                    onClick={() => alert('Mock: Refreshing Tracking...')}
-                    className="flex-1 px-4 py-2.5 bg-white text-blue-700 border border-blue-200 rounded-xl text-xs font-semibold hover:bg-blue-50 transition-colors text-center"
-                  >
-                    Refresh Tracking
-                  </button>
+                ) : (
+                  <>
+                    <button 
+                      onClick={handleDownloadLabel}
+                      disabled={isSaving}
+                      className="w-full px-4 py-3 bg-white text-blue-700 border border-blue-200 rounded-xl text-sm font-bold hover:bg-blue-50 transition-colors shadow-sm"
+                    >
+                      Download Shipping Label
+                    </button>
+                    {order.shippingStatus !== 'Ready For Pickup' && order.shippingStatus !== 'Shipped' && order.shippingStatus !== 'Out For Delivery' && order.shippingStatus !== 'Delivered' && (
+                      <button 
+                        onClick={handleRequestPickup}
+                        disabled={isSaving}
+                        className="w-full px-4 py-3 bg-green-600 text-white rounded-xl text-sm font-bold hover:bg-green-700 transition-colors shadow-md mt-2"
+                      >
+                        {isSaving ? 'Requesting...' : 'Request Courier Pickup'}
+                      </button>
+                    )}
+                  </>
                 )}
               </div>
             </div>

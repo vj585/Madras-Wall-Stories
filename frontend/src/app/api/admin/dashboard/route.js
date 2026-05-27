@@ -15,40 +15,45 @@ export async function GET(request) {
 
     await connectDB();
 
-    // Fetch all non-cancelled orders to calculate overall stats
-    // We populate productId to get the category for top categories calculation
-    const allValidOrders = await Order.find({ orderStatus: { $ne: 'Cancelled' } })
+    const allOrders = await Order.find({})
       .populate('products.productId', 'category')
       .sort({ createdAt: -1 });
 
-    const totalOrders = allValidOrders.length;
+    const totalOrders = allOrders.length;
     let totalRevenue = 0;
     let pendingOrders = 0;
     let deliveredOrders = 0;
+    let cancelledOrders = 0;
     let customPrintOrders = 0;
+    let validOrdersCount = 0;
 
     const categoryTally = {};
 
-    allValidOrders.forEach(order => {
-      totalRevenue += order.amount || 0;
+    allOrders.forEach(order => {
+      if (order.orderStatus === 'Cancelled') {
+        cancelledOrders++;
+      } else {
+        totalRevenue += order.amount || 0;
+        validOrdersCount++;
+
+        let hasCustom = false;
+        order.products.forEach(item => {
+          if (item.isCustom) hasCustom = true;
+
+          // Tally categories
+          if (item.productId && item.productId.category) {
+            const cat = item.productId.category;
+            categoryTally[cat] = (categoryTally[cat] || 0) + (item.quantity || 1);
+          }
+        });
+        if (hasCustom) customPrintOrders++;
+      }
       
       if (order.orderStatus === 'Pending') pendingOrders++;
       if (order.orderStatus === 'Delivered') deliveredOrders++;
-
-      let hasCustom = false;
-      order.products.forEach(item => {
-        if (item.isCustom) hasCustom = true;
-
-        // Tally categories
-        if (item.productId && item.productId.category) {
-          const cat = item.productId.category;
-          categoryTally[cat] = (categoryTally[cat] || 0) + (item.quantity || 1);
-        }
-      });
-      if (hasCustom) customPrintOrders++;
     });
 
-    const averageOrderValue = totalOrders > 0 ? Math.round(totalRevenue / totalOrders) : 0;
+    const averageOrderValue = validOrdersCount > 0 ? Math.round(totalRevenue / validOrdersCount) : 0;
     const productsListed = await Product.countDocuments();
 
     // Format Top Categories array
@@ -58,7 +63,7 @@ export async function GET(request) {
       .slice(0, 5); // top 5
 
     // Get Recent 10 Orders
-    const recentOrders = allValidOrders.slice(0, 10).map(order => ({
+    const recentOrders = allOrders.slice(0, 10).map(order => ({
       id: order._id.toString().slice(-6).toUpperCase(), // Short ID
       customer: order.customerName,
       date: new Date(order.createdAt).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' }),
@@ -73,6 +78,7 @@ export async function GET(request) {
         totalOrders,
         pendingOrders,
         deliveredOrders,
+        cancelledOrders,
         productsListed,
         customPrintOrders,
         averageOrderValue,

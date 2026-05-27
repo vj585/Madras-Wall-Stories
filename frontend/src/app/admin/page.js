@@ -1,6 +1,6 @@
 "use client";
 import { useState, useEffect } from 'react';
-import { IndianRupee, ShoppingBag, Users, TrendingUp, Package, FileImage, ShoppingCart, Loader2 } from 'lucide-react';
+import { IndianRupee, ShoppingBag, Users, TrendingUp, Package, FileImage, ShoppingCart, Loader2, XCircle } from 'lucide-react';
 
 // Indian formatting helper
 const formatINR = (amount) => {
@@ -66,7 +66,7 @@ export default function AdminDashboard() {
     { title: 'Custom Print Orders', value: d.customPrintOrders || '0', icon: FileImage, trend: '0%' },
     { title: 'Average Order Value', value: formatINR(d.averageOrderValue || 0), icon: IndianRupee, trend: '0%' },
     { title: 'Conversion Rate', value: '0%', icon: TrendingUp, trend: '0%' }, // Keep static for now
-    { title: 'Cart Abandonment', value: '0%', icon: Users, trend: '0%' }, // Keep static for now
+    { title: 'Cancelled Orders', value: d.cancelledOrders || '0', icon: XCircle, trend: '0%' },
   ];
 
   const recentOrders = d.recentOrders || [];
@@ -139,6 +139,7 @@ export default function AdminDashboard() {
                       <td className="p-4 whitespace-nowrap">
                         <span className={`px-3 py-1 rounded-full text-xs font-bold ${
                           order.status === 'Delivered' ? 'bg-green-100 text-green-700' : 
+                          order.status === 'Cancelled' ? 'bg-red-100 text-red-700' : 
                           order.status === 'Processing' ? 'bg-yellow-100 text-yellow-700' : 
                           'bg-blue-100 text-blue-700'
                         }`}>

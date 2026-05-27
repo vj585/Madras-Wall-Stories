@@ -1,0 +1,93 @@
+[
+  {
+    "_id": "6a11529f6611274cd7af9c30",
+    "title": "test 1",
+    "slug": "test-1",
+    "description": "",
+    "shortDescription": "",
+    "price": 149,
+    "salePrice": 119,
+    "category": "Posters",
+    "subcategory": "Movies",
+    "images": [
+      "https://res.cloudinary.com/dv8pq813f/image/upload/v1779520146/madras_wall_stories/dnshiqatz0slrxjcouyf.jpg"
+    ],
+    "sizes": [
+      "A4"
+    ],
+    "frameOptions": [
+      "No Frame"
+    ],
+    "stock": 10,
+    "featured": true,
+    "trending": false,
+    "newArrival": true,
+    "rating": 5,
+    "numReviews": 1,
+    "tags": [
+      "Marvel"
+    ],
+    "orientation": "Portrait",
+    "printFinish": "Matte",
+    "status": "Active",
+    "createdAt": "2026-05-23T07:09:19.750Z",
+    "updatedAt": "2026-05-23T15:14:37.659Z",
+    "__v": 1,
+    "variants": []
+  },
+  {
+    "_id": "6a1159564dbb2a2ee30396c4",
+    "title": "test 2",
+    "slug": "test-2",
+    "description": "",
+    "shortDescription": "",
+    "category": "Superhero",
+    "subcategory": "",
+    "images": [
+      "https://res.cloudinary.com/dv8pq813f/image/upload/v1779521873/madras_wall_stories/aesnumd8q62ijebzeobk.jpg"
+    ],
+    "sizes": [],
+    "frameOptions": [],
+    "stock": 10,
+    "variants": [
+      {
+        "size": "A4",
+        "price": 120,
+        "salePrice": 100,
+        "costPrice": 45,
+        "stock": 10,
+        "gst": 18,
+        "frames": [
+          "No Frame"
+        ],
+        "enabled": true,
+        "_id": "6a1159564dbb2a2ee30396c5"
+      },
+      {
+        "size": "A3",
+        "price": 150,
+        "salePrice": 110,
+        "costPrice": 49,
+        "stock": 10,
+        "gst": 18,
+        "frames": [
+          "No Frame"
+        ],
+        "enabled": true,
+        "_id": "6a1159564dbb2a2ee30396c6"
+      }
+    ],
+    "featured": false,
+    "trending": false,
+    "newArrival": true,
+    "rating": 0,
+    "numReviews": 0,
+    "tags": [],
+    "orientation": "Portrait",
+    "printFinish": "Matte",
+    "status": "Active",
+    "createdAt": "2026-05-23T07:37:58.933Z",
+    "updatedAt": "2026-05-23T07:50:10.560Z",
+    "__v": 0
+  }
+]

@@ -1,0 +1,152 @@
+[
+  {
+    "_id": "6a0f3fc775745c9a0fdd578d",
+    "customerName": "Vijay M",
+    "email": "vijay.m582005@gmail.com",
+    "phone": "8148224345",
+    "products": [
+      {
+        "productId": null,
+        "title": "Custom Poster",
+        "price": 4520,
+        "quantity": 1,
+        "size": "A3 (12x18\")",
+        "frame": "No Frame",
+        "image": "https://res.cloudinary.com/dv8pq813f/image/upload/v1779384262/custom_prints/xgbbigelfy6zmm0wyvqw.jpg",
+        "isCustom": true,
+        "customDetails": {
+          "finish": "Glossy",
+          "caption": ""
+        },
+        "_id": "6a0f3fc775745c9a0fdd578e"
+      }
+    ],
+    "amount": 5334,
+    "shippingAddress": {
+      "firstName": "Vijay",
+      "lastName": "M",
+      "address1": "Flat no C4",
+      "address2": "Anna nagar",
+      "city": "Chennai",
+      "state": "Tamil Nadu",
+      "pincode": "600040",
+      "country": "India"
+    },
+    "paymentMethod": "COD",
+    "paymentStatus": "Pending",
+    "orderStatus": "Pending",
+    "createdAt": "2026-05-21T17:24:23.622Z",
+    "updatedAt": "2026-05-21T17:24:23.622Z",
+    "__v": 0
+  },
+  {
+    "_id": "6a1018765f979029ff656174",
+    "customerName": "Vijay M",
+    "email": "vm7758@srmist.edu.in",
+    "phone": "8148224345",
+    "products": [
+      {
+        "productId": "6a0f044ebc1d5795cf4b9d70",
+        "title": "Leo poster",
+        "price": 219,
+        "quantity": 1,
+        "size": "A3",
+        "frame": "No Frame",
+        "image": "https://res.cloudinary.com/dv8pq813f/image/upload/v1779368995/madras_wall_stories/pajldzlv5zylz4gbey87.jpg",
+        "isCustom": false,
+        "_id": "6a1018765f979029ff656175"
+      }
+    ],
+    "amount": 258,
+    "shippingAddress": {
+      "firstName": "Vijay",
+      "lastName": "M",
+      "address1": "H5056, 21st Main Road, Rajni Blossoms Ponni Colony",
+      "address2": "",
+      "city": "Chennai",
+      "state": "Tamil Nadu",
+      "pincode": "600040",
+      "country": "India"
+    },
+    "paymentMethod": "COD",
+    "paymentStatus": "Pending",
+    "orderStatus": "Pending",
+    "createdAt": "2026-05-22T08:48:54.126Z",
+    "updatedAt": "2026-05-22T08:48:54.126Z",
+    "__v": 0
+  },
+  {
+    "_id": "6a109a3f65ffac3f4ed6e437",
+    "customerName": "Vijay M",
+    "email": "vm7758@srmist.edu.in",
+    "phone": "8148224345",
+    "products": [
+      {
+        "productId": "6a0f397e5323289b2a17302b",
+        "title": "Spiderman poster",
+        "price": 75,
+        "quantity": 3,
+        "size": "13x19",
+        "frame": "No Frame",
+        "image": "https://res.cloudinary.com/dv8pq813f/image/upload/v1779382628/madras_wall_stories/y7j2nmk5hbdpiiifcbkv.jpg",
+        "isCustom": false,
+        "_id": "6a109a3f65ffac3f4ed6e438"
+      }
+    ],
+    "amount": 266,
+    "shippingAddress": {
+      "firstName": "Vijay",
+      "lastName": "M",
+      "address1": "H5056, 21st Main Road, Rajni Blossoms Ponni Colony",
+      "address2": "",
+      "city": "Chennai",
+      "state": "Tamil Nadu",
+      "pincode": "600040",
+      "country": "India"
+    },
+    "paymentMethod": "COD",
+    "paymentStatus": "Pending",
+    "orderStatus": "Pending",
+    "createdAt": "2026-05-22T18:02:39.923Z",
+    "updatedAt": "2026-05-22T18:02:39.923Z",
+    "__v": 0
+  },
+  {
+    "_id": "6a10ac3d7b8342737df2a43c",
+    "customerName": "Swetha R",
+    "email": "sweeprvt@gmail.com",
+    "phone": "9444113062",
+    "products": [
+      {
+        "productId": "6a0f044ebc1d5795cf4b9d70",
+        "title": "Leo poster",
+        "price": 69,
+        "quantity": 1,
+        "size": "13x19",
+        "frame": "No Frame",
+        "image": "https://res.cloudinary.com/dv8pq813f/image/upload/v1779368995/madras_wall_stories/pajldzlv5zylz4gbey87.jpg",
+        "isCustom": false,
+        "_id": "6a10ac3d7b8342737df2a43d"
+      }
+    ],
+    "amount": 81,
+    "shippingAddress": {
+      "firstName": "Swetha",
+      "lastName": "R",
+      "address1": "Old no 25/1 vv koil st",
+      "address2": "",
+      "city": "Chennai",
+      "state": "Tamil Nadu",
+      "pincode": "6000012",
+      "country": "India"
+    },
+    "paymentMethod": "Razorpay",
+    "paymentStatus": "Paid",
+    "orderStatus": "Pending",
+    "razorpayOrderId": "order_SsWT4wrP7r6KeS",
+    "razorpayPaymentId": "pay_SsWTMmO6RitNFh",
+    "createdAt": "2026-05-22T19:19:25.919Z",
+    "updatedAt": "2026-05-22T19:19:25.919Z",
+    "__v": 0
+  }
+]

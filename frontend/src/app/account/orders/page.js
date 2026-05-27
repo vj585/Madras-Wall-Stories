@@ -118,9 +118,9 @@ export default async function OrdersPage() {
 
                 <div className="p-4 md:px-6 md:py-4 bg-gray-50/50 flex flex-col sm:flex-row items-center gap-3 justify-end border-t border-gray-50">
                   {order.trackingId && (
-                    <button className="w-full sm:w-auto px-5 py-2.5 bg-white border border-gray-200 text-gray-700 font-medium rounded-xl text-sm hover:bg-gray-50 transition-colors">
+                    <Link href={`/account/orders/${order._id}`} className="w-full sm:w-auto px-5 py-2.5 bg-white border border-gray-200 text-gray-700 font-medium rounded-xl text-sm hover:bg-gray-50 transition-colors text-center">
                       Track Order
-                    </button>
+                    </Link>
                   )}
                   <Link 
                     href={`/account/orders/${order._id}`} 

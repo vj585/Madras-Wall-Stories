@@ -114,12 +114,9 @@ export default function Checkout() {
       const data = await res.json();
       if (data.success) {
         setDeliveryOptions({
-          standard: data.standard,
-          sameDay: data.sameDay
+          standard: data.standard
         });
-        if (!data.sameDay.available && selectedDelivery === 'sameDay') {
-          setSelectedDelivery('standard');
-        }
+        setSelectedDelivery('standard');
       } else {
         throw new Error('Failed to fetch delivery options');
       }
@@ -127,8 +124,7 @@ export default function Checkout() {
       console.error('Failed to calculate delivery. Using fallback.', error);
       // Fallback if the API completely fails
       setDeliveryOptions({
-        standard: { available: true, fee: cartTotal >= 599 ? 0 : (cartTotal >= 299 ? 29 : 49), partner: 'Shiprocket', estimatedDays: '3-5 Business Days' },
-        sameDay: { available: false, fee: 0, partner: 'Porter' }
+        standard: { available: true, fee: cartTotal >= 299 ? 0 : 39, partner: 'Shiprocket', estimatedDays: '3-5 Business Days' }
       });
       setSelectedDelivery('standard');
     } finally {
@@ -609,18 +605,6 @@ export default function Checkout() {
                         <span className={`font-bold ${deliveryOptions.standard.fee === 0 ? 'text-green-600' : ''}`}>
                           {deliveryOptions.standard.fee === 0 ? 'Free' : `₹${deliveryOptions.standard.fee}`}
                         </span>
-                      </label>
-                    )}
-                    {deliveryOptions.sameDay.available && (
-                      <label className={`flex items-center justify-between p-4 border-2 rounded-xl cursor-pointer transition-colors ${selectedDelivery === 'sameDay' ? 'border-black bg-gray-50' : 'border-gray-100 hover:border-gray-200'}`}>
-                        <div className="flex items-center gap-3">
-                          <input type="radio" name="delivery" checked={selectedDelivery === 'sameDay'} onChange={() => setSelectedDelivery('sameDay')} className="w-4 h-4 accent-black" />
-                          <div>
-                            <p className="font-bold text-accent-blue flex items-center gap-1">Same Day Chennai <Sparkles className="w-3 h-3" /></p>
-                            <p className="text-xs text-gray-500">Delivered Today via Porter</p>
-                          </div>
-                        </div>
-                        <span className="font-bold">₹{deliveryOptions.sameDay.fee}</span>
                       </label>
                     )}
                   </div>

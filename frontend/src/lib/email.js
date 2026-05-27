@@ -218,3 +218,22 @@ export async function sendOrderConfirmationEmail(order) {
     console.error('[Email] Failed to send order confirmation email:', err.message);
   }
 }
+
+// ─── Generic Send Email ──────────────────────────────────────────────────────
+export async function sendEmail({ to, subject, text, html }) {
+  try {
+    const transporter = createTransport();
+    const from = process.env.EMAIL_FROM || `Madras Wall Stories <${process.env.EMAIL_USER}>`;
+
+    await transporter.sendMail({
+      from,
+      to,
+      subject,
+      text,
+      html
+    });
+    console.log(`[Email] Generic email sent to ${to}`);
+  } catch (err) {
+    console.error('[Email] Failed to send generic email:', err.message);
+  }
+}

@@ -1,0 +1,16 @@
+[
+  {
+    "_id": "6a1094a6661988539d8fcfe5",
+    "name": "Vijay M",
+    "email": "vm7758@srmist.edu.in",
+    "password": "$2b$12$ix4zynQAbUmRDK/DHzKI8eeN4v3qEKN110hLU/fVZRMSWztYsYtBO",
+    "role": "customer",
+    "authProvider": "email",
+    "emailVerified": true,
+    "orders": [],
+    "wishlist": [],
+    "createdAt": "2026-05-22T17:38:46.891Z",
+    "updatedAt": "2026-05-22T17:39:24.624Z",
+    "__v": 0
+  }
+]

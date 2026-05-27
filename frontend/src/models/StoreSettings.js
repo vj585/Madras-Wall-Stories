@@ -10,10 +10,9 @@ const StoreSettingsSchema = new mongoose.Schema(
         markup: { type: Number, default: 0, min: 0 }
       }
     ],
-    freeShippingThreshold: { type: Number, default: 599 },
-    lowCartDeliveryFee: { type: Number, default: 49 },
-    mediumCartDeliveryFee: { type: Number, default: 29 },
-    sameDayChennaiFee: { type: Number, default: 99 },
+    freeShippingThreshold: { type: Number, default: 299 },
+    lowCartDeliveryFee: { type: Number, default: 39 },
+    deliveryProvider: { type: String, enum: ['Shiprocket'], default: 'Shiprocket' },
     serviceableCities: { type: [String], default: ['Chennai'] },
     pickupCoordinates: {
       latitude: { type: Number, default: 13.0827 }, // Chennai default
