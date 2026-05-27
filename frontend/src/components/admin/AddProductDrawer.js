@@ -12,7 +12,7 @@ const Section = ({ title, children }) => (
   </div>
 );
 
-export default function AddProductDrawer({ isOpen, onClose, editingProduct = null }) {
+export default function AddProductDrawer({ isOpen, onClose, editingProduct = null, existingProducts = [] }) {
   // Form State
   const initialFormState = {
     name: '',
@@ -368,7 +368,12 @@ export default function AddProductDrawer({ isOpen, onClose, editingProduct = nul
               <Section title="1. Basic Info">
                 <div>
                   <label className="block text-xs font-medium text-gray-700 mb-1">Product Name *</label>
-                  <input type="text" name="name" value={formData.name} onChange={handleChange} className={`w-full px-3 py-2 bg-white border ${errors.name ? 'border-red-300 focus:ring-red-500' : 'border-gray-200 focus:ring-accent-blue'} rounded-lg text-sm outline-none focus:ring-1`} placeholder="e.g., Spider Man Across Poster" />
+                  <input type="text" name="name" value={formData.name} onChange={handleChange} list="existing-products" className={`w-full px-3 py-2 bg-white border ${errors.name ? 'border-red-300 focus:ring-red-500' : 'border-gray-200 focus:ring-accent-blue'} rounded-lg text-sm outline-none focus:ring-1`} placeholder="e.g., Spider Man Across Poster" />
+                  <datalist id="existing-products">
+                    {Array.from(new Set(existingProducts.map(p => p.title))).map((title, idx) => (
+                      <option key={idx} value={title} />
+                    ))}
+                  </datalist>
                   {errors.name && <p className="text-red-500 text-xs mt-1 flex items-center gap-1"><AlertCircle className="w-3 h-3"/> {errors.name}</p>}
                 </div>
                 <div>

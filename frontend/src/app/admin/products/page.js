@@ -241,6 +241,7 @@ export default function ProductsPage() {
       <AddProductDrawer 
         isOpen={isDrawerOpen} 
         editingProduct={editingProduct}
+        existingProducts={products}
         onClose={(shouldRefresh) => {
           setIsDrawerOpen(false);
           setEditingProduct(null);
