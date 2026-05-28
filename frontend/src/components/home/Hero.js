@@ -114,15 +114,9 @@ export default function Hero({ initialBanners = [] }) {
             className={`text-[2.5rem] sm:text-[3rem] md:text-[4.5rem] lg:text-[5.5rem] font-heading font-black tracking-tighter mb-4 md:mb-6 leading-[1] md:leading-[0.95] text-gray-900 ${isMobile ? 'will-change-transform will-change-opacity' : ''}`}
           >
             <div className="flex flex-wrap justify-center lg:justify-start">
-              {headingText.split("").map((char, index) => (
-                <motion.span 
-                  key={index} 
-                  variants={letterVariants}
-                  className={char === " " ? "w-3 sm:w-4 md:w-6 lg:w-8" : "inline-block"}
-                >
-                  {char}
-                </motion.span>
-              ))}
+              <motion.span variants={letterVariants} className="inline-block">
+                {headingText}
+              </motion.span>
             </div>
             
             <motion.span 
