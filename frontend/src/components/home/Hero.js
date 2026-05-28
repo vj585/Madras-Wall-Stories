@@ -62,17 +62,13 @@ export default function Hero({ initialBanners = [] }) {
 
   const letterVariants = {
     hidden: { 
-      opacity: isMobile ? 1 : 0, 
-      y: isMobile ? 0 : 50, 
-      filter: isMobile ? 'blur(0px)' : 'blur(10px)', 
-      rotateX: isMobile ? 0 : -90 
+      opacity: 0, 
+      y: 30 
     },
     visible: { 
       opacity: 1, 
       y: 0, 
-      filter: 'blur(0px)',
-      rotateX: 0,
-      transition: { type: 'spring', damping: 12, stiffness: 150 }
+      transition: { type: 'spring', damping: 15, stiffness: 150 }
     }
   };
 

@@ -7,10 +7,14 @@ const categories = [
   { name: 'Anime', fallbackImage: '/images/master.jpg', link: '/category/anime' },
   { name: 'Superhero', fallbackImage: '/images/batman.jpg', link: '/category/superhero' },
   { name: 'Movies', fallbackImage: '/images/pennywise.jpg', link: '/category/movies' },
+  { name: 'TV-Series', fallbackImage: '/images/master.jpg', link: '/category/tv-series' },
   { name: 'Music', fallbackImage: '/images/michael.jpg', link: '/category/music' },
-  { name: 'Cars & F1', fallbackImage: '/images/batman.jpg', link: '/category/cars' },
-  { name: 'Sports', fallbackImage: '/images/master.jpg', link: '/category/sports' },
+  { name: 'Cars', fallbackImage: '/images/batman.jpg', link: '/category/cars' },
   { name: 'Video Games', fallbackImage: '/images/spiderman.jpg', link: '/category/gaming' },
+  { name: 'Motivate', fallbackImage: '/images/master.jpg', link: '/category/motivate' },
+  { name: 'Cricket', fallbackImage: '/images/master.jpg', link: '/category/cricket' },
+  { name: 'Football', fallbackImage: '/images/batman.jpg', link: '/category/football' },
+  { name: 'F1', fallbackImage: '/images/batman.jpg', link: '/category/f1' },
   { name: 'Custom Prints', fallbackImage: '/images/michael.jpg', link: '/custom' },
 ];
 
