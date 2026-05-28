@@ -33,7 +33,24 @@ export async function GET(request) {
       if (order.orderStatus === 'Cancelled') {
         cancelledOrders++;
       } else {
-        totalRevenue += order.amount || 0;
+        // Revenue logic
+        let countRevenue = false;
+        
+        if (order.paymentMethod === 'COD') {
+          if (order.orderStatus === 'Delivered') {
+            countRevenue = true;
+          }
+        } else {
+          // Online payment (Razorpay, etc)
+          if (order.paymentStatus === 'Paid') {
+            countRevenue = true;
+          }
+        }
+
+        if (countRevenue) {
+          totalRevenue += order.amount || 0;
+        }
+
         validOrdersCount++;
 
         let hasCustom = false;
