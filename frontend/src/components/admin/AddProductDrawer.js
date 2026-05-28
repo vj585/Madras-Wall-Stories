@@ -401,6 +401,11 @@ export default function AddProductDrawer({ isOpen, onClose, editingProduct = nul
                       <option key={idx} value={price} />
                     ))}
                   </datalist>
+                  <datalist id="existing-cost-prices">
+                    {Array.from(new Set(existingProducts.flatMap(p => p.variants?.map(v => v.costPrice) || []).filter(Boolean))).sort((a,b)=>a-b).map((price, idx) => (
+                      <option key={idx} value={price} />
+                    ))}
+                  </datalist>
                   {errors.name && <p className="text-red-500 text-xs mt-1 flex items-center gap-1"><AlertCircle className="w-3 h-3"/> {errors.name}</p>}
                 </div>
                 <div>
@@ -507,6 +512,7 @@ export default function AddProductDrawer({ isOpen, onClose, editingProduct = nul
                             type="number" 
                             value={variant.costPrice || ''} 
                             onChange={(e) => handleVariantChange(index, 'costPrice', e.target.value)}
+                            list="existing-cost-prices"
                             className="w-full px-3 py-2 bg-white border border-gray-200 rounded-lg text-sm outline-none focus:ring-1 focus:ring-accent-blue" 
                           />
                         </div>
