@@ -1,7 +1,7 @@
 "use client";
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Image as ImageIcon, UploadCloud, AlertCircle, Plus } from 'lucide-react';
+import { X, Image as ImageIcon, UploadCloud, AlertCircle, Plus, Check } from 'lucide-react';
 
 const Section = ({ title, children }) => (
   <div className="bg-white p-5 rounded-2xl border border-gray-100 shadow-sm mb-6">
@@ -122,6 +122,23 @@ export default function AddProductDrawer({ isOpen, onClose, editingProduct = nul
     if (errors[name]) {
       setErrors(prev => ({ ...prev, [name]: null }));
     }
+  };
+
+  const categoryOptions = [
+    'Posters', 'Polaroids', 'Custom Prints', 'Anime', 'Superhero', 
+    'Movies', 'TV-Series', 'Music', 'Cars', 'Video Games', 
+    'Motivate', 'Cricket', 'Football', 'F1'
+  ];
+
+  const handleCategoryChange = (cat) => {
+    setFormData(prev => {
+      const currentCats = prev.category ? prev.category.split(',').map(c => c.trim()).filter(Boolean) : [];
+      if (currentCats.includes(cat)) {
+        return { ...prev, category: currentCats.filter(c => c !== cat).join(', ') };
+      } else {
+        return { ...prev, category: [...currentCats, cat].join(', ') };
+      }
+    });
   };
 
   const handleVariantChange = (index, field, value) => {
@@ -388,34 +405,37 @@ export default function AddProductDrawer({ isOpen, onClose, editingProduct = nul
                   <label className="block text-xs font-medium text-gray-700 mb-1">Full Description</label>
                   <textarea name="fullDescription" value={formData.fullDescription} onChange={handleChange} rows="4" className="w-full px-3 py-2 bg-white border border-gray-200 rounded-lg text-sm outline-none focus:ring-1 focus:ring-accent-blue resize-none"></textarea>
                 </div>
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <label className="block text-xs font-medium text-gray-700 mb-1">Category *</label>
-                    <select name="category" value={formData.category} onChange={handleChange} className="w-full px-3 py-2 bg-white border border-gray-200 rounded-lg text-sm outline-none focus:ring-1 focus:ring-accent-blue">
-                      <option>Posters</option>
-                      <option>Polaroids</option>
-                      <option>Custom Prints</option>
-                      <option>Anime</option>
-                      <option>Superhero</option>
-                      <option>Movies</option>
-                      <option>TV-Series</option>
-                      <option>Music</option>
-                      <option>Cars</option>
-                      <option>Video Games</option>
-                      <option>Motivate</option>
-                      <option>Cricket</option>
-                      <option>Football</option>
-                      <option>F1</option>
-                    </select>
+                <div>
+                  <label className="block text-xs font-medium text-gray-700 mb-2">Categories *</label>
+                  <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+                    {categoryOptions.map(cat => {
+                      const isSelected = formData.category ? formData.category.split(',').map(c => c.trim()).includes(cat) : false;
+                      return (
+                        <label key={cat} className={`flex items-center gap-2 p-2 border rounded-lg cursor-pointer text-sm transition-colors ${isSelected ? 'bg-accent-blue/10 border-accent-blue text-accent-blue font-medium' : 'bg-white border-gray-200 text-gray-700 hover:bg-gray-50'}`}>
+                          <input 
+                            type="checkbox" 
+                            className="hidden" 
+                            checked={isSelected}
+                            onChange={() => handleCategoryChange(cat)}
+                          />
+                          <div className={`w-4 h-4 rounded border flex items-center justify-center shrink-0 transition-colors ${isSelected ? 'bg-accent-blue border-accent-blue' : 'border-gray-300'}`}>
+                            {isSelected && <Check className="w-3 h-3 text-white" />}
+                          </div>
+                          <span className="truncate">{cat}</span>
+                        </label>
+                      );
+                    })}
                   </div>
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
                   <div>
                     <label className="block text-xs font-medium text-gray-700 mb-1">Subcategory</label>
                     <input type="text" name="subcategory" value={formData.subcategory} onChange={handleChange} className="w-full px-3 py-2 bg-white border border-gray-200 rounded-lg text-sm outline-none focus:ring-1 focus:ring-accent-blue" placeholder="e.g. Movies" />
                   </div>
-                </div>
-                <div>
-                  <label className="block text-xs font-medium text-gray-700 mb-1">Tags (comma separated)</label>
-                  <input type="text" name="tags" value={formData.tags} onChange={handleChange} className="w-full px-3 py-2 bg-white border border-gray-200 rounded-lg text-sm outline-none focus:ring-1 focus:ring-accent-blue" placeholder="e.g. Marvel, Miles Morales, Action" />
+                  <div>
+                    <label className="block text-xs font-medium text-gray-700 mb-1">Tags (comma separated)</label>
+                    <input type="text" name="tags" value={formData.tags} onChange={handleChange} className="w-full px-3 py-2 bg-white border border-gray-200 rounded-lg text-sm outline-none focus:ring-1 focus:ring-accent-blue" placeholder="e.g. Marvel, Miles Morales, Action" />
+                  </div>
                 </div>
               </Section>
 
