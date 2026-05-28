@@ -5,6 +5,7 @@ import AuthProvider from './Providers';
 import './globals.css';
 
 export const metadata = {
+  metadataBase: new URL('https://madraswallstories.com'),
   title: 'Madras Wall Stories | Premium Aesthetic Posters & Memory Prints',
   description: 'Transform your space with premium aesthetic posters, vintage polaroids, and custom framed prints. High-quality decor crafted for modern lifestyle and memories.',
   keywords: 'posters, wall decor, aesthetic prints, polaroids, custom frames, room decor',

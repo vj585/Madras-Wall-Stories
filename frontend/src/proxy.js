@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { getToken } from "next-auth/jwt";
 
-export async function middleware(req) {
+export async function proxy(req) {
   const token = await getToken({ req, secret: process.env.NEXTAUTH_SECRET });
   const { pathname } = req.nextUrl;
 
@@ -17,6 +17,16 @@ export async function middleware(req) {
     if (token.role !== 'ADMIN') {
       // Has session but not ADMIN role, redirect to home
       return NextResponse.redirect(new URL('/', req.url));
+    }
+  }
+
+  // Protect Admin API mutations centrally
+  const adminApiRoutes = ['/api/products', '/api/orders', '/api/customers', '/api/coupons', '/api/banners', '/api/admin-users'];
+  const isAdminApiRoute = adminApiRoutes.some(route => pathname.startsWith(route));
+
+  if (isAdminApiRoute && req.method !== 'GET') {
+    if (!token || token.role !== 'ADMIN') {
+      return NextResponse.json({ success: false, error: 'Unauthorized: Admin access required' }, { status: 401 });
     }
   }
 
@@ -36,5 +46,5 @@ export async function middleware(req) {
 }
 
 export const config = {
-  matcher: ['/admin/:path*', '/profile/:path*', '/orders/:path*', '/account/:path*', '/wishlist/:path*'],
+  matcher: ['/admin/:path*', '/profile/:path*', '/orders/:path*', '/account/:path*', '/wishlist/:path*', '/api/:path*'],
 };
