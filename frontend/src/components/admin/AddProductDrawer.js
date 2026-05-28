@@ -391,6 +391,16 @@ export default function AddProductDrawer({ isOpen, onClose, editingProduct = nul
                       <option key={idx} value={title} />
                     ))}
                   </datalist>
+                  <datalist id="existing-prices">
+                    {Array.from(new Set(existingProducts.flatMap(p => p.variants?.map(v => v.price) || []).filter(Boolean))).sort((a,b)=>a-b).map((price, idx) => (
+                      <option key={idx} value={price} />
+                    ))}
+                  </datalist>
+                  <datalist id="existing-sale-prices">
+                    {Array.from(new Set(existingProducts.flatMap(p => p.variants?.map(v => v.salePrice) || []).filter(Boolean))).sort((a,b)=>a-b).map((price, idx) => (
+                      <option key={idx} value={price} />
+                    ))}
+                  </datalist>
                   {errors.name && <p className="text-red-500 text-xs mt-1 flex items-center gap-1"><AlertCircle className="w-3 h-3"/> {errors.name}</p>}
                 </div>
                 <div>
@@ -477,6 +487,7 @@ export default function AddProductDrawer({ isOpen, onClose, editingProduct = nul
                             type="number" 
                             value={variant.price} 
                             onChange={(e) => handleVariantChange(index, 'price', e.target.value)}
+                            list="existing-prices"
                             className={`w-full px-3 py-2 bg-white border ${errors[`variant_${index}_price`] ? 'border-red-300' : 'border-gray-200'} rounded-lg text-sm outline-none focus:ring-1`} 
                           />
                         </div>
@@ -486,6 +497,7 @@ export default function AddProductDrawer({ isOpen, onClose, editingProduct = nul
                             type="number" 
                             value={variant.salePrice || ''} 
                             onChange={(e) => handleVariantChange(index, 'salePrice', e.target.value)}
+                            list="existing-sale-prices"
                             className="w-full px-3 py-2 bg-white border border-gray-200 rounded-lg text-sm outline-none focus:ring-1 focus:ring-accent-blue" 
                           />
                         </div>
