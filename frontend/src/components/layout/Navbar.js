@@ -149,6 +149,8 @@ export default function Navbar() {
         </div>
       </div>
 
+      </header>
+
       {/* Mobile Menu */}
       <AnimatePresence>
         {mobileMenuOpen && (
@@ -157,7 +159,7 @@ export default function Navbar() {
             animate={{ opacity: 1, x: 0 }}
             exit={{ opacity: 0, x: '-100%' }}
             transition={{ type: 'spring', bounce: 0, duration: 0.4 }}
-            className="fixed inset-0 z-50 bg-background md:hidden flex flex-col"
+            className="fixed inset-0 z-[100] bg-white text-gray-900 md:hidden flex flex-col"
           >
             <div className="p-4 flex justify-between items-center border-b border-gray-100">
               <Link href="/" onClick={() => setMobileMenuOpen(false)}>
@@ -184,7 +186,6 @@ export default function Navbar() {
           </motion.div>
         )}
       </AnimatePresence>
-      </header>
     </>
   );
 }
