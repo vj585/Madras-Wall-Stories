@@ -31,7 +31,7 @@ export default function ProductClient({ product, related = [], framePricing = []
   
   const [selectedFrame, setSelectedFrame] = useState(activeVariant.frames?.[0] || '');
   const [quantity, setQuantity] = useState(1);
-  const [activeAccordion, setActiveAccordion] = useState('description');
+  const [activeAccordion, setActiveAccordion] = useState('materials');
   const { toggleWishlist, isInWishlist } = useWishlist();
   const [addedToCart, setAddedToCart] = useState(false);
 
@@ -256,12 +256,56 @@ export default function ProductClient({ product, related = [], framePricing = []
               </div>
             </div>
 
+            {/* Product Description */}
+            {product.description && (
+              <div className="mb-6 text-gray-600 text-sm leading-relaxed whitespace-pre-line">
+                {product.description}
+              </div>
+            )}
+
             {/* Accordions */}
             <div className="space-y-3">
               {[
-                { id: 'description', title: 'Description', content: product.description },
-                { id: 'materials', title: 'Materials & Finish', content: 'Printed on museum-quality 300 GSM art board with acid-free inks for long-lasting vibrancy. Frames are crafted from engineered wood with shatter-proof acrylic glass.' },
-                { id: 'shipping', title: 'Shipping & Returns', content: 'Orders processed within 24–48 hours. Delivery in 3–5 working days across India. 7-day hassle-free returns if the product arrives damaged.' },
+                { 
+                  id: 'materials', 
+                  title: 'Materials & Finish', 
+                  content: (
+                    <ul className="space-y-3">
+                      <li className="flex items-start gap-2.5">
+                        <div className="w-1.5 h-1.5 rounded-full bg-accent-blue mt-1.5 shrink-0"></div>
+                        <span><strong className="text-gray-900 font-semibold">Premium Quality:</strong> Printed on museum-grade 300 GSM art board for unmatched durability.</span>
+                      </li>
+                      <li className="flex items-start gap-2.5">
+                        <div className="w-1.5 h-1.5 rounded-full bg-accent-blue mt-1.5 shrink-0"></div>
+                        <span><strong className="text-gray-900 font-semibold">Vibrant Colors:</strong> Acid-free inks guarantee fade-resistant, long-lasting vibrancy.</span>
+                      </li>
+                      <li className="flex items-start gap-2.5">
+                        <div className="w-1.5 h-1.5 rounded-full bg-accent-blue mt-1.5 shrink-0"></div>
+                        <span><strong className="text-gray-900 font-semibold">Sleek Frames:</strong> Crafted from engineered wood with shatter-proof acrylic glass for a premium finish.</span>
+                      </li>
+                    </ul>
+                  )
+                },
+                { 
+                  id: 'shipping', 
+                  title: 'Shipping & Returns', 
+                  content: (
+                    <ul className="space-y-3">
+                      <li className="flex items-start gap-2.5">
+                        <div className="w-1.5 h-1.5 rounded-full bg-green-500 mt-1.5 shrink-0"></div>
+                        <span><strong className="text-gray-900 font-semibold">Fast Dispatch:</strong> Orders are processed and shipped within 24–48 hours.</span>
+                      </li>
+                      <li className="flex items-start gap-2.5">
+                        <div className="w-1.5 h-1.5 rounded-full bg-green-500 mt-1.5 shrink-0"></div>
+                        <span><strong className="text-gray-900 font-semibold">Speedy Delivery:</strong> Expect your poster in 3–5 working days across India.</span>
+                      </li>
+                      <li className="flex items-start gap-2.5">
+                        <div className="w-1.5 h-1.5 rounded-full bg-green-500 mt-1.5 shrink-0"></div>
+                        <span><strong className="text-gray-900 font-semibold">Hassle-Free Returns:</strong> We offer a 7-day replacement policy if your product arrives damaged.</span>
+                      </li>
+                    </ul>
+                  )
+                },
               ].map(item => (
                 <div key={item.id} className="border border-gray-100 rounded-2xl overflow-hidden">
                   <button
