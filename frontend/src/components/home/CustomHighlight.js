@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import Link from 'next/link';
 import Image from 'next/image';
 import { ArrowRight, Wand2, Frame, Upload } from 'lucide-react';
+import { getUniqueBanners } from '@/utils/bannerUtils';
 
 import { useState, useEffect } from 'react';
 
@@ -27,8 +28,11 @@ export default function CustomHighlight({ banners = [] }) {
     };
   }, [banners.length]);
 
-  const img1 = banners.length > 0 ? banners[idx1 % banners.length]?.image : "/images/spiderman.jpg";
-  const img2 = banners.length > 0 ? banners[idx2 % banners.length]?.image : "/images/pennywise.jpg";
+  const fallbacks = ["/images/spiderman.jpg", "/images/pennywise.jpg"];
+  const uniqueImages = getUniqueBanners(banners, [idx1, idx2], fallbacks);
+  
+  const img1 = uniqueImages[0]?.image;
+  const img2 = uniqueImages[1]?.image;
 
   return (
     <section className="py-12 md:py-20 bg-surface-warm text-foreground overflow-hidden">

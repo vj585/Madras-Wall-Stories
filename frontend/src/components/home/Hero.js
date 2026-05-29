@@ -5,6 +5,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { ArrowRight, Star, Truck, ShieldCheck, ChevronDown } from 'lucide-react';
 import { useMobileAdaptive } from '@/hooks/useMobileAdaptive';
+import { getUniqueBanners } from '@/utils/bannerUtils';
 
 export default function Hero({ initialBanners = [] }) {
   const [banners, setBanners] = useState(initialBanners);
@@ -87,9 +88,12 @@ export default function Hero({ initialBanners = [] }) {
   };
 
   // Determine images to show based on banners or fallbacks
-  const img1 = banners.length > 0 ? banners[idx1 % banners.length]?.image : "/images/batman.jpg";
-  const img2 = banners.length > 1 ? banners[idx2 % banners.length]?.image : (banners.length === 1 ? banners[0]?.image : "/images/pennywise.jpg");
-  const img3 = banners.length > 2 ? banners[idx3 % banners.length]?.image : (banners.length > 0 ? banners[0]?.image : "/images/michael.jpg");
+  const fallbacks = ["/images/batman.jpg", "/images/pennywise.jpg", "/images/michael.jpg"];
+  const uniqueImages = getUniqueBanners(banners, [idx1, idx2, idx3], fallbacks);
+  
+  const img1 = uniqueImages[0]?.image;
+  const img2 = uniqueImages[1]?.image;
+  const img3 = uniqueImages[2]?.image;
 
   return (
     <motion.section 

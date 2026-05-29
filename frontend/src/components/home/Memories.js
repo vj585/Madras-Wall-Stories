@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import Link from 'next/link';
 import Image from 'next/image';
 import { ArrowRight } from 'lucide-react';
+import { getUniqueBanners } from '@/utils/bannerUtils';
 
 import { useState, useEffect } from 'react';
 
@@ -33,9 +34,12 @@ export default function Memories({ banners = [] }) {
     };
   }, [banners.length]);
 
-  const img1 = banners.length > 0 ? banners[idx1 % banners.length]?.image : "/images/master.jpg";
-  const img2 = banners.length > 0 ? banners[idx2 % banners.length]?.image : "/images/michael.jpg";
-  const img3 = banners.length > 0 ? banners[idx3 % banners.length]?.image : "/images/batman.jpg";
+  const fallbacks = ["/images/master.jpg", "/images/michael.jpg", "/images/batman.jpg"];
+  const uniqueImages = getUniqueBanners(banners, [idx1, idx2, idx3], fallbacks);
+  
+  const img1 = uniqueImages[0]?.image;
+  const img2 = uniqueImages[1]?.image;
+  const img3 = uniqueImages[2]?.image;
 
   return (
     <section className="py-12 md:py-20 bg-surface text-foreground overflow-hidden">

@@ -2,8 +2,8 @@
 import { motion } from 'framer-motion';
 import Image from 'next/image';
 import Link from 'next/link';
-
 import { useState, useEffect } from 'react';
+import { getUniqueBanners } from '@/utils/bannerUtils';
 
 const layoutHeights = ['h-64', 'h-96', 'h-72', 'h-80', 'h-64', 'h-96'];
 
@@ -22,14 +22,15 @@ export default function Inspiration({ banners = [] }) {
   }, [banners.length]);
 
   // Construct items matching the required layout heights
-  const items = layoutHeights.map((height, i) => {
-    const bannerIndex = (offset + i) % banners.length;
-    return {
-      id: i,
-      image: banners.length > 0 ? banners[bannerIndex]?.image : '/images/master.jpg',
-      height
-    };
-  });
+  const requestedIndices = layoutHeights.map((_, i) => offset + i);
+  const fallbacks = ['/images/master.jpg', '/images/spiderman.jpg', '/images/pennywise.jpg'];
+  const uniqueImages = getUniqueBanners(banners, requestedIndices, fallbacks);
+
+  const items = layoutHeights.map((height, i) => ({
+    id: i,
+    image: uniqueImages[i]?.image,
+    height
+  }));
 
   return (
     <section className="py-24 bg-surface text-foreground overflow-hidden">
