@@ -1,7 +1,8 @@
 import { NextResponse } from 'next/server';
 import { connectDB } from "@/lib/mongodb";
 import Order from "@/models/Order";
-import { sendEmail } from "@/lib/email"; // Assume this exists for sending emails
+import { sendTrackingEmail } from "@/lib/email";
+import { sendTrackingSMS } from "@/lib/sms";
 
 export async function POST(request) {
   try {
@@ -53,14 +54,13 @@ export async function POST(request) {
       // Trigger Email/SMS Notifications for critical events
       if (['Shipped', 'Out For Delivery', 'Delivered'].includes(mappedStatus)) {
         try {
-          await sendEmail({
-            to: order.email,
-            subject: `Update on your Madras Wall Stories Order: ${mappedStatus}`,
-            text: `Hi ${order.customerName},\n\nYour order #${order._id.toString().slice(-6).toUpperCase()} is now ${mappedStatus}.\n\nYou can track your order in your account dashboard.\n\nThank you,\nMadras Wall Stories`
-          });
-        } catch (emailErr) {
-          console.error("Failed to send tracking email:", emailErr);
-          // Don't fail the webhook if email fails
+          await Promise.all([
+            sendTrackingEmail(order, mappedStatus),
+            sendTrackingSMS(order, mappedStatus)
+          ]);
+        } catch (notificationErr) {
+          console.error("Failed to send tracking notification:", notificationErr);
+          // Don't fail the webhook if notifications fail
         }
       }
     }
