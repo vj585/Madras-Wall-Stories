@@ -42,8 +42,19 @@ export default function Register() {
         setError(data.error || 'Failed to register. Please try again.');
         setIsLoading(false);
       } else {
-        setSuccessMsg(data.message || 'Account created! Please check your email to verify.');
-        // Don't redirect immediately so they see the success message
+        // Auto login after registration
+        const signInResult = await signIn('credentials', {
+          email: formData.email,
+          password: formData.password,
+          redirect: false,
+        });
+
+        if (signInResult?.error) {
+          setError('Account created, but auto-login failed. Please sign in manually.');
+          setIsLoading(false);
+        } else {
+          router.push('/account');
+        }
       }
     } catch (err) {
       setError('An error occurred. Please try again.');

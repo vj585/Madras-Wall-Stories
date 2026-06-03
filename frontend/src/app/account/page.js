@@ -6,6 +6,8 @@ import { Package, MapPin, Heart, LogOut, User as UserIcon, ChevronRight } from '
 import Customer from '@/models/Customer';
 import { connectDB } from '@/lib/mongodb';
 import AccountLogoutButton from './AccountLogoutButton';
+import VerifyEmailButton from './VerifyEmailButton';
+import { ShieldCheck, ShieldAlert } from 'lucide-react';
 
 export const metadata = {
   title: 'My Account | Madras Wall Stories',
@@ -40,9 +42,21 @@ export default async function AccountPage() {
               <UserIcon className="w-8 h-8 text-gray-400" />
             )}
           </div>
-          <div>
-            <h2 className="text-xl md:text-2xl font-bold text-gray-900">{session.user.name}</h2>
+          <div className="flex-1">
+            <div className="flex flex-wrap items-center gap-3 mb-1">
+              <h2 className="text-xl md:text-2xl font-bold text-gray-900">{session.user.name}</h2>
+              {customer?.emailVerified ? (
+                <span className="flex items-center gap-1.5 text-[10px] uppercase tracking-wider font-bold bg-green-50 text-green-700 px-2.5 py-1 rounded-full border border-green-200">
+                  <ShieldCheck className="w-3 h-3" /> Verified
+                </span>
+              ) : (
+                <span className="flex items-center gap-1.5 text-[10px] uppercase tracking-wider font-bold bg-amber-50 text-amber-700 px-2.5 py-1 rounded-full border border-amber-200">
+                  <ShieldAlert className="w-3 h-3" /> Email Not Verified
+                </span>
+              )}
+            </div>
             <p className="text-gray-500">{session.user.email}</p>
+            {!customer?.emailVerified && <VerifyEmailButton email={session.user.email} />}
           </div>
         </div>
 

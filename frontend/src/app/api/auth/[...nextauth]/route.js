@@ -52,9 +52,7 @@ export const authOptions = {
           if (user.authProvider === 'google') {
             throw new Error("This account uses Google Login. Please sign in with Google.");
           }
-          if (!user.emailVerified) {
-            throw new Error("Please verify your email before logging in.");
-          }
+          // Email verification is optional now. No blocker here.
         }
 
         const isPasswordValid = await bcrypt.compare(credentials.password, user.password);
