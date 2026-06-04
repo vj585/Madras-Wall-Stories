@@ -39,10 +39,12 @@ export async function calculateSecureOrderTotal(cartItems) {
       const product = await Product.findById(item.productId).lean();
       if (!product) throw new Error(`Product not found: ${item.title}`);
       
-      const variant = product.variants?.find(v => v.size === item.size);
-      if (!variant) throw new Error(`Variant not found for product: ${item.title}, size: ${item.size}`);
-      
-      unitPrice = variant.salePrice || variant.price || 0;
+      if (product.variants && product.variants.length > 0) {
+        const variant = product.variants.find(v => v.size === item.size) || product.variants[0];
+        unitPrice = variant.salePrice || variant.price || 0;
+      } else {
+        unitPrice = product.salePrice || product.price || 0;
+      }
       
       if (item.frame) {
         const frameConfig = framePricing.find(f => f.name === item.frame);
