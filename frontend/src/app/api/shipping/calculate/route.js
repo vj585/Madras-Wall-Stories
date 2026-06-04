@@ -1,6 +1,5 @@
 import { NextResponse } from 'next/server';
-import { connectDB } from "@/lib/mongodb";
-import StoreSettings from "@/models/StoreSettings";
+import { calculateShippingFee } from '@/utils/shippingUtils';
 
 export async function POST(request) {
   try {
@@ -10,21 +9,14 @@ export async function POST(request) {
       return NextResponse.json({ success: false, error: 'Cart total is required' }, { status: 400 });
     }
 
-    await connectDB();
-    const settings = await StoreSettings.findOne({ singletonId: 'global_settings' });
-    
-    // Strict Rules: Cart < 299 -> 39, >= 299 -> Free
-    const threshold = settings?.freeShippingThreshold ?? 299;
-    const fee = settings?.lowCartDeliveryFee ?? 39;
-    
-    let standardFee = (cartTotal < threshold) ? fee : 0;
+    const standardFee = calculateShippingFee(cartTotal);
 
     const response = {
       success: true,
       standard: {
         available: true,
         fee: standardFee,
-        partner: settings?.deliveryProvider || 'Shiprocket',
+        partner: 'Shiprocket',
         estimatedDays: '3-5 Business Days'
       }
     };

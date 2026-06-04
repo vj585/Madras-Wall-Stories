@@ -3,11 +3,11 @@ import { useCart } from '@/context/CartContext';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, Minus, Plus, ShoppingBag, ArrowRight } from 'lucide-react';
 import Link from 'next/link';
+import { FREE_SHIPPING_THRESHOLD } from '@/utils/shippingUtils';
 
 export default function CartDrawer() {
   const { isCartOpen, setIsCartOpen, cartItems, removeFromCart, updateQuantity, cartTotal } = useCart();
-  const freeShippingThreshold = 299;
-  const progress = Math.min((cartTotal / freeShippingThreshold) * 100, 100);
+  const progress = Math.min((cartTotal / FREE_SHIPPING_THRESHOLD) * 100, 100);
 
   return (
     <AnimatePresence>
@@ -49,7 +49,7 @@ export default function CartDrawer() {
                 <p className="text-sm font-medium mb-2 text-center">
                   {progress >= 100 
                     ? <span className="text-green-500">You've unlocked free shipping! 🎉</span>
-                    : `Add ₹${freeShippingThreshold - cartTotal} more for free shipping`}
+                    : `Add ₹${FREE_SHIPPING_THRESHOLD - cartTotal} more for free shipping`}
                 </p>
                 <div className="w-full h-2 bg-gray-200 rounded-full overflow-hidden">
                   <motion.div 

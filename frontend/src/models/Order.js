@@ -47,6 +47,19 @@ const OrderSchema = new mongoose.Schema(
       type: Number,
       required: true,
     },
+    subtotal: {
+      type: Number,
+    },
+    shipping: {
+      type: Number,
+    },
+    grandTotal: {
+      type: Number,
+    },
+    freeShippingApplied: {
+      type: Boolean,
+      default: false,
+    },
     shippingAddress: {
       firstName: String,
       lastName: String,

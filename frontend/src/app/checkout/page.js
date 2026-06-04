@@ -6,6 +6,7 @@ import {
   MapPin, Truck, CreditCard, CheckCircle2, ChevronRight,
   ShieldCheck, ArrowLeft, ArrowRight, User, Mail, Sparkles, Gift, Package, AlertCircle
 } from 'lucide-react';
+import { calculateShippingFee } from '@/utils/shippingUtils';
 import Link from 'next/link';
 import Script from 'next/script';
 import { useRouter } from 'next/navigation';
@@ -81,9 +82,8 @@ export default function Checkout() {
   });
 
   const [deliveryOptions, setDeliveryOptions] = useState(() => {
-    const defaultFee = cartTotal >= 599 ? 0 : (cartTotal >= 299 ? 29 : 49);
     return {
-      standard: { available: true, fee: defaultFee, partner: 'Shiprocket', estimatedDays: '3-5 Business Days' },
+      standard: { available: true, fee: calculateShippingFee(cartTotal), partner: 'Shiprocket', estimatedDays: '3-5 Business Days' },
       sameDay: { available: false, fee: 0, partner: 'Porter' }
     };
   });
@@ -95,7 +95,7 @@ export default function Checkout() {
       ...prev,
       standard: {
         ...prev.standard,
-        fee: cartTotal >= 599 ? 0 : (cartTotal >= 299 ? 29 : 49)
+        fee: calculateShippingFee(cartTotal)
       }
     }));
   }, [cartTotal]);
@@ -124,7 +124,7 @@ export default function Checkout() {
       console.error('Failed to calculate delivery. Using fallback.', error);
       // Fallback if the API completely fails
       setDeliveryOptions({
-        standard: { available: true, fee: cartTotal >= 299 ? 0 : 39, partner: 'Shiprocket', estimatedDays: '3-5 Business Days' }
+        standard: { available: true, fee: calculateShippingFee(cartTotal), partner: 'Shiprocket', estimatedDays: '3-5 Business Days' }
       });
       setSelectedDelivery('standard');
     } finally {
@@ -164,6 +164,10 @@ export default function Checkout() {
         email: guestEmail || 'guest@example.com',
         phone: customerPhone,
         amount: total,
+        subtotal: cartTotal,
+        shipping: deliveryFee,
+        grandTotal: total,
+        freeShippingApplied: deliveryFee === 0,
         paymentStatus: 'Pending',
         shippingAddress: address, // Keep legacy format
         addressSnapshot: selectedSavedAddress ? {

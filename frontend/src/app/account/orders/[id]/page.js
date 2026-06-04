@@ -49,10 +49,10 @@ export default async function OrderDetailsPage({ params }) {
 
   const shippingStatus = order.shippingStatus || order.orderStatus || 'Pending';
   
-  // Calculate subtotal
-  const subtotal = order.products.reduce((acc, item) => acc + (item.price * item.quantity), 0);
-  const discount = 0; // Update if order has discount logic
-  const shippingCharge = order.amount - subtotal + discount > 0 ? order.amount - subtotal + discount : 0; // Rough calc, adjust based on true model if needed
+  // Use exact immutable snapshots from the database. No reverse calculation.
+  const subtotal = order.subtotal || 0;
+  const shippingCharge = order.shipping || 0;
+  const discount = 0; // If future discount fields are added, use order.discount
 
   const defaultTimeline = [
     { status: 'Order Confirmed', timestamp: order.createdAt }

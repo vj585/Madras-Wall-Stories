@@ -482,7 +482,11 @@ function OrderDrawer({ order, onClose, onStatusChange }) {
               <div className="space-y-2">
                 <div className="flex justify-between text-sm">
                   <span className="text-gray-500">Subtotal</span>
-                  <span className="font-medium">₹{order.amount.toLocaleString('en-IN')}</span>
+                  <span className="font-medium">₹{(order.subtotal || 0).toLocaleString('en-IN')}</span>
+                </div>
+                <div className="flex justify-between text-sm">
+                  <span className="text-gray-500">Shipping</span>
+                  <span className="font-medium">{order.shipping > 0 ? `₹${order.shipping}` : (order.freeShippingApplied ? 'Free' : (order.shipping === 0 ? 'Free' : '—'))}</span>
                 </div>
                 <div className="flex justify-between text-sm font-bold border-t border-gray-200 pt-2 mt-2">
                   <span>Total Paid</span>
