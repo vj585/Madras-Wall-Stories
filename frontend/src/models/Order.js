@@ -25,7 +25,9 @@ const OrderSchema = new mongoose.Schema(
           ref: 'Product',
         },
         title: String,
-        price: Number,
+        price: Number, // Legacy
+        unitPrice: Number,
+        lineTotal: Number,
         quantity: {
           type: Number,
           default: 1,
@@ -117,6 +119,9 @@ const OrderSchema = new mongoose.Schema(
       type: String,
       unique: true,
       sparse: true,
+    },
+    paymentTimestamp: {
+      type: Date,
     },
     coupon: {
       type: String,

@@ -236,7 +236,7 @@ export default function Checkout() {
       const orderRes = await fetch('/api/payment/create-order', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ amount: total })
+        body: JSON.stringify({ amount: total, products: cartItems })
       });
       const orderDataApi = await orderRes.json();
 

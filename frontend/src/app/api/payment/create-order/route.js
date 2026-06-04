@@ -1,17 +1,37 @@
 import { NextResponse } from 'next/server';
 import razorpay from '@/lib/razorpay';
+import { calculateSecureOrderTotal } from '@/lib/serverPricing';
+import { calculateShippingFee } from '@/utils/shippingUtils';
+import { connectDB } from '@/lib/mongodb';
 
 export async function POST(request) {
   try {
-    const { amount } = await request.json();
+    const { amount, products } = await request.json();
 
-    if (!amount || amount <= 0) {
-      return NextResponse.json({ success: false, error: 'Invalid amount' }, { status: 400 });
+    if (!amount || amount <= 0 || !products || !products.length) {
+      return NextResponse.json({ success: false, error: 'Invalid payload' }, { status: 400 });
     }
 
-    // Razorpay amount is in paise (₹1 = 100 paise)
+    await connectDB();
+
+    // 1. Calculate secure subtotal from DB
+    const { subtotal } = await calculateSecureOrderTotal(products);
+    
+    // 2. Calculate secure shipping
+    const shipping = calculateShippingFee(subtotal);
+    
+    // 3. Compute true grand total
+    const grandTotal = subtotal + shipping;
+
+    // 4. Reject mismatch (Tamper protection)
+    if (grandTotal !== amount) {
+      console.error(`Price mismatch detected! Frontend sent: ${amount}, Backend computed: ${grandTotal}`);
+      return NextResponse.json({ success: false, error: 'Price mismatch detected. Please refresh the page.' }, { status: 400 });
+    }
+
+    // 5. Razorpay amount is in paise (₹1 = 100 paise)
     const options = {
-      amount: amount * 100, 
+      amount: grandTotal * 100, 
       currency: "INR",
       receipt: `receipt_${Date.now()}_${Math.floor(Math.random() * 1000)}`,
     };

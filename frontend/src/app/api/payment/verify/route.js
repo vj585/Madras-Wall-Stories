@@ -3,6 +3,8 @@ import crypto from 'crypto';
 import { connectDB } from '@/lib/mongodb';
 import Order from '@/models/Order';
 import { processAndSaveOrder } from '@/lib/orderUtils';
+import { calculateSecureOrderTotal } from '@/lib/serverPricing';
+import { calculateShippingFee } from '@/utils/shippingUtils';
 
 export async function POST(request) {
   try {
@@ -40,13 +42,24 @@ export async function POST(request) {
       return NextResponse.json({ success: false, error: 'Order for this payment already exists.' }, { status: 400 });
     }
 
-    // Phase 5: Build Final Order Object & Save
+    // Phase 5 & 6: Immutable Server-Side Pricing Verification
+    const { subtotal, recalculatedProducts } = await calculateSecureOrderTotal(orderDetails.products || []);
+    const shipping = calculateShippingFee(subtotal);
+    const grandTotal = subtotal + shipping;
+
     const finalOrder = {
       ...orderDetails,
+      products: recalculatedProducts,
+      subtotal,
+      shipping,
+      grandTotal,
+      amount: grandTotal, // Backwards compatibility
+      freeShippingApplied: shipping === 0,
       paymentMethod: 'Razorpay',
       paymentStatus: 'Paid',
       razorpayOrderId: razorpay_order_id,
       razorpayPaymentId: razorpay_payment_id,
+      paymentTimestamp: new Date(),
     };
 
     const newOrder = await processAndSaveOrder(finalOrder);
