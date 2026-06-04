@@ -4,7 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useCart } from '@/context/CartContext';
 import {
   MapPin, Truck, CreditCard, CheckCircle2, ChevronRight,
-  ShieldCheck, ArrowLeft, ArrowRight, User, Mail, Sparkles, Gift, Package, AlertCircle
+  ShieldCheck, ArrowLeft, ArrowRight, User, Mail, Sparkles, Gift, Package, AlertCircle, Loader2
 } from 'lucide-react';
 import { calculateShippingFee } from '@/utils/shippingUtils';
 import Link from 'next/link';
@@ -27,13 +27,19 @@ export default function Checkout() {
   const [isPlacingOrder, setIsPlacingOrder] = useState(false);
   const [paymentError, setPaymentError] = useState('');
   
-  const { data: session } = useSession();
+  const { data: session, status } = useSession();
   const [savedAddresses, setSavedAddresses] = useState([]);
   const [selectedSavedAddress, setSelectedSavedAddress] = useState(null);
   const [isAddingNewAddress, setIsAddingNewAddress] = useState(false);
+  const [isSessionLoading, setIsSessionLoading] = useState(true);
 
   useEffect(() => {
-    if (session?.user) {
+    if (status === 'loading') {
+      setIsSessionLoading(true);
+      return;
+    }
+
+    if (status === 'authenticated' && session?.user) {
       setGuestEmail(session.user.email);
       if (session.user.name) {
         const nameParts = session.user.name.split(' ');
@@ -64,11 +70,13 @@ export default function Checkout() {
           }
           setStep(1); // Skip Contact step for logged-in users
         })
-        .catch(console.error);
+        .catch(console.error)
+        .finally(() => setIsSessionLoading(false));
     } else {
       setIsAddingNewAddress(true);
+      setIsSessionLoading(false);
     }
-  }, [session]);
+  }, [status, session]);
 
   const [address, setAddress] = useState({
     firstName: '',
@@ -320,6 +328,14 @@ export default function Checkout() {
       setIsPlacingOrder(false);
     }
   };
+
+  if (isSessionLoading) {
+    return (
+      <div className="min-h-screen bg-background flex flex-col items-center justify-center pt-24 pb-12 px-4">
+        <Loader2 className="w-8 h-8 animate-spin text-black" />
+      </div>
+    );
+  }
 
   if (step === 4) {
     return (
