@@ -27,6 +27,14 @@ export default function Login() {
     }
   }, [status, session, router]);
 
+  if (status === 'loading') {
+    return (
+      <div className="min-h-screen bg-background flex flex-col items-center justify-center pt-24 pb-12 px-4">
+        <Loader2 className="w-8 h-8 animate-spin text-black" />
+      </div>
+    );
+  }
+
   const handleEmailLogin = async (e) => {
     e.preventDefault();
     setIsLoading(true);
