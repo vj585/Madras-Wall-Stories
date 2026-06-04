@@ -418,6 +418,16 @@ export default function Checkout() {
                 >
                   <h2 className="text-xl font-bold mb-1">How should we contact you?</h2>
                   <p className="text-gray-400 text-sm mb-6">For your order confirmation and delivery updates.</p>
+                  
+                  <form onSubmit={(e) => {
+                    e.preventDefault();
+                    if (!guestEmail || (!guestPhone && !session)) {
+                      alert("Please provide both email and phone number.");
+                      return;
+                    }
+                    setAddress(prev => ({ ...prev, phone: prev.phone || guestPhone }));
+                    setStep(1);
+                  }}>
 
                   {/* Google Sign-in — optional */}
                   {!session && (
@@ -466,19 +476,12 @@ export default function Checkout() {
                   </div>
 
                   <button
-                    type="button"
-                    onClick={() => {
-                      if (!guestEmail || (!guestPhone && !session)) {
-                        alert("Please provide both email and phone number.");
-                        return;
-                      }
-                      setAddress(prev => ({ ...prev, phone: prev.phone || guestPhone }));
-                      setStep(1);
-                    }}
+                    type="submit"
                     className="w-full py-4 mt-6 bg-black text-white rounded-xl font-bold flex items-center justify-center gap-2 hover:bg-gray-800 transition-all shadow-md"
                   >
                     Continue to Shipping <ArrowRight className="w-5 h-5" />
                   </button>
+                  </form>
                   <p className="text-center text-xs text-gray-400 mt-3">No account required. Your data is safe with us 🔒</p>
                 </motion.div>
               )}

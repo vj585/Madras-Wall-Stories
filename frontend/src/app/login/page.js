@@ -197,6 +197,7 @@ export default function Login() {
               animate={{ opacity: 1, x: 0 }}
               exit={{ opacity: 0, x: -20 }}
               className="space-y-4"
+              onSubmit={(e) => e.preventDefault()}
             >
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">Mobile Number</label>
