@@ -13,11 +13,13 @@ export async function calculateSecureOrderTotal(cartItems) {
 
   for (const item of cartItems) {
     let unitPrice = 0;
+    let resolvedProductId = item.productId;
 
     if (item.isCustom) {
       // Rebuild custom print price
-      // Parse productType from name: "Custom Poster" -> "Poster"
-      const productType = item.name.replace('Custom ', '').trim();
+      // Parse productType from name/title: "Custom Poster" -> "Poster"
+      const title = item.title || item.name || '';
+      const productType = title.replace('Custom ', '').trim();
       
       let basePrice = customPricingConfig?.basePrices?.[productType] || 0;
       
@@ -34,10 +36,17 @@ export async function calculateSecureOrderTotal(cartItems) {
       }
       
       unitPrice = basePrice;
-    } else if (item.productId) {
+    } else if (item.productId || item.slug) {
       // Rebuild standard product price
-      const product = await Product.findById(item.productId).lean();
+      let product = null;
+      if (item.productId) {
+        product = await Product.findById(item.productId).lean();
+      } else if (item.slug) {
+        product = await Product.findOne({ slug: item.slug }).lean();
+      }
+      
       if (!product) throw new Error(`Product not found: ${item.title}`);
+      resolvedProductId = product._id;
       
       if (product.variants && product.variants.length > 0) {
         const variant = product.variants.find(v => v.size === item.size) || product.variants[0];
@@ -61,7 +70,7 @@ export async function calculateSecureOrderTotal(cartItems) {
 
     // Push the cryptographically rebuilt item to replace the frontend payload
     recalculatedProducts.push({
-      productId: item.productId,
+      productId: resolvedProductId,
       title: item.title || item.name,
       price: unitPrice, // Legacy
       unitPrice: unitPrice,

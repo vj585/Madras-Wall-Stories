@@ -194,6 +194,7 @@ export default function Checkout() {
         },
         products: cartItems.map(item => ({
           productId: item.id?.startsWith('custom-') ? null : (item._id || null),
+          slug: item.id?.startsWith('custom-') ? null : item.id,
           title: item.name,
           price: item.price,
           quantity: item.quantity,
@@ -236,7 +237,7 @@ export default function Checkout() {
       const orderRes = await fetch('/api/payment/create-order', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ amount: total, products: cartItems })
+        body: JSON.stringify({ amount: total, products: orderData.products })
       });
       const orderDataApi = await orderRes.json();
 
