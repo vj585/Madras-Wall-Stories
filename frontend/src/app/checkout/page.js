@@ -466,6 +466,7 @@ export default function Checkout() {
                   </div>
 
                   <button
+                    type="button"
                     onClick={() => {
                       if (!guestEmail || (!guestPhone && !session)) {
                         alert("Please provide both email and phone number.");
