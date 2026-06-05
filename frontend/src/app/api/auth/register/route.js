@@ -8,9 +8,9 @@ import { sendVerificationEmail } from '@/lib/mail';
 
 export async function POST(req) {
   try {
-    const { name, email, password } = await req.json();
+    const { name, email, phone, password } = await req.json();
 
-    if (!name || !email || !password) {
+    if (!name || !email || !phone || !password) {
       return NextResponse.json({ error: 'All fields are required' }, { status: 400 });
     }
 
@@ -38,6 +38,7 @@ export async function POST(req) {
     const newCustomer = await Customer.create({
       name,
       email: email.toLowerCase(),
+      phone,
       password: hashedPassword,
       role: 'customer',
       authProvider: 'email',

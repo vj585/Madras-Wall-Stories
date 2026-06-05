@@ -8,7 +8,7 @@ import { Mail, Lock, User, CheckCircle2, XCircle, Loader2 } from 'lucide-react';
 
 export default function Register() {
   const router = useRouter();
-  const [formData, setFormData] = useState({ name: '', email: '', password: '', confirmPassword: '' });
+  const [formData, setFormData] = useState({ name: '', email: '', phone: '', password: '', confirmPassword: '' });
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
   const [successMsg, setSuccessMsg] = useState('');
@@ -20,7 +20,7 @@ export default function Register() {
   const reqNum = /[0-9]/.test(formData.password);
   const isMatch = formData.password === formData.confirmPassword && formData.password.length > 0;
 
-  const isValid = reqLength && reqUpper && reqLower && reqNum && isMatch && formData.name && formData.email;
+  const isValid = reqLength && reqUpper && reqLower && reqNum && isMatch && formData.name && formData.email && formData.phone;
 
   const handleRegister = async (e) => {
     e.preventDefault();
@@ -33,7 +33,7 @@ export default function Register() {
       const res = await fetch('/api/auth/register', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name: formData.name, email: formData.email, password: formData.password })
+        body: JSON.stringify({ name: formData.name, email: formData.email, phone: formData.phone, password: formData.password })
       });
 
       const data = await res.json();
@@ -157,6 +157,23 @@ export default function Register() {
                 onChange={(e) => setFormData({...formData, email: e.target.value})}
                 className="w-full pl-11 pr-4 py-3.5 bg-gray-50 border border-gray-200 rounded-xl focus:bg-white focus:border-accent-blue focus:ring-1 focus:ring-accent-blue outline-none transition-all text-sm" 
                 placeholder="you@example.com" 
+              />
+            </div>
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Phone Number</label>
+            <div className="relative flex">
+              <span className="inline-flex items-center px-4 border border-r-0 border-gray-200 bg-gray-50 text-gray-500 sm:text-sm rounded-l-xl">
+                +91
+              </span>
+              <input 
+                type="tel" 
+                required
+                value={formData.phone}
+                onChange={(e) => setFormData({...formData, phone: e.target.value})}
+                className="flex-1 min-w-0 block w-full px-4 py-3.5 bg-gray-50 border border-gray-200 rounded-none rounded-r-xl focus:bg-white focus:border-accent-blue focus:ring-1 focus:ring-accent-blue outline-none transition-all text-sm" 
+                placeholder="98765 43210" 
               />
             </div>
           </div>
