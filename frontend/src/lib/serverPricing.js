@@ -15,6 +15,10 @@ export async function calculateSecureOrderTotal(cartItems) {
     let unitPrice = 0;
     let resolvedProductId = item.productId;
 
+    if (item.quantity !== undefined && item.quantity <= 0) {
+      throw new Error(`Invalid quantity for item: ${item.title}`);
+    }
+
     if (item.isCustom) {
       // Rebuild custom print price
       // Parse productType from name/title: "Custom Poster" -> "Poster"
@@ -46,6 +50,9 @@ export async function calculateSecureOrderTotal(cartItems) {
       }
       
       if (!product) throw new Error(`Product not found: ${item.title}`);
+      if (product.stock !== undefined && product.stock < (item.quantity || 1)) {
+        throw new Error(`Insufficient stock for product: ${product.name}. Available: ${product.stock}, Requested: ${item.quantity || 1}`);
+      }
       resolvedProductId = product._id;
       
       if (product.variants && product.variants.length > 0) {

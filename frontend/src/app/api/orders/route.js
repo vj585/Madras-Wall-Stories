@@ -36,6 +36,15 @@ export async function POST(request) {
     const shipping = calculateShippingFee(subtotal);
     const grandTotal = subtotal + shipping;
 
+    // Phase 5 & 6: Reject mismatch (Tamper protection)
+    // Coerce to Numbers in case the payload sent them as strings
+    if (Number(body.amount) !== grandTotal || 
+        (body.shipping !== undefined && Number(body.shipping) !== shipping) || 
+        (body.subtotal !== undefined && Number(body.subtotal) !== subtotal)) {
+      console.error(`COD Price mismatch! Amount sent: ${body.amount}, Subtotal sent: ${body.subtotal}, Shipping sent: ${body.shipping}. Backend computed GrandTotal: ${grandTotal}, Subtotal: ${subtotal}, Shipping: ${shipping}`);
+      return NextResponse.json({ success: false, error: 'Price mismatch detected. Order rejected.' }, { status: 400 });
+    }
+
     const finalOrder = {
       ...body,
       products: recalculatedProducts,
