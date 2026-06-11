@@ -1,5 +1,5 @@
 "use client";
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import {
   Heart, Share2, Star, Truck, Shield, RefreshCw,
@@ -39,6 +39,13 @@ export default function ProductClient({ product, related = [], framePricing = []
     ? Math.round(((activeVariant.price - activeVariant.salePrice) / activeVariant.price) * 100) 
     : 0;
   const totalStock = variants.reduce((acc, v) => acc + (v.stock || 0), 0);
+  const currentStock = variants.length > 0 ? (activeVariant.stock || 0) : (product.stock || 0);
+
+  useEffect(() => {
+    if (quantity > currentStock) {
+      setQuantity(Math.max(1, currentStock));
+    }
+  }, [currentStock, quantity]);
 
   const calculatePrice = () => {
     let p = activeVariant.salePrice || activeVariant.price || 0;
@@ -223,20 +230,31 @@ export default function ProductClient({ product, related = [], framePricing = []
               </div>
             )}
 
+            {/* Inventory Status */}
+            <div className="mb-4 text-sm">
+              {currentStock <= 0 ? (
+                <span className="text-red-600 font-bold flex items-center gap-1.5"><span className="w-2 h-2 rounded-full bg-red-600"></span>Out of Stock</span>
+              ) : currentStock <= 5 ? (
+                <span className="text-orange-500 font-bold flex items-center gap-1.5"><span className="w-2 h-2 rounded-full bg-orange-500 animate-pulse"></span>Only {currentStock} Left!</span>
+              ) : (
+                <span className="text-green-600 font-bold flex items-center gap-1.5"><span className="w-2 h-2 rounded-full bg-green-600"></span>In Stock</span>
+              )}
+            </div>
+
             {/* Quantity + Add to Cart */}
             <div className="flex gap-3 mb-6">
               <div className="flex items-center border border-gray-200 rounded-xl h-14 w-28 justify-between px-4 flex-shrink-0">
                 <button onClick={() => setQuantity(q => Math.max(1, q - 1))} className="text-xl text-gray-500 hover:text-black transition-colors">−</button>
                 <span className="font-bold">{quantity}</span>
-                <button onClick={() => setQuantity(q => (q < product.stock ? q + 1 : q))} className="text-xl text-gray-500 hover:text-black transition-colors">+</button>
+                <button onClick={() => setQuantity(q => (q < currentStock ? q + 1 : q))} className="text-xl text-gray-500 hover:text-black transition-colors">+</button>
               </div>
               <button
                 onClick={handleAddToCart}
-                disabled={activeVariant.stock <= 0}
-                className={`flex-1 h-14 rounded-xl font-bold text-base flex items-center justify-center gap-2 transition-all shadow-md ${activeVariant.stock <= 0 ? 'bg-gray-100 text-gray-400 cursor-not-allowed' : addedToCart ? 'bg-green-500 text-white' : 'bg-black text-white hover:bg-gray-800'}`}
+                disabled={currentStock <= 0}
+                className={`flex-1 h-14 rounded-xl font-bold text-base flex items-center justify-center gap-2 transition-all shadow-md ${currentStock <= 0 ? 'bg-gray-100 text-gray-400 cursor-not-allowed' : addedToCart ? 'bg-green-500 text-white' : 'bg-black text-white hover:bg-gray-800'}`}
               >
                 <ShoppingCart className="w-5 h-5" />
-                {activeVariant.stock <= 0 ? 'Out of Stock' : addedToCart ? 'Added! ✓' : `Add to Cart — ₹${calculatePrice()}`}
+                {currentStock <= 0 ? 'Out of Stock' : addedToCart ? 'Added! ✓' : `Add to Cart — ₹${calculatePrice()}`}
               </button>
             </div>
 

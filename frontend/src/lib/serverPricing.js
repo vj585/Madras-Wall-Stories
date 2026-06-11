@@ -56,7 +56,10 @@ export async function calculateSecureOrderTotal(cartItems) {
       let availableStock = 0;
       
       if (product.variants && product.variants.length > 0) {
-        const variant = product.variants.find(v => v.size === item.size) || product.variants[0];
+        const variant = product.variants.find(v => v.size === item.size);
+        if (!variant) {
+          throw new Error(`Invalid size selected: ${item.size || 'None'} for product: ${product.title}`);
+        }
         unitPrice = variant.salePrice || variant.price || 0;
         availableStock = variant.stock;
       } else {
