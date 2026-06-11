@@ -50,16 +50,22 @@ export async function calculateSecureOrderTotal(cartItems) {
       }
       
       if (!product) throw new Error(`Product not found: ${item.title}`);
-      if (product.stock !== undefined && product.stock < (item.quantity || 1)) {
-        throw new Error(`Insufficient stock for product: ${product.name}. Available: ${product.stock}, Requested: ${item.quantity || 1}`);
-      }
+      
       resolvedProductId = product._id;
+      
+      let availableStock = 0;
       
       if (product.variants && product.variants.length > 0) {
         const variant = product.variants.find(v => v.size === item.size) || product.variants[0];
         unitPrice = variant.salePrice || variant.price || 0;
+        availableStock = variant.stock;
       } else {
         unitPrice = product.salePrice || product.price || 0;
+        availableStock = product.stock || 0;
+      }
+      
+      if (availableStock < (item.quantity || 1)) {
+        throw new Error(`Insufficient stock for product: ${product.title}. Available: ${availableStock}, Requested: ${item.quantity || 1}`);
       }
       
       if (item.frame) {
