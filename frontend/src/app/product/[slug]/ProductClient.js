@@ -42,8 +42,10 @@ export default function ProductClient({ product, related = [], framePricing = []
   const currentStock = variants.length > 0 ? (activeVariant.stock || 0) : (product.stock || 0);
 
   useEffect(() => {
-    if (quantity > currentStock) {
-      setQuantity(Math.max(1, currentStock));
+    if (currentStock <= 0) {
+      if (quantity !== 0) setQuantity(0);
+    } else if (quantity === 0 || quantity > currentStock) {
+      setQuantity(Math.min(Math.max(1, quantity || 1), currentStock));
     }
   }, [currentStock, quantity]);
 
@@ -243,10 +245,18 @@ export default function ProductClient({ product, related = [], framePricing = []
 
             {/* Quantity + Add to Cart */}
             <div className="flex gap-3 mb-6">
-              <div className="flex items-center border border-gray-200 rounded-xl h-14 w-28 justify-between px-4 flex-shrink-0">
-                <button onClick={() => setQuantity(q => Math.max(1, q - 1))} className="text-xl text-gray-500 hover:text-black transition-colors">−</button>
-                <span className="font-bold">{quantity}</span>
-                <button onClick={() => setQuantity(q => (q < currentStock ? q + 1 : q))} className="text-xl text-gray-500 hover:text-black transition-colors">+</button>
+              <div className={`flex items-center border border-gray-200 rounded-xl h-14 w-28 justify-between px-4 flex-shrink-0 ${currentStock <= 0 ? 'opacity-60 cursor-not-allowed bg-gray-50' : ''}`}>
+                <button 
+                  onClick={() => setQuantity(q => Math.max(1, q - 1))} 
+                  disabled={currentStock <= 0}
+                  className={`text-xl transition-colors ${currentStock <= 0 ? 'text-gray-400 cursor-not-allowed' : 'text-gray-500 hover:text-black'}`}
+                >−</button>
+                <span className={`font-bold ${currentStock <= 0 ? 'text-gray-400' : ''}`}>{quantity}</span>
+                <button 
+                  onClick={() => setQuantity(q => (q < currentStock ? q + 1 : q))} 
+                  disabled={currentStock <= 0}
+                  className={`text-xl transition-colors ${currentStock <= 0 ? 'text-gray-400 cursor-not-allowed' : 'text-gray-500 hover:text-black'}`}
+                >+</button>
               </div>
               <button
                 onClick={handleAddToCart}
