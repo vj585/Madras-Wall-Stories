@@ -6,6 +6,7 @@ import { ChevronLeft, Package, MapPin, Truck, CheckCircle, Clock, FileText } fro
 import Order from '@/models/Order';
 import { connectDB } from '@/lib/mongodb';
 import Image from 'next/image';
+import CancelOrderButton from './CancelOrderButton';
 
 export const metadata = {
   title: 'Order Details | Madras Wall Stories',
@@ -79,8 +80,13 @@ export default async function OrderDetailsPage({ params }) {
               </p>
             </div>
           </div>
-          <div className={`self-start md:self-auto px-4 py-1.5 rounded-full text-sm font-bold border ${getStatusColor(shippingStatus)}`}>
-            {shippingStatus}
+          <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3">
+            <div className={`self-start md:self-auto px-4 py-1.5 rounded-full text-sm font-bold border ${getStatusColor(shippingStatus)}`}>
+              {shippingStatus}
+            </div>
+            {['Pending', 'Processing'].includes(order.orderStatus) && (
+              <CancelOrderButton orderId={order._id.toString()} />
+            )}
           </div>
         </div>
 

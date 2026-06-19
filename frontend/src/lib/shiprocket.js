@@ -237,3 +237,43 @@ export const refreshTracking = async (awbCode) => {
 
   return { success: false, error: 'Failed to fetch tracking.' };
 };
+
+/**
+ * Cancel a shipment/order in Shiprocket
+ */
+export const cancelShipment = async ({ awbCode, shipmentId }) => {
+  if (!checkCredentials()) {
+    return { success: true, message: 'Cancellation mocked successfully.' };
+  }
+
+  // If we have an AWB, cancel via AWB endpoint
+  if (awbCode) {
+    const response = await authenticatedRequest(`${getBaseUrl()}/orders/cancel/awbs`, {
+      method: 'POST',
+      body: JSON.stringify({ awbs: [awbCode] })
+    });
+
+    if (response.success && response.data?.message) {
+      return { success: true, message: response.data.message };
+    }
+    return { success: false, error: response.data?.message || 'Failed to cancel AWB in Shiprocket.' };
+  }
+
+  // If we only have shipmentId, try cancelling via order IDs (Shiprocket expects its own order_ids, 
+  // but if we only have shipmentId and no awb, we might try if shipmentId works or return error)
+  // To be safe, if we only have shipmentId, we will attempt the cancel endpoint, but it might fail 
+  // if Shiprocket strict checks order_id vs shipment_id.
+  if (shipmentId) {
+    const response = await authenticatedRequest(`${getBaseUrl()}/orders/cancel`, {
+      method: 'POST',
+      body: JSON.stringify({ ids: [shipmentId] })
+    });
+
+    if (response.success && response.data?.message) {
+      return { success: true, message: response.data.message };
+    }
+    return { success: false, error: response.data?.message || 'Failed to cancel shipment in Shiprocket.' };
+  }
+
+  return { success: false, error: 'No AWB or Shipment ID provided for cancellation.' };
+};

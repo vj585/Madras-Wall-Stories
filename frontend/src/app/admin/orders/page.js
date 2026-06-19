@@ -183,6 +183,29 @@ function OrderDrawer({ order, onClose, onStatusChange }) {
     }
   };
 
+  const handleCancelOrder = async () => {
+    if (!confirm("Are you sure you want to cancel this order? This will restore stock and mark it as Cancelled.")) return;
+    setIsSaving(true);
+    try {
+      const res = await fetch(`/api/orders/${order._id}/cancel`, {
+        method: 'POST',
+      });
+      const data = await res.json();
+      if (data.success) {
+        alert("Order cancelled successfully.");
+        onStatusChange(order._id, 'Cancelled');
+        setStatus('Cancelled');
+      } else {
+        alert("Failed to cancel order: " + data.error);
+      }
+    } catch (e) {
+      console.error(e);
+      alert("Error cancelling order.");
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
   const addr = order.shippingAddress;
   const fullAddress = addr
     ? [addr.address1, addr.address2, addr.city, addr.state, addr.pincode, addr.country]
@@ -255,16 +278,27 @@ function OrderDrawer({ order, onClose, onStatusChange }) {
                   {isSaving ? 'Saving...' : 'Update'}
                 </button>
               </div>
-              <div className="mt-3 flex flex-wrap gap-2">
-                {ALL_STATUSES.map(s => (
+              <div className="mt-4 flex flex-wrap gap-2 items-center justify-between border-t border-gray-200 pt-3">
+                <div className="flex flex-wrap gap-2">
+                  {ALL_STATUSES.map(s => (
+                    <button
+                      key={s}
+                      onClick={() => setStatus(s)}
+                      className={`px-3 py-1 rounded-full text-xs font-semibold border transition-all ${status === s ? STATUS_STYLES[s] + ' scale-105' : 'bg-white border-gray-200 text-gray-500 hover:border-gray-300'}`}
+                    >
+                      {s}
+                    </button>
+                  ))}
+                </div>
+                {order.orderStatus !== 'Cancelled' && order.orderStatus !== 'Delivered' && (
                   <button
-                    key={s}
-                    onClick={() => setStatus(s)}
-                    className={`px-3 py-1 rounded-full text-xs font-semibold border transition-all ${status === s ? STATUS_STYLES[s] + ' scale-105' : 'bg-white border-gray-200 text-gray-500 hover:border-gray-300'}`}
+                    onClick={handleCancelOrder}
+                    disabled={isSaving}
+                    className="px-4 py-1.5 rounded-full text-xs font-bold bg-white text-red-600 border border-red-200 hover:bg-red-50 hover:text-red-700 transition-colors disabled:opacity-50 mt-2 sm:mt-0"
                   >
-                    {s}
+                    Cancel Order
                   </button>
-                ))}
+                )}
               </div>
             </div>
 
