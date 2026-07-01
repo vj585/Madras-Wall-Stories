@@ -32,6 +32,30 @@ export default function Checkout() {
   const [selectedSavedAddress, setSelectedSavedAddress] = useState(null);
   const [isAddingNewAddress, setIsAddingNewAddress] = useState(false);
   const [isSessionLoading, setIsSessionLoading] = useState(true);
+  const [invalidCartItems, setInvalidCartItems] = useState([]);
+  const [isValidatingCart, setIsValidatingCart] = useState(true);
+
+  useEffect(() => {
+    if (cartItems.length === 0) {
+      setIsValidatingCart(false);
+      return;
+    }
+    fetch('/api/cart/validate', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ cartItems })
+    })
+    .then(res => res.json())
+    .then(data => {
+      if (data.success && data.invalidItems.length > 0) {
+        setInvalidCartItems(data.invalidItems);
+      } else {
+        setInvalidCartItems([]);
+      }
+    })
+    .catch(err => console.error("Cart validation failed", err))
+    .finally(() => setIsValidatingCart(false));
+  }, [cartItems]);
 
   useEffect(() => {
     if (status === 'loading') {
@@ -91,12 +115,13 @@ export default function Checkout() {
 
   const [deliveryOptions, setDeliveryOptions] = useState(() => {
     return {
-      standard: { available: true, fee: calculateShippingFee(cartTotal), partner: 'Shiprocket', estimatedDays: '3-5 Business Days' },
+      standard: { available: true, fee: calculateShippingFee(cartTotal), partner: 'Standard', estimatedDays: '3-5 Business Days' },
       sameDay: { available: false, fee: 0, partner: 'Porter' }
     };
   });
   const [selectedDelivery, setSelectedDelivery] = useState('standard');
   const [isCalculatingDelivery, setIsCalculatingDelivery] = useState(false);
+  const [placedOrder, setPlacedOrder] = useState(null);
 
   useEffect(() => {
     setDeliveryOptions(prev => ({
@@ -132,7 +157,7 @@ export default function Checkout() {
       console.error('Failed to calculate delivery. Using fallback.', error);
       // Fallback if the API completely fails
       setDeliveryOptions({
-        standard: { available: true, fee: calculateShippingFee(cartTotal), partner: 'Shiprocket', estimatedDays: '3-5 Business Days' }
+        standard: { available: true, fee: calculateShippingFee(cartTotal), partner: 'Standard', estimatedDays: '3-5 Business Days' }
       });
       setSelectedDelivery('standard');
     } finally {
@@ -150,6 +175,56 @@ export default function Checkout() {
     { id: 2, title: 'Delivery', icon: Truck },
     { id: 3, title: 'Payment', icon: CreditCard },
   ];
+
+  if (cartItems.length === 0 && step < 4) {
+    return (
+      <div className="pt-32 pb-20 min-h-screen bg-background flex flex-col items-center justify-center">
+        <Package className="w-16 h-16 text-gray-300 mb-4" />
+        <h2 className="text-2xl font-bold font-heading mb-2">Your cart is empty</h2>
+        <p className="text-gray-500 mb-6">Looks like you haven't added anything to your cart yet.</p>
+        <Link href="/shop" className="px-8 py-3 bg-black text-white rounded-full font-bold hover:bg-gray-800 transition-colors">
+          Browse Products
+        </Link>
+      </div>
+    );
+  }
+
+  if (isValidatingCart && step < 4) {
+    return (
+      <div className="pt-32 pb-20 min-h-screen bg-background flex flex-col items-center justify-center">
+        <Loader2 className="w-8 h-8 animate-spin text-accent-blue mb-4" />
+        <p className="text-gray-500">Validating your cart...</p>
+      </div>
+    );
+  }
+
+  if (invalidCartItems.length > 0 && step < 4) {
+    return (
+      <div className="pt-32 pb-20 min-h-[70vh] bg-background flex flex-col items-center justify-center px-4">
+        <AlertCircle className="w-16 h-16 text-red-500 mb-4" />
+        <h2 className="text-2xl font-bold mb-2 text-center">Some items are no longer available</h2>
+        <p className="text-gray-500 max-w-md text-center mb-6">
+          The following items have been removed from our catalog or are no longer active. Please remove them from your cart to proceed with checkout.
+        </p>
+        <div className="space-y-4 mb-8 w-full max-w-md">
+          {invalidCartItems.map((item, index) => (
+            <div key={`${item.id}-${index}`} className="p-4 border border-red-200 bg-red-50 rounded-xl flex justify-between items-center gap-4">
+              <span className="font-medium text-red-800 line-clamp-1">{item.name}</span>
+              <button 
+                onClick={() => {
+                  const idx = cartItems.findIndex(ci => ci.id === item.id && ci.size === item.size);
+                  if(idx !== -1) removeFromCart(idx);
+                }} 
+                className="text-sm bg-red-100 text-red-700 px-3 py-1.5 rounded-lg hover:bg-red-200 transition-colors font-medium shrink-0"
+              >
+                Remove
+              </button>
+            </div>
+          ))}
+        </div>
+      </div>
+    );
+  }
 
   const loadRazorpay = () => {
     return new Promise((resolve) => {
@@ -213,7 +288,7 @@ export default function Checkout() {
           customDetails: item.customDetails
         })),
         deliveryMode: selectedDelivery === 'sameDay' ? 'Same Day' : 'Standard',
-        deliveryPartner: deliveryOptions[selectedDelivery]?.partner || 'Shiprocket',
+        deliveryPartner: deliveryOptions[selectedDelivery]?.partner || 'Standard',
         courierCost: deliveryFee
       };
 
@@ -225,6 +300,7 @@ export default function Checkout() {
         });
         const data = await res.json();
         if (data.success) {
+          setPlacedOrder(data.data);
           clearCart();
           setStep(4);
         } else {
@@ -237,7 +313,7 @@ export default function Checkout() {
       // Razorpay Flow
       const isLoaded = await loadRazorpay();
       if (!isLoaded) {
-        alert("Razorpay SDK failed to load. Are you online?");
+        alert("We couldn't connect to our secure payment gateway. Please check your internet connection and try again.");
         setIsPlacingOrder(false);
         return;
       }
@@ -293,6 +369,7 @@ export default function Checkout() {
             const verifyData = await verifyRes.json();
             console.log("Verify API response:", verifyData);
             if (verifyData.success) {
+              setPlacedOrder(verifyData.data);
               clearCart();
               setStep(4);
             } else {
@@ -354,27 +431,42 @@ export default function Checkout() {
             <CheckCircle2 className="w-10 h-10 text-green-500" />
           </motion.div>
           <h1 className="text-3xl font-heading font-bold text-gray-900 mb-3">Order Placed! 🎉</h1>
-          <p className="text-gray-500 mb-2">Your prints are being prepared with love.</p>
-          {guestEmail && (
-            <p className="text-sm text-gray-400 mb-8">
-              Order confirmation sent to <span className="font-medium text-gray-700">{guestEmail}</span>
-            </p>
-          )}
-
-          <div className="flex items-center gap-4 bg-gray-50 rounded-2xl p-4 mb-8 text-left">
-            <Package className="w-8 h-8 text-accent-blue flex-shrink-0" />
-            <div>
-              <p className="font-semibold text-gray-900 text-sm">Expected Delivery: 3–5 Business Days</p>
-              <p className="text-xs text-gray-500">You'll receive a tracking link via WhatsApp/Email.</p>
+          <p className="text-gray-500 mb-2">Thank you for shopping with Madras Wall Stories ❤️</p>
+          <p className="text-gray-500 mb-6 text-sm">We are now preparing your artwork. You will receive an email when your order has been dispatched.</p>
+          
+          {placedOrder && (
+            <div className="bg-gray-50 rounded-2xl p-6 mb-8 text-left text-sm border border-gray-100">
+              <div className="flex justify-between mb-3 border-b border-gray-200 pb-3">
+                <span className="text-gray-500">Order Number</span>
+                <span className="font-bold font-mono">#{placedOrder._id?.toString().slice(-6).toUpperCase()}</span>
+              </div>
+              <div className="flex justify-between mb-3 border-b border-gray-200 pb-3">
+                <span className="text-gray-500">Payment Method</span>
+                <span className="font-bold">{placedOrder.paymentMethod === 'COD' ? 'Cash on Delivery' : 'Paid Online'}</span>
+              </div>
+              <div className="flex justify-between mb-3 border-b border-gray-200 pb-3">
+                <span className="text-gray-500">Expected Dispatch</span>
+                <span className="font-bold">1–2 Business Days</span>
+              </div>
+              <div className="flex justify-between mt-3">
+                <span className="text-gray-500">Delivery Address</span>
+                <span className="font-bold text-right max-w-[60%] line-clamp-2">
+                  {placedOrder.addressSnapshot?.street || placedOrder.shippingAddress?.address1}, {placedOrder.addressSnapshot?.city || placedOrder.shippingAddress?.city}
+                </span>
+              </div>
             </div>
-          </div>
+          )}
 
           {session ? (
             <Link href="/account/orders" className="block w-full py-4 bg-black text-white rounded-xl font-bold hover:bg-gray-800 transition-all text-center mb-4 shadow-md">
-              Go To My Orders
+              View Orders
             </Link>
-          ) : null}
-          <Link href="/" className={`block w-full py-4 rounded-xl font-bold transition-all text-center ${session ? 'bg-gray-100 text-gray-700 hover:bg-gray-200' : 'bg-black text-white hover:bg-gray-800 shadow-md'}`}>
+          ) : (
+            <Link href="/track" className="block w-full py-4 bg-black text-white rounded-xl font-bold hover:bg-gray-800 transition-all text-center mb-4 shadow-md">
+              Track Order
+            </Link>
+          )}
+          <Link href="/" className="block w-full py-4 rounded-xl font-bold transition-all text-center bg-gray-100 text-gray-700 hover:bg-gray-200">
             Continue Shopping
           </Link>
         </motion.div>
@@ -624,7 +716,7 @@ export default function Checkout() {
                           <input type="radio" name="delivery" checked={selectedDelivery === 'standard'} onChange={() => setSelectedDelivery('standard')} className="w-4 h-4 accent-black" />
                           <div>
                             <p className="font-bold">Standard Delivery</p>
-                            <p className="text-xs text-gray-500">{deliveryOptions.standard.estimatedDays} • Shiprocket</p>
+                            <p className="text-xs text-gray-500">{deliveryOptions.standard.estimatedDays} • Standard</p>
                           </div>
                         </div>
                         <span className={`font-bold ${deliveryOptions.standard.fee === 0 ? 'text-green-600' : ''}`}>
@@ -758,6 +850,20 @@ export default function Checkout() {
                   <span className={`font-semibold ${deliveryFee === 0 ? 'text-green-600' : ''}`}>
                     {deliveryFee === 0 ? 'Free' : `₹${deliveryFee}`}
                   </span>
+                </div>
+                {step >= 3 && (
+                  <div className="flex justify-between text-sm">
+                    <span className="text-gray-500">Payment Method</span>
+                    <span className="font-semibold capitalize">{paymentMethod === 'cod' ? 'Cash on Delivery' : paymentMethod.toUpperCase()}</span>
+                  </div>
+                )}
+                <div className="flex justify-between text-sm">
+                  <span className="text-gray-500">Est. Dispatch</span>
+                  <span className="font-semibold">1-2 Business Days</span>
+                </div>
+                <div className="flex justify-between text-sm">
+                  <span className="text-gray-500">Est. Delivery</span>
+                  <span className="font-semibold">{deliveryOptions[selectedDelivery]?.estimatedDays || '3-5 Business Days'}</span>
                 </div>
               </div>
               <div className="border-t border-gray-100 pt-4 flex justify-between items-center mb-6">

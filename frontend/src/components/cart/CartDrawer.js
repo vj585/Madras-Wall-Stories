@@ -46,10 +46,10 @@ export default function CartDrawer() {
             {/* Free Shipping Progress */}
             {cartItems.length > 0 && (
               <div className="px-6 py-4 bg-gray-50 border-b border-gray-200">
-                <p className="text-sm font-medium mb-2 text-center">
+                <p className="text-sm font-medium mb-3 text-center">
                   {progress >= 100 
-                    ? <span className="text-green-500">You've unlocked free shipping! 🎉</span>
-                    : `Add ₹${FREE_SHIPPING_THRESHOLD - cartTotal} more for free shipping`}
+                    ? <span className="text-green-600 font-bold">Congratulations! You've unlocked FREE SHIPPING. 🎉</span>
+                    : <span>Spend <span className="font-bold">₹{FREE_SHIPPING_THRESHOLD - cartTotal}</span> more to unlock <span className="font-bold text-accent-blue">FREE SHIPPING</span>.</span>}
                 </p>
                 <div className="w-full h-2 bg-gray-200 rounded-full overflow-hidden">
                   <motion.div 

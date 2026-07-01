@@ -5,7 +5,6 @@ import Product from '@/models/Product';
 import mongoose from 'mongoose';
 import { getServerSession } from 'next-auth/next';
 import { authOptions } from '@/app/api/auth/[...nextauth]/route';
-import { cancelShipment } from '@/lib/shiprocket';
 
 export async function POST(request, { params }) {
   try {
@@ -46,19 +45,7 @@ export async function POST(request, { params }) {
       return NextResponse.json({ success: false, error: 'Cannot cancel a delivered order' }, { status: 400 });
     }
 
-    // Attempt Shiprocket cancellation if shipment/AWB exists
-    if (order.shipmentId || order.awbCode) {
-      try {
-        const srRes = await cancelShipment({ awbCode: order.awbCode, shipmentId: order.shipmentId });
-        if (!srRes.success) {
-          console.warn(`Shiprocket cancellation failed or skipped for order ${id}: ${srRes.error}`);
-          // We continue to cancel locally even if SR fails, to ensure consistency. 
-          // Admins might need to manually check Shiprocket in edge cases.
-        }
-      } catch (err) {
-        console.error("Error cancelling in Shiprocket:", err);
-      }
-    }
+    // Shiprocket cancellation removed.
 
     // Restore Stock
     for (const item of order.products) {

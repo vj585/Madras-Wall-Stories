@@ -5,17 +5,15 @@ import Image from 'next/image';
 
 const categories = [
   { name: 'Anime', fallbackImage: '/images/master.jpg', link: '/category/anime' },
-  { name: 'Superhero', fallbackImage: '/images/batman.jpg', link: '/category/superhero' },
+  { name: 'Marvel', fallbackImage: '/images/batman.jpg', link: '/category/marvel' },
   { name: 'Movies', fallbackImage: '/images/pennywise.jpg', link: '/category/movies' },
-  { name: 'TV-Series', fallbackImage: '/images/master.jpg', link: '/category/tv-series' },
-  { name: 'Music', fallbackImage: '/images/michael.jpg', link: '/category/music' },
+  { name: 'Gaming', fallbackImage: '/images/spiderman.jpg', link: '/category/gaming' },
   { name: 'Cars', fallbackImage: '/images/batman.jpg', link: '/category/cars' },
-  { name: 'Video Games', fallbackImage: '/images/spiderman.jpg', link: '/category/gaming' },
-  { name: 'Motivate', fallbackImage: '/images/master.jpg', link: '/category/motivate' },
-  { name: 'Cricket', fallbackImage: '/images/master.jpg', link: '/category/cricket' },
-  { name: 'Football', fallbackImage: '/images/batman.jpg', link: '/category/football' },
-  { name: 'F1', fallbackImage: '/images/batman.jpg', link: '/category/f1' },
-  { name: 'Custom Prints', fallbackImage: '/images/michael.jpg', link: '/custom' },
+  { name: 'Music', fallbackImage: '/images/michael.jpg', link: '/category/music' },
+  { name: 'Nature', fallbackImage: '/images/master.jpg', link: '/category/nature' },
+  { name: 'Quotes', fallbackImage: '/images/master.jpg', link: '/category/quotes' },
+  { name: 'Sports', fallbackImage: '/images/batman.jpg', link: '/category/sports' },
+  { name: 'Travel', fallbackImage: '/images/master.jpg', link: '/category/travel' },
 ];
 
 export default function Categories({ products = [] }) {
@@ -40,10 +38,11 @@ export default function Categories({ products = [] }) {
         <div className="flex overflow-x-auto pb-8 hide-scrollbar gap-8 snap-x">
           {categories.map((cat, idx) => {
             // Find a product that matches this category to use as thumbnail
-            const categoryProduct = products.find(p => 
-              p.category.toLowerCase().includes(cat.name.toLowerCase()) || 
-              cat.name.toLowerCase().includes(p.category.toLowerCase())
-            );
+            const categoryProduct = products.find(p => {
+              const theme = p.theme || p.category || '';
+              return theme.toLowerCase().includes(cat.name.toLowerCase()) || 
+                     cat.name.toLowerCase().includes(theme.toLowerCase());
+            });
             const imageSrc = (categoryProduct?.images && categoryProduct.images.length > 0) ? categoryProduct.images[0] : cat.fallbackImage;
 
             return (

@@ -35,11 +35,10 @@ export default function Navbar() {
   }, []);
 
   const navLinks = [
-    { name: 'Anime Posters', href: '/category/anime' },
-    { name: 'Movie Posters', href: '/category/movies' },
+    { name: 'Shop All', href: '/shop' },
+    { name: 'Posters', href: '/posters' },
     { name: 'Polaroids', href: '/polaroids' },
     { name: 'Custom Prints', href: '/custom' },
-    { name: 'Photo Frames', href: '/frames' },
   ];
 
   return (

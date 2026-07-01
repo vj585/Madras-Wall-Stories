@@ -79,8 +79,8 @@ export async function PATCH(request, { params }) {
     await connectDB();
     const body = await request.json();
 
-    // Only allow safe partial updates via PATCH (e.g. orderStatus, trackingId)
-    const allowedFields = ['orderStatus', 'shippingStatus', 'trackingId', 'shipmentId', 'deliveryPartner'];
+    // Only allow safe partial updates via PATCH (e.g. orderStatus, trackingNumber)
+    const allowedFields = ['orderStatus', 'shippingStatus', 'trackingNumber', 'trackingUrl', 'dispatchDate', 'estimatedDelivery', 'shippingNotes', 'courierCharge', 'packageWeight', 'courierName', 'deliveryPartner'];
     const updateData = {};
     for (const field of allowedFields) {
       if (body[field] !== undefined) updateData[field] = body[field];
@@ -107,7 +107,7 @@ export async function PATCH(request, { params }) {
 
     // Trigger Notification asynchronously
     if (newTimelineStatus && ['Packed', 'Shipped', 'Out For Delivery', 'Delivered'].includes(newTimelineStatus)) {
-      sendStatusUpdateNotification(order, newTimelineStatus);
+      await sendStatusUpdateNotification(order, newTimelineStatus);
     }
 
     return NextResponse.json({ success: true, data: order }, { status: 200 });

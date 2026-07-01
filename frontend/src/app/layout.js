@@ -25,6 +25,12 @@ export const metadata = {
     locale: 'en_IN',
     type: 'website',
   },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Madras Wall Stories | Premium Aesthetic Posters',
+    description: 'Transform your space with premium aesthetic posters and custom polaroids.',
+    images: ['/images/og-image.jpg'],
+  },
 };
 
 export const viewport = {

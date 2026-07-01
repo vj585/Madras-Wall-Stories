@@ -25,6 +25,9 @@ const ProductSchema = new mongoose.Schema(
       type: String,
       required: [true, 'Please provide a product category'],
     },
+    theme: {
+      type: String,
+    },
     subcategory: {
       type: String,
     },
@@ -74,6 +77,10 @@ const ProductSchema = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
+    bestSeller: {
+      type: Boolean,
+      default: false,
+    },
     trending: {
       type: Boolean,
       default: false,
@@ -106,8 +113,12 @@ const ProductSchema = new mongoose.Schema(
     },
     status: {
       type: String,
-      enum: ['Active', 'Draft', 'Hidden'],
+      enum: ['Active', 'Inactive', 'Draft', 'Hidden'],
       default: 'Active',
+    },
+    displayOrder: {
+      type: Number,
+      default: 0,
     },
   },
   {

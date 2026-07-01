@@ -72,6 +72,6 @@ export async function POST(request) {
     if (error.code === 11000) {
       return NextResponse.json({ success: false, error: 'Order for this payment already exists.' }, { status: 400 });
     }
-    return NextResponse.json({ success: false, error: error.message || 'Internal server error during verification.' }, { status: 500 });
+    return NextResponse.json({ success: false, error: 'We encountered a temporary issue while verifying your payment. Please contact support if your account was charged.' }, { status: 500 });
   }
 }

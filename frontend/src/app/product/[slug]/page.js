@@ -46,8 +46,8 @@ export default async function ProductPage({ params }) {
   if (!product) {
     return (
       <div className="min-h-screen bg-gray-50 flex flex-col items-center justify-center pt-24 px-4 text-center">
-        <h1 className="text-4xl font-heading font-bold mb-4">Product Not Found</h1>
-        <p className="text-gray-500 mb-8">This poster could not be found.</p>
+        <h1 className="text-4xl font-heading font-bold mb-4">This product is no longer available.</h1>
+        <p className="text-gray-500 max-w-md mb-8 text-center">It looks like the artwork you're looking for is either out of stock or has been removed from our catalog.</p>
         <Link
           href="/"
           className="px-8 py-4 bg-black text-white rounded-full font-bold hover:bg-gray-800 transition-all"
@@ -58,7 +58,7 @@ export default async function ProductPage({ params }) {
     );
   }
 
-  const related = await getRelatedProducts(slug, product.category);
+  const related = await getRelatedProducts(product);
 
   await connectDB();
   const settings = await StoreSettings.findOne({ singletonId: 'global_settings' }).lean().exec();

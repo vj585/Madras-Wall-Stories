@@ -120,8 +120,9 @@ export async function processAndSaveOrder(orderData) {
 
   // 4. Fire email + SMS (failure-safe — never blocks order response)
   const plainOrder = newOrder.toObject ? newOrder.toObject() : newOrder;
-  // Run in background — do not await, order response returns immediately
-  Promise.all([
+  // Await the dispatch so serverless functions (e.g. Vercel) don't exit prematurely,
+  // but it remains failure-safe because the inner functions catch their own errors.
+  await Promise.all([
     sendOrderConfirmationEmail(plainOrder),
     sendOrderSMS(plainOrder),
   ]).catch(err => console.error('[Notifications] Unexpected error in notification dispatch:', err));

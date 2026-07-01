@@ -1,6 +1,7 @@
 "use client";
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import Link from 'next/link';
 import {
   Search, ShoppingCart, Eye, Package, X, Printer,
   MapPin, Phone, Mail, CreditCard, Truck, CheckCircle2,
@@ -28,16 +29,18 @@ async function downloadImage(url, filename = 'custom-print.jpg') {
 }
 
 const STATUS_STYLES = {
-  Pending:    'bg-amber-100 text-amber-700 border-amber-200',
-  Processing: 'bg-blue-100 text-blue-700 border-blue-200',
-  Printed:    'bg-purple-100 text-purple-700 border-purple-200',
-  Packed:     'bg-indigo-100 text-indigo-700 border-indigo-200',
-  Shipped:    'bg-cyan-100 text-cyan-700 border-cyan-200',
-  Delivered:  'bg-green-100 text-green-700 border-green-200',
-  Cancelled:  'bg-red-100 text-red-700 border-red-200',
+  'Pending': 'bg-yellow-100 text-yellow-700 border-yellow-200',
+  'Processing': 'bg-green-100 text-green-700 border-green-200',
+  'Printing': 'bg-blue-100 text-blue-700 border-blue-200',
+  'Quality Check': 'bg-purple-100 text-purple-700 border-purple-200',
+  'Packed': 'bg-orange-100 text-orange-700 border-orange-200',
+  'Shipped': 'bg-indigo-100 text-indigo-700 border-indigo-200',
+  'Out For Delivery': 'bg-cyan-100 text-cyan-700 border-cyan-200',
+  'Delivered': 'bg-green-100 text-green-700 border-green-200',
+  'Cancelled': 'bg-red-100 text-red-700 border-red-200',
 };
 
-const ALL_STATUSES = ['Pending', 'Processing', 'Printed', 'Packed', 'Shipped', 'Delivered', 'Cancelled'];
+const ALL_STATUSES = ['Pending', 'Processing', 'Printing', 'Quality Check', 'Packed', 'Shipped', 'Out For Delivery', 'Delivered', 'Cancelled'];
 
 function ImageModal({ src, onClose }) {
   return (
@@ -89,76 +92,76 @@ function OrderDrawer({ order, onClose, onStatusChange }) {
     ready: false
   });
   
+  const [showDispatchForm, setShowDispatchForm] = useState(false);
+  const [dispatchData, setDispatchData] = useState({
+    courierCompany: 'India Post',
+    customCourierName: '',
+    trackingNumber: '',
+    trackingUrl: '',
+    dispatchDate: new Date().toISOString().split('T')[0],
+    estimatedDelivery: '',
+    shippingNotes: '',
+    courierCharge: '',
+    packageWeight: ''
+  });
+
   const isChecklistComplete = Object.values(checklist).every(Boolean);
 
   const toggleChecklist = (field) => {
     setChecklist(prev => ({ ...prev, [field]: !prev[field] }));
   };
 
-  const handleFulfillOrder = async () => {
-    if (!isChecklistComplete) return alert("Please complete the packing checklist first.");
-    setIsSaving(true);
-    try {
-      const res = await fetch(`/api/orders/${order._id}/shiprocket`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ action: 'create_shipment' }),
-      });
-      const data = await res.json();
-      if (data.success) {
-        alert("Shipment created and AWB generated!");
-        onStatusChange(order._id, 'Packed'); // Optionally trigger refresh of parent list
-        window.location.reload(); // Simple refresh for now to pull new order data
-      } else {
-        alert("Failed to fulfill: " + data.error);
-      }
-    } catch (e) {
-      console.error(e);
-      alert("Error fulfilling order.");
-    } finally {
-      setIsSaving(false);
-    }
-  };
+  const handleManualDispatch = async (e) => {
+    e.preventDefault();
+    if (!dispatchData.trackingNumber) return alert("Tracking number is required.");
 
-  const handleRequestPickup = async () => {
+    const courierName = dispatchData.courierCompany === 'Other' ? dispatchData.customCourierName : dispatchData.courierCompany;
+
+    const confirmMessage = `Confirm Manual Dispatch?
+    
+Courier: ${courierName}
+Tracking Number: ${dispatchData.trackingNumber}
+Estimated Delivery: ${dispatchData.estimatedDelivery || 'N/A'}
+Courier Charge: ₹${dispatchData.courierCharge || 0}
+Weight: ${dispatchData.packageWeight || 0}kg
+
+This will mark the order as Shipped and notify the customer. Proceed?`;
+
+    if (!confirm(confirmMessage)) {
+      return;
+    }
+
     setIsSaving(true);
+    
     try {
-      const res = await fetch(`/api/orders/${order._id}/shiprocket`, {
-        method: 'POST',
+      const res = await fetch(`/api/orders/${order._id}`, {
+        method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ action: 'request_pickup' }),
+        body: JSON.stringify({
+          orderStatus: 'Shipped',
+          shippingStatus: 'Shipped',
+          courierName,
+          deliveryPartner: courierName,
+          trackingNumber: dispatchData.trackingNumber,
+          trackingUrl: dispatchData.trackingUrl,
+          dispatchDate: dispatchData.dispatchDate,
+          estimatedDelivery: dispatchData.estimatedDelivery,
+          shippingNotes: dispatchData.shippingNotes,
+          courierCharge: Number(dispatchData.courierCharge) || 0,
+          packageWeight: Number(dispatchData.packageWeight) || 0,
+        }),
       });
       const data = await res.json();
       if (data.success) {
-        alert("Pickup requested successfully!");
+        alert("Order Dispatched Successfully!");
+        onStatusChange(order._id, 'Shipped');
         window.location.reload();
       } else {
-        alert("Failed to request pickup: " + data.error);
+        alert("Failed to dispatch: " + data.error);
       }
-    } catch (e) {
-      console.error(e);
-      alert("Error requesting pickup.");
-    } finally {
-      setIsSaving(false);
-    }
-  };
-
-  const handleDownloadLabel = async () => {
-    setIsSaving(true);
-    try {
-      const res = await fetch(`/api/orders/${order._id}/shiprocket`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ action: 'fetch_label' }),
-      });
-      const data = await res.json();
-      if (data.success && data.labelUrl) {
-        window.open(data.labelUrl, '_blank');
-      } else {
-        alert("Failed to fetch label: " + data.error);
-      }
-    } catch (e) {
-      console.error(e);
+    } catch (err) {
+      console.error(err);
+      alert("Error dispatching order.");
     } finally {
       setIsSaving(false);
     }
@@ -239,14 +242,22 @@ function OrderDrawer({ order, onClose, onStatusChange }) {
                 {new Date(order.createdAt).toLocaleString('en-IN', { dateStyle: 'medium', timeStyle: 'short' })}
               </p>
             </div>
-            <div className="flex items-center gap-3">
-              <button
-                onClick={() => window.print()}
-                className="flex items-center gap-2 px-4 py-2 bg-gray-100 text-gray-700 rounded-xl text-sm font-medium hover:bg-gray-200 transition-colors"
+            <div className="flex items-center gap-2">
+              <Link
+                href={`/admin/orders/${order._id}/invoice`}
+                target="_blank"
+                className="flex items-center gap-1.5 px-3 py-2 bg-gray-100 text-gray-700 rounded-lg text-xs font-semibold hover:bg-gray-200 transition-colors"
               >
-                <Printer className="w-4 h-4" /> Print
-              </button>
-              <button onClick={onClose} className="p-2 rounded-xl hover:bg-gray-100 transition-colors">
+                <Printer className="w-3.5 h-3.5" /> Invoice
+              </Link>
+              <Link
+                href={`/admin/orders/${order._id}/packingslip`}
+                target="_blank"
+                className="flex items-center gap-1.5 px-3 py-2 bg-gray-100 text-gray-700 rounded-lg text-xs font-semibold hover:bg-gray-200 transition-colors"
+              >
+                <Printer className="w-3.5 h-3.5" /> Packing Slip
+              </Link>
+              <button onClick={onClose} className="p-2 rounded-xl hover:bg-gray-100 transition-colors ml-1">
                 <X className="w-5 h-5" />
               </button>
             </div>
@@ -306,7 +317,7 @@ function OrderDrawer({ order, onClose, onStatusChange }) {
             <div className="bg-blue-50/50 rounded-2xl p-4 border border-blue-100">
               <div className="flex justify-between items-center mb-4">
                 <p className="text-xs font-semibold text-blue-800 uppercase tracking-wider flex items-center gap-2">
-                  <Truck className="w-4 h-4" /> Logistics Hub
+                  <Truck className="w-4 h-4" /> Logistics & Dispatch
                 </p>
                 <span className="text-[10px] font-bold bg-white text-blue-700 px-2 py-0.5 rounded-full border border-blue-200 uppercase">
                   {order.deliveryMode || 'Standard'}
@@ -315,21 +326,39 @@ function OrderDrawer({ order, onClose, onStatusChange }) {
               
               <div className="grid grid-cols-2 gap-4 mb-4">
                 <div>
-                  <p className="text-xs text-gray-500">Partner</p>
-                  <p className="font-semibold text-gray-900">{order.deliveryPartner || 'Shiprocket'}</p>
-                </div>
-                <div>
-                  <p className="text-xs text-gray-500">Courier Cost</p>
-                  <p className="font-semibold text-gray-900">₹{order.courierCost || 0}</p>
-                </div>
-                <div>
-                  <p className="text-xs text-gray-500">Shipment ID</p>
-                  <p className="font-semibold text-gray-900">{order.shipmentId || '—'}</p>
+                  <p className="text-xs text-gray-500">Courier Company</p>
+                  <p className="font-semibold text-gray-900">{order.courierName || '—'}</p>
                 </div>
                 <div>
                   <p className="text-xs text-gray-500">Tracking Number</p>
-                  <p className="font-semibold text-gray-900">{order.trackingId || '—'}</p>
+                  <p className="font-semibold text-gray-900">{order.trackingNumber || '—'}</p>
                 </div>
+                {order.trackingUrl && (
+                  <div className="col-span-2">
+                    <p className="text-xs text-gray-500">Tracking URL</p>
+                    <a href={order.trackingUrl} target="_blank" rel="noopener noreferrer" className="font-semibold text-accent-blue hover:underline break-all">
+                      {order.trackingUrl}
+                    </a>
+                  </div>
+                )}
+                {order.dispatchDate && (
+                  <div>
+                    <p className="text-xs text-gray-500">Dispatch Date</p>
+                    <p className="font-semibold text-gray-900">{new Date(order.dispatchDate).toLocaleDateString()}</p>
+                  </div>
+                )}
+                {order.estimatedDelivery && (
+                  <div>
+                    <p className="text-xs text-gray-500">Est. Delivery</p>
+                    <p className="font-semibold text-gray-900">{new Date(order.estimatedDelivery).toLocaleDateString()}</p>
+                  </div>
+                )}
+                {order.shippingNotes && (
+                  <div className="col-span-2">
+                    <p className="text-xs text-gray-500">Shipping Notes</p>
+                    <p className="text-sm text-gray-800 italic">{order.shippingNotes}</p>
+                  </div>
+                )}
               </div>
 
               {order.statusTimeline && order.statusTimeline.length > 0 && (
@@ -347,7 +376,7 @@ function OrderDrawer({ order, onClose, onStatusChange }) {
               )}
 
               {/* Packing Checklist */}
-              {!order.shipmentId && (
+              {!order.trackingNumber && !showDispatchForm && (
                 <div className="mb-4 bg-white p-4 rounded-xl border border-blue-200 shadow-sm">
                   <p className="text-sm font-bold text-gray-800 mb-3 flex items-center gap-2">
                     <CheckSquare className="w-4 h-4 text-blue-600" /> Packing Checklist
@@ -373,39 +402,135 @@ function OrderDrawer({ order, onClose, onStatusChange }) {
                       </label>
                     ))}
                   </div>
+                  <button 
+                    onClick={() => setShowDispatchForm(true)}
+                    disabled={!isChecklistComplete}
+                    className="w-full mt-4 px-4 py-3 bg-blue-600 text-white rounded-xl text-sm font-bold hover:bg-blue-700 transition-colors disabled:opacity-50 shadow-md"
+                  >
+                    Manual Dispatch (Enter Tracking)
+                  </button>
                 </div>
               )}
 
-              <div className="flex flex-col gap-2">
-                {!order.shipmentId ? (
-                  <button 
-                    onClick={handleFulfillOrder}
-                    disabled={!isChecklistComplete || isSaving}
-                    className="w-full px-4 py-3 bg-blue-600 text-white rounded-xl text-sm font-bold hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed shadow-md"
-                  >
-                    {isSaving ? 'Processing...' : 'Fulfill Order (Create Shipment & AWB)'}
-                  </button>
-                ) : (
-                  <>
-                    <button 
-                      onClick={handleDownloadLabel}
-                      disabled={isSaving}
-                      className="w-full px-4 py-3 bg-white text-blue-700 border border-blue-200 rounded-xl text-sm font-bold hover:bg-blue-50 transition-colors shadow-sm"
+              {showDispatchForm && !order.trackingNumber && (
+                <form onSubmit={handleManualDispatch} className="bg-white p-4 rounded-xl border border-blue-200 shadow-sm space-y-3">
+                  <p className="font-bold text-gray-900 mb-2">Enter Courier Details</p>
+                  
+                  <div>
+                    <label className="text-xs text-gray-500">Courier Company *</label>
+                    <select 
+                      value={dispatchData.courierCompany}
+                      onChange={e => setDispatchData({...dispatchData, courierCompany: e.target.value})}
+                      className="w-full p-2 border rounded-lg text-sm"
+                      required
                     >
-                      Download Shipping Label
+                      <option>India Post</option>
+                      <option>DTDC</option>
+                      <option>Blue Dart</option>
+                      <option>Delhivery</option>
+                      <option>Professional Couriers</option>
+                      <option>ST Courier</option>
+                      <option>XpressBees</option>
+                      <option>Other</option>
+                    </select>
+                  </div>
+
+                  {dispatchData.courierCompany === 'Other' && (
+                    <div>
+                      <label className="text-xs text-gray-500">Custom Courier Name *</label>
+                      <input 
+                        type="text"
+                        value={dispatchData.customCourierName}
+                        onChange={e => setDispatchData({...dispatchData, customCourierName: e.target.value})}
+                        className="w-full p-2 border rounded-lg text-sm"
+                        required
+                      />
+                    </div>
+                  )}
+
+                  <div>
+                    <label className="text-xs text-gray-500">Tracking Number *</label>
+                    <input 
+                      type="text"
+                      value={dispatchData.trackingNumber}
+                      onChange={e => setDispatchData({...dispatchData, trackingNumber: e.target.value})}
+                      className="w-full p-2 border rounded-lg text-sm"
+                      required
+                    />
+                  </div>
+
+                  <div>
+                    <label className="text-xs text-gray-500">Tracking URL</label>
+                    <input 
+                      type="url"
+                      value={dispatchData.trackingUrl}
+                      onChange={e => setDispatchData({...dispatchData, trackingUrl: e.target.value})}
+                      className="w-full p-2 border rounded-lg text-sm"
+                    />
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-3">
+                    <div>
+                      <label className="text-xs text-gray-500">Dispatch Date *</label>
+                      <input 
+                        type="date"
+                        value={dispatchData.dispatchDate}
+                        onChange={e => setDispatchData({...dispatchData, dispatchDate: e.target.value})}
+                        className="w-full p-2 border rounded-lg text-sm"
+                        required
+                      />
+                    </div>
+                    <div>
+                      <label className="text-xs text-gray-500">Estimated Delivery</label>
+                      <input 
+                        type="date"
+                        value={dispatchData.estimatedDelivery}
+                        onChange={e => setDispatchData({...dispatchData, estimatedDelivery: e.target.value})}
+                        className="w-full p-2 border rounded-lg text-sm"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-3">
+                    <div>
+                      <label className="text-xs text-gray-500">Courier Charge (₹)</label>
+                      <input 
+                        type="number"
+                        value={dispatchData.courierCharge}
+                        onChange={e => setDispatchData({...dispatchData, courierCharge: e.target.value})}
+                        className="w-full p-2 border rounded-lg text-sm"
+                      />
+                    </div>
+                    <div>
+                      <label className="text-xs text-gray-500">Package Weight (kg)</label>
+                      <input 
+                        type="number"
+                        step="0.01"
+                        value={dispatchData.packageWeight}
+                        onChange={e => setDispatchData({...dispatchData, packageWeight: e.target.value})}
+                        className="w-full p-2 border rounded-lg text-sm"
+                      />
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className="text-xs text-gray-500">Shipping Notes</label>
+                    <textarea 
+                      value={dispatchData.shippingNotes}
+                      onChange={e => setDispatchData({...dispatchData, shippingNotes: e.target.value})}
+                      className="w-full p-2 border rounded-lg text-sm"
+                      rows="2"
+                    />
+                  </div>
+
+                  <div className="flex gap-2 pt-2">
+                    <button type="button" onClick={() => setShowDispatchForm(false)} className="flex-1 p-2 bg-gray-100 rounded-lg text-sm font-semibold text-gray-700">Cancel</button>
+                    <button type="submit" disabled={isSaving} className="flex-1 p-2 bg-black text-white rounded-lg text-sm font-semibold disabled:opacity-50">
+                      {isSaving ? 'Dispatching...' : 'Dispatch Order'}
                     </button>
-                    {order.shippingStatus !== 'Ready For Pickup' && order.shippingStatus !== 'Shipped' && order.shippingStatus !== 'Out For Delivery' && order.shippingStatus !== 'Delivered' && (
-                      <button 
-                        onClick={handleRequestPickup}
-                        disabled={isSaving}
-                        className="w-full px-4 py-3 bg-green-600 text-white rounded-xl text-sm font-bold hover:bg-green-700 transition-colors shadow-md mt-2"
-                      >
-                        {isSaving ? 'Requesting...' : 'Request Courier Pickup'}
-                      </button>
-                    )}
-                  </>
-                )}
-              </div>
+                  </div>
+                </form>
+              )}
             </div>
 
             {/* Products — Detailed */}

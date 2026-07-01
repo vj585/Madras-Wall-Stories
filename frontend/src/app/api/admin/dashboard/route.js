@@ -15,73 +15,100 @@ export async function GET(request) {
 
     await connectDB();
 
+    // Get today's start and end date
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const tomorrow = new Date(today);
+    tomorrow.setDate(tomorrow.getDate() + 1);
+
     const allOrders = await Order.find({})
-      .populate('products.productId', 'category')
+      .populate('products.productId', 'title category')
       .sort({ createdAt: -1 });
 
     const totalOrders = allOrders.length;
     let totalRevenue = 0;
-    let pendingOrders = 0;
-    let deliveredOrders = 0;
+    
+    // Status counts
+    let awaitingPrinting = 0;
+    let awaitingQualityCheck = 0;
+    let packed = 0;
+    let shipped = 0;
+    let delivered = 0;
     let cancelledOrders = 0;
-    let customPrintOrders = 0;
-    let validOrdersCount = 0;
 
-    const categoryTally = {};
+    // Today's metrics
+    let todaysOrders = 0;
+    let todaysRevenue = 0;
+    let todaysCourierCost = 0;
+
+    // Courier metrics
+    let totalCourierCost = 0;
+    let validCourierOrders = 0;
+
+    const productTally = {};
 
     allOrders.forEach(order => {
+      const isToday = order.createdAt >= today && order.createdAt < tomorrow;
+
       if (order.orderStatus === 'Cancelled') {
         cancelledOrders++;
       } else {
+        // Status counts
+        if (order.orderStatus === 'Pending' || order.orderStatus === 'Processing') awaitingPrinting++;
+        if (order.orderStatus === 'Printing' || order.orderStatus === 'Quality Check') awaitingQualityCheck++;
+        if (order.orderStatus === 'Packed') packed++;
+        if (order.orderStatus === 'Shipped' || order.orderStatus === 'Out For Delivery') shipped++;
+        if (order.orderStatus === 'Delivered') delivered++;
+
         // Revenue logic
         let countRevenue = false;
-        
         if (order.paymentMethod === 'COD') {
-          if (order.orderStatus === 'Delivered') {
-            countRevenue = true;
-          }
+          if (order.orderStatus === 'Delivered') countRevenue = true;
         } else {
-          // Online payment (Razorpay, etc)
-          if (order.paymentStatus === 'Paid') {
-            countRevenue = true;
-          }
+          if (order.paymentStatus === 'Paid') countRevenue = true;
         }
 
         if (countRevenue) {
           totalRevenue += order.amount || 0;
+          if (isToday) todaysRevenue += order.amount || 0;
         }
 
-        validOrdersCount++;
+        if (order.courierCost && order.courierCost > 0) {
+          totalCourierCost += order.courierCost;
+          validCourierOrders++;
+          if (isToday) todaysCourierCost += order.courierCost;
+        }
 
-        let hasCustom = false;
+        if (isToday) todaysOrders++;
+
+        // Tally products for Top Selling
         order.products.forEach(item => {
-          if (item.isCustom) hasCustom = true;
-
-          // Tally categories
-          if (item.productId && item.productId.category) {
-            const cat = item.productId.category;
-            categoryTally[cat] = (categoryTally[cat] || 0) + (item.quantity || 1);
+          const key = item.productId ? item.productId.title : item.title;
+          if (key) {
+            productTally[key] = (productTally[key] || 0) + (item.quantity || 1);
           }
         });
-        if (hasCustom) customPrintOrders++;
       }
-      
-      if (order.orderStatus === 'Pending') pendingOrders++;
-      if (order.orderStatus === 'Delivered') deliveredOrders++;
     });
 
-    const averageOrderValue = validOrdersCount > 0 ? Math.round(totalRevenue / validOrdersCount) : 0;
-    const productsListed = await Product.countDocuments();
-
-    // Format Top Categories array
-    const topCategories = Object.entries(categoryTally)
+    const averageCourierCost = validCourierOrders > 0 ? Math.round(totalCourierCost / validCourierOrders) : 0;
+    
+    // Format Top Products
+    const topProducts = Object.entries(productTally)
       .map(([name, count]) => ({ name, count }))
-      .sort((a, b) => b.count - a.count)
-      .slice(0, 5); // top 5
+      .sort((a, b) => b.count - a.count);
+    
+    const topSellingProduct = topProducts.length > 0 ? topProducts[0].name : 'N/A';
+
+    // Get Low Stock Products
+    const lowStockProducts = await Product.find({ 
+      status: 'Active', 
+      stock: { $lte: 5 } 
+    }).select('title stock').sort({ stock: 1 }).lean();
 
     // Get Recent 10 Orders
     const recentOrders = allOrders.slice(0, 10).map(order => ({
-      id: order._id.toString().slice(-6).toUpperCase(), // Short ID
+      id: order._id.toString().slice(-6).toUpperCase(),
       customer: order.customerName,
       date: new Date(order.createdAt).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' }),
       amount: order.amount,
@@ -91,18 +118,21 @@ export async function GET(request) {
     return NextResponse.json({
       success: true,
       data: {
-        totalRevenue,
-        totalOrders,
-        pendingOrders,
-        deliveredOrders,
+        todaysOrders,
+        todaysRevenue,
+        todaysCourierCost,
+        averageCourierCost,
+        awaitingPrinting,
+        awaitingQualityCheck,
+        packed,
+        shipped,
+        delivered,
         cancelledOrders,
-        productsListed,
-        customPrintOrders,
-        averageOrderValue,
-        recentOrders,
-        topCategories
+        topSellingProduct,
+        lowStockProducts,
+        recentOrders
       }
-    }, { status: 200 });
+    });
 
   } catch (error) {
     console.error("Dashboard API Error:", error);

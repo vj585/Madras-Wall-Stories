@@ -19,7 +19,8 @@ export default function AddProductDrawer({ isOpen, onClose, editingProduct = nul
     slug: '',
     shortDescription: '',
     fullDescription: '',
-    category: 'Posters',
+    category: 'Standard Posters',
+    theme: '',
     subcategory: '',
     tags: '',
     seoKeywords: '',
@@ -39,7 +40,8 @@ export default function AddProductDrawer({ isOpen, onClose, editingProduct = nul
     shippingClass: 'Standard',
     freeShipping: false,
     metaTitle: '',
-    metaDescription: ''
+    metaDescription: '',
+    displayOrder: 0
   };
 
   const [formData, setFormData] = useState(initialFormState);
@@ -124,22 +126,13 @@ export default function AddProductDrawer({ isOpen, onClose, editingProduct = nul
     }
   };
 
-  const categoryOptions = [
-    'Posters', 'Polaroids', 'Custom Prints', 'Anime', 'Superhero', 
-    'Movies', 'TV-Series', 'Music', 'Cars', 'Video Games', 
-    'Motivate', 'Cricket', 'Football', 'F1'
+  const productTypeOptions = [
+    'Standard Posters', 'Custom Posters', 'Standard Polaroids', 'Custom Polaroids', 'Standard Stickers'
   ];
 
-  const handleCategoryChange = (cat) => {
-    setFormData(prev => {
-      const currentCats = prev.category ? prev.category.split(',').map(c => c.trim()).filter(Boolean) : [];
-      if (currentCats.includes(cat)) {
-        return { ...prev, category: currentCats.filter(c => c !== cat).join(', ') };
-      } else {
-        return { ...prev, category: [...currentCats, cat].join(', ') };
-      }
-    });
-  };
+  const themeOptions = [
+    'Anime', 'Movies', 'Marvel', 'Gaming', 'Cars', 'Music', 'Quotes', 'Sports', 'Nature', 'Travel', 'Minimal', 'Abstract', 'Vintage'
+  ];
 
   const handleVariantChange = (index, field, value) => {
     setFormData(prev => {
@@ -305,10 +298,13 @@ export default function AddProductDrawer({ isOpen, onClose, editingProduct = nul
         featured: formData.featured,
         trending: formData.trending,
         newArrival: formData.newArrival,
+        bestSeller: formData.bestSeller,
         tags: formData.tags.split(',').map(t => t.trim()).filter(Boolean),
         orientation: formData.orientation,
         printFinish: formData.finish,
         status: status,
+        theme: formData.theme,
+        displayOrder: Number(formData.displayOrder) || 0,
       };
 
       const method = editingProduct ? 'PUT' : 'POST';
@@ -632,8 +628,23 @@ export default function AddProductDrawer({ isOpen, onClose, editingProduct = nul
                 
               </Section>
 
-              <Section title="5. Visibility Flags">
-                <div className="grid grid-cols-2 gap-y-3">
+              <Section title="5. Visibility & Ordering">
+                <div className="grid grid-cols-2 gap-4 mb-4">
+                  <div>
+                    <label className="block text-xs font-medium text-gray-700 mb-1">Status</label>
+                    <select name="status" value={formData.status} onChange={handleChange} className="w-full px-3 py-2 bg-white border border-gray-200 rounded-lg text-sm outline-none focus:ring-1 focus:ring-accent-blue">
+                      <option value="Active">Active (Visible)</option>
+                      <option value="Inactive">Inactive (Hidden)</option>
+                      <option value="Draft">Draft</option>
+                      <option value="Hidden">Hidden (Legacy)</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label className="block text-xs font-medium text-gray-700 mb-1">Display Order (0 is default)</label>
+                    <input type="number" name="displayOrder" value={formData.displayOrder} onChange={handleChange} className="w-full px-3 py-2 bg-white border border-gray-200 rounded-lg text-sm outline-none focus:ring-1 focus:ring-accent-blue" />
+                  </div>
+                </div>
+                <div className="grid grid-cols-2 gap-y-3 pt-3 border-t border-gray-100">
                   {['featured', 'trending', 'bestSeller', 'newArrival', 'customPrint'].map(flag => (
                     <label key={flag} className="flex items-center gap-2 cursor-pointer">
                       <input type="checkbox" name={flag} checked={formData[flag]} onChange={handleChange} className="w-4 h-4 rounded text-accent-blue" />

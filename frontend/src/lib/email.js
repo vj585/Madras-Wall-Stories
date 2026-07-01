@@ -300,14 +300,16 @@ function buildTrackingEmailHTML({ order, status }) {
                 <td style="font-size:14px;color:#555;padding-bottom:12px;">Order ID</td>
                 <td style="font-size:14px;font-weight:700;color:#1a1a2e;text-align:right;padding-bottom:12px;">#${orderId}</td>
               </tr>
-              ${order.trackingId ? `
+              ${order.trackingNumber ? `
               <tr>
                 <td style="font-size:14px;color:#555;padding-bottom:12px;border-top:1px solid #eee;padding-top:12px;">Courier</td>
-                <td style="font-size:14px;font-weight:700;color:#1a1a2e;text-align:right;padding-bottom:12px;border-top:1px solid #eee;padding-top:12px;">${order.courierName || 'Partner'}</td>
+                <td style="font-size:14px;font-weight:700;color:#1a1a2e;text-align:right;padding-bottom:12px;border-top:1px solid #eee;padding-top:12px;">${order.courierName || order.deliveryPartner || 'Partner'}</td>
               </tr>
               <tr>
                 <td style="font-size:14px;color:#555;border-top:1px solid #eee;padding-top:12px;">AWB / Tracking</td>
-                <td style="font-size:14px;font-weight:700;color:#3b82f6;text-align:right;border-top:1px solid #eee;padding-top:12px;">${order.trackingId}</td>
+                <td style="font-size:14px;font-weight:700;color:#3b82f6;text-align:right;border-top:1px solid #eee;padding-top:12px;">
+                  ${order.trackingUrl ? `<a href="${order.trackingUrl}" style="color:#3b82f6;text-decoration:none;">${order.trackingNumber}</a>` : order.trackingNumber}
+                </td>
               </tr>` : ''}
             </table>
           </td>

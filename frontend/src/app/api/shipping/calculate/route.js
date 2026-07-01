@@ -16,7 +16,7 @@ export async function POST(request) {
       standard: {
         available: true,
         fee: standardFee,
-        partner: 'Shiprocket',
+        partner: 'Standard',
         estimatedDays: '3-5 Business Days'
       }
     };

@@ -269,18 +269,32 @@ export default function ProductClient({ product, related = [], framePricing = []
             </div>
 
             {/* Trust Features */}
-            <div className="grid grid-cols-3 gap-3 mb-8 py-5 border-y border-gray-100 text-center">
-              <div className="flex flex-col items-center gap-2">
-                <Truck className="w-5 h-5 text-accent-blue" />
-                <span className="text-xs font-medium text-gray-600">Free Delivery<br/>above ₹299</span>
-              </div>
-              <div className="flex flex-col items-center gap-2 border-x border-gray-100 px-2">
-                <Shield className="w-5 h-5 text-green-500" />
-                <span className="text-xs font-medium text-gray-600">Quality<br/>Guaranteed</span>
-              </div>
-              <div className="flex flex-col items-center gap-2">
-                <RefreshCw className="w-5 h-5 text-amber-500" />
-                <span className="text-xs font-medium text-gray-600">7 Days<br/>Easy Returns</span>
+            <div className="mb-8 py-5 border-y border-gray-100">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm text-gray-700">
+                <div className="flex items-center gap-2">
+                  <Shield className="w-4 h-4 text-green-500 shrink-0" />
+                  <span>Premium Quality Prints</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Shield className="w-4 h-4 text-green-500 shrink-0" />
+                  <span>Secure Payments</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Shield className="w-4 h-4 text-green-500 shrink-0" />
+                  <span>Cash on Delivery Available</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Truck className="w-4 h-4 text-accent-blue shrink-0" />
+                  <span>Ships Within 1–2 Business Days</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Truck className="w-4 h-4 text-accent-blue shrink-0" />
+                  <span>Free Shipping Above ₹299</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Shield className="w-4 h-4 text-green-500 shrink-0" />
+                  <span>Carefully Packed</span>
+                </div>
               </div>
             </div>
 

@@ -19,12 +19,12 @@ export default function SearchPage() {
         return;
       }
       try {
-        const res = await fetch('/api/products');
+        const res = await fetch('/api/products?activeOnly=true');
         const data = await res.json();
         
         if (data.success && data.data) {
           const lowerQ = q.toLowerCase();
-          const activeProducts = data.data.filter(p => p.status !== 'Draft' && p.status !== 'Hidden');
+          const activeProducts = data.data;
           
           const filtered = activeProducts.filter(p => 
             p.title.toLowerCase().includes(lowerQ) || 

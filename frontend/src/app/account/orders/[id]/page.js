@@ -7,6 +7,7 @@ import Order from '@/models/Order';
 import { connectDB } from '@/lib/mongodb';
 import Image from 'next/image';
 import CancelOrderButton from './CancelOrderButton';
+import TrackingDetails from './TrackingDetails';
 
 export const metadata = {
   title: 'Order Details | Madras Wall Stories',
@@ -14,13 +15,16 @@ export const metadata = {
 
 const getStatusColor = (status) => {
   switch (status) {
-    case 'Pending': return 'bg-orange-50 text-orange-600 border-orange-100';
-    case 'Packed': return 'bg-blue-50 text-blue-600 border-blue-100';
-    case 'Shipped':
-    case 'Out For Delivery': return 'bg-purple-50 text-purple-600 border-purple-100';
-    case 'Delivered': return 'bg-green-50 text-green-600 border-green-100';
-    case 'Cancelled': return 'bg-red-50 text-red-600 border-red-100';
-    default: return 'bg-gray-50 text-gray-600 border-gray-100';
+    case 'Pending': return 'bg-yellow-50 text-yellow-600 border-yellow-200';
+    case 'Processing': return 'bg-green-50 text-green-600 border-green-200';
+    case 'Printing': return 'bg-blue-50 text-blue-600 border-blue-200';
+    case 'Quality Check': return 'bg-purple-50 text-purple-600 border-purple-200';
+    case 'Packed': return 'bg-orange-50 text-orange-600 border-orange-200';
+    case 'Shipped': return 'bg-indigo-50 text-indigo-600 border-indigo-200';
+    case 'Out For Delivery': return 'bg-cyan-50 text-cyan-600 border-cyan-200';
+    case 'Delivered': return 'bg-green-50 text-green-600 border-green-200';
+    case 'Cancelled': return 'bg-red-50 text-red-600 border-red-200';
+    default: return 'bg-gray-50 text-gray-600 border-gray-200';
   }
 };
 
@@ -102,28 +106,7 @@ export default async function OrderDetailsPage({ params }) {
                 Delivery Status
               </h2>
               
-              {order.trackingId ? (
-                <div className="bg-blue-50/50 p-4 rounded-2xl border border-blue-100 mb-6">
-                  <div className="flex flex-wrap gap-4 justify-between items-center">
-                    <div>
-                      <p className="text-xs text-gray-500 uppercase tracking-wider font-medium mb-1">Courier Partner</p>
-                      <p className="font-bold text-gray-900">{order.deliveryPartner || 'Standard Shipping'}</p>
-                    </div>
-                    <div>
-                      <p className="text-xs text-gray-500 uppercase tracking-wider font-medium mb-1">Tracking ID</p>
-                      <p className="font-bold text-accent-blue font-mono">{order.trackingId}</p>
-                    </div>
-                    <div>
-                      <p className="text-xs text-gray-500 uppercase tracking-wider font-medium mb-1">Est. Delivery</p>
-                      <p className="font-bold text-gray-900">
-                        {order.estimatedDelivery ? new Date(order.estimatedDelivery).toLocaleDateString() : 'Updating...'}
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              ) : (
-                <p className="text-sm text-gray-500 mb-6">Tracking details will be updated once your order is shipped.</p>
-              )}
+              <TrackingDetails order={order} />
 
               {/* Timeline */}
               <div className="relative pl-4 space-y-6 before:absolute before:inset-0 before:ml-5 before:-translate-x-px md:before:mx-auto md:before:translate-x-0 before:h-full before:w-0.5 before:bg-gradient-to-b before:from-transparent before:via-gray-200 before:to-transparent">

@@ -2,10 +2,14 @@ import { NextResponse } from 'next/server';
 import { connectDB } from '@/lib/mongodb';
 import Product from '@/models/Product';
 
-export async function GET() {
+export async function GET(request) {
   try {
+    const { searchParams } = new URL(request.url);
+    const activeOnly = searchParams.get('activeOnly');
+    
     await connectDB();
-    const products = await Product.find({}).sort({ createdAt: -1 });
+    const query = activeOnly === 'true' ? { status: 'Active' } : {};
+    const products = await Product.find(query).sort({ displayOrder: 1, createdAt: -1 });
     
     // Migration fallback for legacy products
     const mappedProducts = products.map(p => {
