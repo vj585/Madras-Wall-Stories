@@ -1,14 +1,14 @@
-import { getOrderById } from '@/lib/orders';
+import { connectDB } from '@/lib/mongodb';
+import Order from '@/models/Order';
 import { notFound } from 'next/navigation';
-import { format } from 'date-fns';
 
 export default async function InvoicePage({ params }) {
-  const { id } = params;
-  const orderData = await getOrderById(id);
+  const { id } = await params;
   
-  if (!orderData) return notFound();
+  await connectDB();
+  const order = await Order.findById(id).lean();
   
-  const order = orderData.data;
+  if (!order) return notFound();
 
   return (
     <div className="max-w-4xl mx-auto p-8 bg-white text-black print:p-0">
@@ -16,7 +16,7 @@ export default async function InvoicePage({ params }) {
         <div>
           <h1 className="text-3xl font-bold font-heading mb-2">INVOICE</h1>
           <p className="text-gray-500 text-sm">Order #{order.orderId}</p>
-          <p className="text-gray-500 text-sm">Date: {format(new Date(order.createdAt), 'dd MMM yyyy, hh:mm a')}</p>
+          <p className="text-gray-500 text-sm">Date: {new Date(order.createdAt).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' })}</p>
         </div>
         <div className="text-right">
           <h2 className="text-xl font-bold font-heading">Madras Wall Stories</h2>
