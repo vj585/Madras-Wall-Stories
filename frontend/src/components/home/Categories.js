@@ -11,35 +11,38 @@ const productTypes = [
     name: 'Posters',
     categoryMatch: ['standard posters', 'premium posters', 'posters'],
     link: '/posters',
+    fallbackImage: '/images/master.jpg',
     themes: [
-      { name: 'Anime', slug: 'anime' },
-      { name: 'Movies', slug: 'movies' },
-      { name: 'Marvel', slug: 'marvel' },
-      { name: 'Gaming', slug: 'gaming' },
-      { name: 'Music', slug: 'music' },
-      { name: 'Sports', slug: 'sports' },
-      { name: 'Nature', slug: 'nature' },
-      { name: 'Quotes', slug: 'quotes' },
+      { name: 'Anime', slug: 'anime', fallbackImage: '/images/master.jpg' },
+      { name: 'Movies', slug: 'movies', fallbackImage: '/images/pennywise.jpg' },
+      { name: 'Marvel', slug: 'marvel', fallbackImage: '/images/batman.jpg' },
+      { name: 'Gaming', slug: 'gaming', fallbackImage: '/images/spiderman.jpg' },
+      { name: 'Music', slug: 'music', fallbackImage: '/images/michael.jpg' },
+      { name: 'Sports', slug: 'sports', fallbackImage: '/images/batman.jpg' },
+      { name: 'Nature', slug: 'nature', fallbackImage: '/images/master.jpg' },
+      { name: 'Quotes', slug: 'quotes', fallbackImage: '/images/master.jpg' },
     ],
   },
   {
     name: 'Polaroids',
     categoryMatch: ['polaroids', 'standard polaroid', 'custom polaroid'],
     link: '/polaroids',
+    fallbackImage: '/images/michael.jpg',
     themes: [
-      { name: 'Memories', slug: 'memories' },
-      { name: 'Aesthetic', slug: 'aesthetic' },
-      { name: 'Custom', slug: 'custom' },
+      { name: 'Memories', slug: 'memories', fallbackImage: '/images/spiderman.jpg' },
+      { name: 'Aesthetic', slug: 'aesthetic', fallbackImage: '/images/master.jpg' },
+      { name: 'Custom', slug: 'custom', fallbackImage: '/images/pennywise.jpg' },
     ],
   },
   {
     name: 'Stickers',
     categoryMatch: ['stickers', 'standard sticker'],
     link: '/shop?category=stickers',
+    fallbackImage: '/images/spiderman.jpg',
     themes: [
-      { name: 'Anime', slug: 'sticker-anime' },
-      { name: 'Pop Culture', slug: 'pop-culture' },
-      { name: 'Minimal', slug: 'minimal' },
+      { name: 'Anime', slug: 'sticker-anime', fallbackImage: '/images/master.jpg' },
+      { name: 'Pop Culture', slug: 'pop-culture', fallbackImage: '/images/batman.jpg' },
+      { name: 'Minimal', slug: 'minimal', fallbackImage: '/images/michael.jpg' },
     ],
   },
 ];
@@ -47,13 +50,13 @@ const productTypes = [
 /**
  * For HERO card: finds any product in this category
  */
-function resolveHeroImage(products, categoryMatches) {
+function resolveHeroImage(products, categoryMatches, fallbackImage) {
   const catLower = categoryMatches.map(c => c.toLowerCase());
   const match = products.find(p =>
     catLower.some(c => (p.category || '').toLowerCase().includes(c)) &&
     p.images?.[0]
   );
-  return match?.images?.[0] || null;
+  return match?.images?.[0] || fallbackImage;
 }
 
 /**
@@ -61,7 +64,7 @@ function resolveHeroImage(products, categoryMatches) {
  * matches that theme (with or without category constraint).
  * Returns null if no theme-specific product exists → "Coming Soon" tile shown.
  */
-function resolveThemeImage(products, categoryMatches, themeName) {
+function resolveThemeImage(products, categoryMatches, themeName, fallbackImage) {
   const catLower = categoryMatches.map(c => c.toLowerCase());
   const themeLower = themeName.toLowerCase();
 
@@ -80,8 +83,8 @@ function resolveThemeImage(products, categoryMatches, themeName) {
   );
   if (themeOnly?.images?.[0]) return themeOnly.images[0];
 
-  // No match → return null so a "Coming Soon" placeholder is shown
-  return null;
+  // No match → return fallback so the original images are shown
+  return fallbackImage;
 }
 
 function CategoryCard({ href, image, label, delay = 0, isHero = false }) {
@@ -167,7 +170,7 @@ export default function Categories({ products = [] }) {
         {/* Three product type groups */}
         <div className="space-y-12 md:space-y-16">
           {productTypes.map((type, typeIdx) => {
-            const heroImage = resolveHeroImage(products, type.categoryMatch);
+            const heroImage = resolveHeroImage(products, type.categoryMatch, type.fallbackImage);
 
             return (
               <motion.div
@@ -206,7 +209,7 @@ export default function Categories({ products = [] }) {
 
                   {/* Theme sub-category cards */}
                   {type.themes.map((theme, themeIdx) => {
-                    const themeImage = resolveThemeImage(products, type.categoryMatch, theme.name);
+                    const themeImage = resolveThemeImage(products, type.categoryMatch, theme.name, theme.fallbackImage);
                     return (
                       <CategoryCard
                         key={theme.slug}
