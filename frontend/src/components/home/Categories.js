@@ -83,6 +83,13 @@ function resolveThemeImage(products, categoryMatches, themeName, fallbackImage) 
   );
   if (themeOnly?.images?.[0]) return themeOnly.images[0];
 
+  // Level 3 (Legacy Support): Old products stored the theme name in the category field itself
+  const legacyCategory = products.find(p =>
+    (p.category || '').toLowerCase().includes(themeLower) &&
+    p.images?.[0]
+  );
+  if (legacyCategory?.images?.[0]) return legacyCategory.images[0];
+
   // No match → return fallback so the original images are shown
   return fallbackImage;
 }
