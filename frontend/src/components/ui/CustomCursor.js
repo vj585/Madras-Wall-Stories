@@ -1,9 +1,11 @@
 "use client";
 import { useEffect, useState } from 'react';
-import { motion, useSpring } from 'framer-motion';
+import { motion, useSpring, useMotionValue, useTransform } from 'framer-motion';
 
 export default function CustomCursor() {
-  const [mousePosition, setMousePosition] = useState({ x: -100, y: -100 });
+  const mouseX = useMotionValue(-100);
+  const mouseY = useMotionValue(-100);
+
   const [isHovering, setIsHovering] = useState(false);
   const [isDesktop, setIsDesktop] = useState(false);
 
@@ -22,22 +24,21 @@ export default function CustomCursor() {
     if (!isDesktop) return;
 
     const mouseMove = (e) => {
-      setMousePosition({
-        x: e.clientX,
-        y: e.clientY
-      });
+      mouseX.set(e.clientX);
+      mouseY.set(e.clientY);
     };
 
     const handleMouseOver = (e) => {
+      if (!e.target) return;
       const target = e.target;
       const isClickable = 
-        target.tagName.toLowerCase() === 'button' ||
-        target.tagName.toLowerCase() === 'a' ||
-        target.closest('button') ||
-        target.closest('a') ||
-        target.classList.contains('cursor-pointer');
+        target.tagName?.toLowerCase() === 'button' ||
+        target.tagName?.toLowerCase() === 'a' ||
+        target.closest?.('button') ||
+        target.closest?.('a') ||
+        target.classList?.contains('cursor-pointer');
         
-      setIsHovering(isClickable);
+      setIsHovering(!!isClickable);
     };
 
     window.addEventListener("mousemove", mouseMove);
@@ -51,13 +52,17 @@ export default function CustomCursor() {
       window.removeEventListener("mouseover", handleMouseOver);
       document.body.style.cursor = 'auto';
     };
-  }, [isDesktop]);
+  }, [isDesktop, mouseX, mouseY]);
 
   const springConfig = { damping: 25, stiffness: 400, mass: 0.5 };
-  const cursorX = useSpring(mousePosition.x - (isHovering ? 24 : 8), springConfig);
-  const cursorY = useSpring(mousePosition.y - (isHovering ? 24 : 8), springConfig);
-  const dotX = useSpring(mousePosition.x - 4, { damping: 40, stiffness: 800, mass: 0.1 });
-  const dotY = useSpring(mousePosition.y - 4, { damping: 40, stiffness: 800, mass: 0.1 });
+  
+  // Create transformed motion values to center the cursor
+  const cursorSize = isHovering ? 48 : 16;
+  const cursorX = useSpring(useTransform(mouseX, x => x - cursorSize / 2), springConfig);
+  const cursorY = useSpring(useTransform(mouseY, y => y - cursorSize / 2), springConfig);
+  
+  const dotX = useSpring(useTransform(mouseX, x => x - 4), { damping: 40, stiffness: 800, mass: 0.1 });
+  const dotY = useSpring(useTransform(mouseY, y => y - 4), { damping: 40, stiffness: 800, mass: 0.1 });
 
   if (!isDesktop) return null;
 
