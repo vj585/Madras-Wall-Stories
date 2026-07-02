@@ -110,6 +110,7 @@ export default React.memo(function Trending({ products = [] }) {
                     <span className="font-bold text-lg text-gray-900">₹{product.salePrice || product.price}</span>
                     {product.salePrice && <span className="text-sm text-gray-400 line-through">₹{product.price}</span>}
                   </div>
+                </div>
                 </TiltWrapper>
               </motion.div>
             ))}
