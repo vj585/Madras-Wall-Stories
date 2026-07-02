@@ -74,9 +74,14 @@ export default function Footer() {
         </div>
 
         <div className="border-t border-white/10 pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
-          <p className="text-gray-500 text-sm">
-            © {new Date().getFullYear()} Madras Wall Stories. All rights reserved.
-          </p>
+          <div className="flex flex-col items-center md:items-start gap-1">
+            <p className="text-gray-500 text-sm">
+              © {new Date().getFullYear()} Madras Wall Stories. All rights reserved.
+            </p>
+            <p className="text-gray-600 text-xs flex items-center gap-1">
+              Made with <span className="text-red-400">♥</span> in Chennai, India
+            </p>
+          </div>
           <div className="flex space-x-6 text-sm text-gray-500">
             <Link href="/privacy" className="hover:text-white transition-colors">Privacy Policy</Link>
             <Link href="/terms" className="hover:text-white transition-colors">Terms of Service</Link>
