@@ -2,7 +2,6 @@ import StoreLayoutWrapper from '@/components/layout/StoreLayoutWrapper';
 import { CartProvider } from '@/context/CartContext';
 import { WishlistProvider } from '@/context/WishlistContext';
 import AuthProvider from './Providers';
-import CustomCursor from '@/components/ui/CustomCursor';
 import './globals.css';
 
 export const metadata = {
@@ -45,7 +44,6 @@ export default function RootLayout({ children }) {
         <AuthProvider>
           <WishlistProvider>
             <CartProvider>
-              <CustomCursor />
               <StoreLayoutWrapper>
                 {children}
               </StoreLayoutWrapper>
