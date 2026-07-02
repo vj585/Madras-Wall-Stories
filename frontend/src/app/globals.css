@@ -20,12 +20,44 @@
   --foreground: #111111;
 }
 
+html {
+  scroll-behavior: smooth;
+}
+
 body {
   background-color: var(--color-background);
   color: var(--color-foreground);
   font-family: var(--font-sans);
   overflow-x: clip; /* clip instead of hidden fixes iOS Safari IntersectionObserver bugs */
   -webkit-font-smoothing: antialiased;
+}
+
+/* Brand text selection – gold highlight */
+::selection {
+  background: rgba(212, 175, 55, 0.25);
+  color: #111111;
+}
+
+/* Themed scrollbar – subtle, on-brand */
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #FAFAF8;
+}
+::-webkit-scrollbar-thumb {
+  background: #D4AF37;
+  border-radius: 999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #b8962e;
+}
+
+/* Accessible focus ring in brand navy */
+:focus-visible {
+  outline: 2px solid #1A365D;
+  outline-offset: 3px;
+  border-radius: 4px;
 }
 
 /* iOS Safe Area Utilities */
@@ -80,4 +112,16 @@ h1, h2, h3, h4, h5, h6 {
 
 .font-script {
   font-family: 'Dancing Script', cursive;
+}
+
+/* Gold shimmer effect – for cart badge and accents */
+@keyframes gold-shimmer {
+  0% { background-position: -200% center; }
+  100% { background-position: 200% center; }
+}
+
+.gold-shimmer {
+  background: linear-gradient(90deg, #D4AF37 0%, #F5D97A 40%, #D4AF37 60%, #b8962e 100%);
+  background-size: 200% auto;
+  animation: gold-shimmer 3s linear infinite;
 }
