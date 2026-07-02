@@ -9,10 +9,8 @@ import TiltWrapper from '@/components/ui/TiltWrapper';
 const productTypes = [
   {
     name: 'Posters',
-    // Matches products with category containing "Poster"
-    categoryMatch: ['Standard Posters', 'Premium Posters', 'Posters'],
+    categoryMatch: ['standard posters', 'premium posters', 'posters'],
     link: '/posters',
-    accent: '#1A365D',
     themes: [
       { name: 'Anime', slug: 'anime' },
       { name: 'Movies', slug: 'movies' },
@@ -23,46 +21,124 @@ const productTypes = [
       { name: 'Nature', slug: 'nature' },
       { name: 'Quotes', slug: 'quotes' },
     ],
-    fallbackImage: '/images/master.jpg',
   },
   {
     name: 'Polaroids',
-    categoryMatch: ['Polaroids', 'Standard Polaroid', 'Custom Polaroid'],
+    categoryMatch: ['polaroids', 'standard polaroid', 'custom polaroid'],
     link: '/polaroids',
-    accent: '#D4AF37',
     themes: [
       { name: 'Memories', slug: 'memories' },
       { name: 'Aesthetic', slug: 'aesthetic' },
       { name: 'Custom', slug: 'custom' },
     ],
-    fallbackImage: '/images/michael.jpg',
   },
   {
     name: 'Stickers',
-    categoryMatch: ['Stickers', 'Standard Sticker'],
+    categoryMatch: ['stickers', 'standard sticker'],
     link: '/shop?category=stickers',
-    accent: '#111111',
     themes: [
       { name: 'Anime', slug: 'sticker-anime' },
       { name: 'Pop Culture', slug: 'pop-culture' },
       { name: 'Minimal', slug: 'minimal' },
     ],
-    fallbackImage: '/images/spiderman.jpg',
   },
 ];
 
-function getProductImage(products, categoryMatches, theme) {
-  const match = products.find(p => {
-    const catMatch = categoryMatches.some(c =>
-      (p.category || '').toLowerCase().includes(c.toLowerCase())
+// PLACEHOLDER: shown when no product image is available for a category
+const PLACEHOLDER = '/images/placeholder-category.jpg';
+
+/**
+ * Smart image resolver — tries 3 levels before giving up:
+ * 1. Product matching BOTH category + theme
+ * 2. Any product matching just the theme name (across all categories)
+ * 3. Any product matching the category (any theme)
+ * 4. Returns null → caller shows placeholder
+ */
+function resolveImage(products, categoryMatches, themeName) {
+  if (!products || products.length === 0) return null;
+
+  const catLower = categoryMatches.map(c => c.toLowerCase());
+  const themeLower = themeName?.toLowerCase();
+
+  // Level 1: category + theme
+  if (themeLower) {
+    const exact = products.find(p =>
+      catLower.some(c => (p.category || '').toLowerCase().includes(c)) &&
+      (p.theme || '').toLowerCase().includes(themeLower)
     );
-    if (theme) {
-      const themeMatch = (p.theme || '').toLowerCase().includes(theme.toLowerCase());
-      return catMatch && themeMatch;
-    }
-    return catMatch;
-  });
-  return match?.images?.[0] || null;
+    if (exact?.images?.[0]) return exact.images[0];
+
+    // Level 2: theme only (any category)
+    const themeOnly = products.find(p =>
+      (p.theme || '').toLowerCase().includes(themeLower)
+    );
+    if (themeOnly?.images?.[0]) return themeOnly.images[0];
+  }
+
+  // Level 3: category only (any theme) – used for hero card
+  const catOnly = products.find(p =>
+    catLower.some(c => (p.category || '').toLowerCase().includes(c)) &&
+    p.images?.[0]
+  );
+  if (catOnly?.images?.[0]) return catOnly.images[0];
+
+  return null;
+}
+
+function CategoryCard({ href, image, label, delay = 0, isHero = false }) {
+  const hasImage = !!image;
+
+  return (
+    <Link href={href} className="snap-start shrink-0 group w-36 md:w-44">
+      <motion.div
+        initial={{ opacity: 0, scale: 0.95 }}
+        whileInView={{ opacity: 1, scale: 1 }}
+        viewport={{ once: true }}
+        transition={{ delay }}
+        className="flex flex-col gap-3"
+      >
+        <TiltWrapper className="w-full aspect-[3/4] rounded-2xl overflow-hidden relative shadow-sm border border-gray-100 group-hover:shadow-lg transition-all duration-300">
+          {hasImage ? (
+            <Image
+              src={image}
+              alt={label}
+              fill
+              sizes="(max-width: 768px) 144px, 176px"
+              className="object-cover transition-transform duration-700 group-hover:scale-105"
+            />
+          ) : (
+            // Placeholder state — shows a branded "No products yet" tile
+            <div className="w-full h-full bg-gradient-to-br from-gray-100 to-gray-50 flex flex-col items-center justify-center gap-2 p-3">
+              <div className="w-10 h-10 rounded-full bg-white border border-gray-200 flex items-center justify-center">
+                <svg className="w-5 h-5 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                </svg>
+              </div>
+              <span className="text-[10px] text-gray-400 text-center font-medium leading-tight">Coming Soon</span>
+            </div>
+          )}
+
+          {/* On hero card: overlay with type name */}
+          {isHero && hasImage && (
+            <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent z-10 flex items-end p-3">
+              <span className="text-white font-heading font-bold text-sm tracking-wide">{label}</span>
+            </div>
+          )}
+
+          {/* Subtle hover overlay */}
+          {!isHero && (
+            <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors duration-300 z-10" />
+          )}
+        </TiltWrapper>
+
+        {!isHero && (
+          <span className="font-heading font-medium text-sm text-gray-800 group-hover:text-accent-blue transition-colors text-center">
+            {label}
+          </span>
+        )}
+      </motion.div>
+    </Link>
+  );
 }
 
 export default function Categories({ products = [] }) {
@@ -92,8 +168,7 @@ export default function Categories({ products = [] }) {
         {/* Three product type groups */}
         <div className="space-y-12 md:space-y-16">
           {productTypes.map((type, typeIdx) => {
-            // Find the best image for this type's hero
-            const heroImage = getProductImage(products, type.categoryMatch, null) || type.fallbackImage;
+            const heroImage = resolveImage(products, type.categoryMatch, null);
 
             return (
               <motion.div
@@ -106,7 +181,6 @@ export default function Categories({ products = [] }) {
                 {/* Type heading row */}
                 <div className="flex items-center justify-between mb-6">
                   <div className="flex items-center gap-3">
-                    {/* Gold accent bar */}
                     <span className="block w-1 h-7 rounded-full bg-accent-yellow" />
                     <h3 className="font-heading font-bold text-2xl md:text-3xl text-gray-900">
                       {type.name}
@@ -120,64 +194,34 @@ export default function Categories({ products = [] }) {
                   </Link>
                 </div>
 
-                {/* Horizontal scroll row: hero card + theme chips */}
+                {/* Horizontal scroll row */}
                 <div className="flex overflow-x-auto pb-4 hide-scrollbar gap-4 snap-x">
                   {/* Hero / Type card */}
-                  <Link href={type.link} className="snap-start shrink-0 group w-36 md:w-44">
-                    <TiltWrapper className="w-full aspect-[3/4] rounded-2xl overflow-hidden relative shadow-sm border border-gray-100 group-hover:shadow-lg transition-all duration-300">
-                      <Image
-                        src={heroImage}
-                        alt={type.name}
-                        fill
-                        sizes="(max-width: 768px) 144px, 176px"
-                        className="object-cover transition-transform duration-700 group-hover:scale-105"
-                      />
-                      {/* Dark overlay with type name */}
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent z-10 flex items-end p-3">
-                        <span className="text-white font-heading font-bold text-sm tracking-wide">
-                          {type.name}
-                        </span>
-                      </div>
-                    </TiltWrapper>
-                  </Link>
+                  <CategoryCard
+                    href={type.link}
+                    image={heroImage}
+                    label={type.name}
+                    delay={0}
+                    isHero
+                  />
 
-                  {/* Theme chips / sub-category cards */}
+                  {/* Theme sub-category cards */}
                   {type.themes.map((theme, themeIdx) => {
-                    const themeImage = getProductImage(products, type.categoryMatch, theme.name) || type.fallbackImage;
+                    const themeImage = resolveImage(products, type.categoryMatch, theme.name);
                     return (
-                      <Link
+                      <CategoryCard
                         key={theme.slug}
                         href={`/category/${theme.slug}`}
-                        className="snap-start shrink-0 group w-36 md:w-44"
-                      >
-                        <motion.div
-                          initial={{ opacity: 0, scale: 0.95 }}
-                          whileInView={{ opacity: 1, scale: 1 }}
-                          viewport={{ once: true }}
-                          transition={{ delay: themeIdx * 0.05 }}
-                          className="flex flex-col gap-3"
-                        >
-                          <div className="w-full aspect-[3/4] rounded-2xl overflow-hidden relative shadow-sm border border-gray-100 group-hover:shadow-lg transition-all duration-300">
-                            <Image
-                              src={themeImage}
-                              alt={theme.name}
-                              fill
-                              sizes="(max-width: 768px) 144px, 176px"
-                              className="object-cover transition-transform duration-700 group-hover:scale-105"
-                            />
-                            {/* Subtle overlay on hover */}
-                            <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors duration-300 z-10" />
-                          </div>
-                          <span className="font-heading font-medium text-sm text-gray-800 group-hover:text-accent-blue transition-colors text-center">
-                            {theme.name}
-                          </span>
-                        </motion.div>
-                      </Link>
+                        image={themeImage}
+                        label={theme.name}
+                        delay={themeIdx * 0.05 + 0.05}
+                        isHero={false}
+                      />
                     );
                   })}
                 </div>
 
-                {/* Thin divider between sections (not after last) */}
+                {/* Divider between groups */}
                 {typeIdx < productTypes.length - 1 && (
                   <div className="mt-10 h-px bg-gradient-to-r from-transparent via-gray-200 to-transparent" />
                 )}
