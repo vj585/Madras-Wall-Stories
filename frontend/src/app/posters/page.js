@@ -7,9 +7,10 @@ export const dynamic = 'force-dynamic';
 
 export default async function PostersPage() {
   const allProducts = await getStorefrontProducts();
-  const posters = allProducts.filter(p => 
-    !p.category.toLowerCase().includes('polaroid') && 
-    !p.title.toLowerCase().includes('polaroid')
+  // Sync with DB category values set in AddProductDrawer
+  const POSTER_CATEGORIES = ['standard posters', 'premium posters', 'posters'];
+  const posters = allProducts.filter(p =>
+    POSTER_CATEGORIES.some(cat => (p.category || '').toLowerCase().includes(cat))
   );
 
   return (

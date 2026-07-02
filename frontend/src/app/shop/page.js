@@ -6,22 +6,67 @@ import TiltWrapper from '@/components/ui/TiltWrapper';
 
 export const dynamic = 'force-dynamic';
 
-export default async function ShopPage() {
-  const products = await getStorefrontProducts();
+// Category groups synced to DB values (AddProductDrawer categoryOptions)
+const CATEGORY_FILTERS = {
+  posters: ['standard posters', 'premium posters', 'posters'],
+  polaroids: ['polaroids', 'standard polaroid', 'custom polaroid'],
+  stickers: ['stickers', 'standard sticker'],
+};
+
+const FILTER_TABS = [
+  { label: 'All', value: '' },
+  { label: 'Posters', value: 'posters' },
+  { label: 'Polaroids', value: 'polaroids' },
+  { label: 'Stickers', value: 'stickers' },
+];
+
+export default async function ShopPage({ searchParams }) {
+  const resolved = await searchParams;
+  const activeFilter = (resolved?.category || '').toLowerCase();
+  const allProducts = await getStorefrontProducts();
+
+  const products = activeFilter && CATEGORY_FILTERS[activeFilter]
+    ? allProducts.filter(p =>
+        CATEGORY_FILTERS[activeFilter].some(cat =>
+          (p.category || '').toLowerCase().includes(cat)
+        )
+      )
+    : allProducts;
 
   return (
     <div className="pt-32 pb-20 min-h-screen bg-background">
       <div className="container mx-auto px-4 max-w-6xl">
-        <div className="mb-12">
-          <h1 className="text-4xl md:text-5xl font-heading font-bold mb-4">All Prints</h1>
+        <div className="mb-8">
+          <h1 className="text-4xl md:text-5xl font-heading font-bold mb-2">All Prints</h1>
           <p className="text-gray-500 text-lg">Browse our full collection of premium aesthetic wall art.</p>
         </div>
+
+        {/* Filter Tabs */}
+        <div className="flex gap-2 overflow-x-auto hide-scrollbar pb-2 mb-8">
+          {FILTER_TABS.map(tab => {
+            const isActive = activeFilter === tab.value;
+            return (
+              <Link
+                key={tab.value}
+                href={tab.value ? `/shop?category=${tab.value}` : '/shop'}
+                className={`shrink-0 px-5 py-2 rounded-full text-sm font-medium transition-all border ${
+                  isActive
+                    ? 'bg-accent-blue text-white border-accent-blue shadow-sm'
+                    : 'bg-white text-gray-600 border-gray-200 hover:border-accent-blue hover:text-accent-blue'
+                }`}
+              >
+                {tab.label}
+              </Link>
+            );
+          })}
+        </div>
+
         {products.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-20 bg-white rounded-3xl border border-gray-100 shadow-sm">
             <div className="w-16 h-16 bg-gray-50 rounded-full flex items-center justify-center mb-4">
               <PackageOpen className="w-8 h-8 text-gray-300" />
             </div>
-            <h3 className="text-xl font-bold text-gray-900 mb-2">No posters available yet</h3>
+            <h3 className="text-xl font-bold text-gray-900 mb-2">No products found</h3>
             <p className="text-gray-500 text-center max-w-sm">We are currently curating our collection. Check back soon for premium prints.</p>
           </div>
         ) : (
