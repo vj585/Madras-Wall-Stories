@@ -3,6 +3,7 @@ import { usePathname } from 'next/navigation';
 import dynamic from 'next/dynamic';
 import Navbar from '@/components/layout/Navbar';
 import BottomNav from '@/components/layout/BottomNav';
+import PageTransition from '@/components/layout/PageTransition';
 
 const CartDrawer = dynamic(() => import('@/components/cart/CartDrawer'));
 const Footer = dynamic(() => import('@/components/layout/Footer'));
@@ -20,7 +21,9 @@ export default function StoreLayoutWrapper({ children }) {
       <Navbar />
       <CartDrawer />
       <main className="min-h-screen">
-        {children}
+        <PageTransition>
+          {children}
+        </PageTransition>
       </main>
       <Footer />
       <BottomNav />

@@ -2,6 +2,7 @@
 import { motion } from 'framer-motion';
 import Link from 'next/link';
 import Image from 'next/image';
+import TiltWrapper from '@/components/ui/TiltWrapper';
 
 const categories = [
   { name: 'Anime', fallbackImage: '/images/master.jpg', link: '/category/anime' },
@@ -54,16 +55,16 @@ export default function Categories({ products = [] }) {
                 transition={{ delay: idx * 0.1 }}
                 className="flex flex-col items-center gap-6"
               >
-                <div className="w-40 h-40 md:w-56 md:h-56 rounded-[2.5rem] overflow-hidden relative border border-gray-100 transition-all duration-500 shadow-sm group-hover:shadow-xl group-hover:-translate-y-2">
+                <TiltWrapper className="w-40 h-40 md:w-56 md:h-56 rounded-[2.5rem] overflow-hidden relative border border-gray-100 transition-all duration-500 shadow-sm group-hover:shadow-xl">
                   <div className="absolute inset-0 bg-black/5 group-hover:bg-transparent transition-colors z-10"></div>
                   <Image 
                     src={imageSrc} 
                     alt={cat.name} 
                     fill
                     sizes="(max-width: 768px) 160px, 224px"
-                    className="object-cover transform group-hover:scale-110 transition-transform duration-700"
+                    className="object-cover transition-transform duration-700 group-hover:scale-110" 
                   />
-                </div>
+                </TiltWrapper>
                 <h3 className="font-heading font-semibold text-lg md:text-xl text-gray-800 group-hover:text-accent-blue transition-colors">
                   {cat.name}
                 </h3>

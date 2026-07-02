@@ -5,6 +5,7 @@ import { Heart, ShoppingBag, Star, PackageOpen } from 'lucide-react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { useWishlist } from '@/context/WishlistContext';
+import TiltWrapper from '@/components/ui/TiltWrapper';
 
 export default React.memo(function Trending({ products = [] }) {
   const { wishlistItems, toggleWishlist, isInWishlist } = useWishlist();
@@ -52,9 +53,10 @@ export default React.memo(function Trending({ products = [] }) {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: idx * 0.1 }}
-                className="group relative bg-white rounded-2xl md:rounded-3xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-500 flex flex-col will-change-transform"
+                className="group relative h-full will-change-transform"
               >
-                <div className="relative aspect-[3/4] overflow-hidden bg-gray-50">
+                <TiltWrapper className="w-full h-full flex flex-col bg-white rounded-2xl md:rounded-3xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-500">
+                  <div className="relative aspect-[3/4] overflow-hidden bg-gray-50">
                   {product.stock <= 0 ? (
                     <div className="absolute top-3 left-3 z-10 bg-black/90 backdrop-blur-md text-white text-[10px] font-bold px-2.5 py-1 rounded-full uppercase tracking-widest">
                       Out of Stock
@@ -108,7 +110,7 @@ export default React.memo(function Trending({ products = [] }) {
                     <span className="font-bold text-lg text-gray-900">₹{product.salePrice || product.price}</span>
                     {product.salePrice && <span className="text-sm text-gray-400 line-through">₹{product.price}</span>}
                   </div>
-                </div>
+                </TiltWrapper>
               </motion.div>
             ))}
           </div>
