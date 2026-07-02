@@ -78,17 +78,18 @@ export default async function CategoryPage({ params }) {
 
   const allProducts = await getStorefrontProducts();
 
-  // Filter products by checking if any of the allowed match strings exist in the product's category, theme, or tags
   const filtered = allProducts.filter(p => {
     const fieldsToSearch = [
-      p.category || '',
-      p.theme || '',
+      p.category,
+      p.theme,
       ...(p.tags || [])
-    ].map(f => f.toLowerCase());
+    ]
+      .filter(Boolean)
+      .map(f => f.toLowerCase().trim());
     
     return categoryInfo.match.some(m => {
-      const matchStr = m.toLowerCase();
-      return fieldsToSearch.some(field => field.includes(matchStr) || matchStr.includes(field));
+      const matchStr = m.toLowerCase().trim();
+      return fieldsToSearch.some(field => field.includes(matchStr) || matchStr === field);
     });
   });
 
