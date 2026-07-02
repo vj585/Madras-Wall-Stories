@@ -44,44 +44,43 @@ const productTypes = [
   },
 ];
 
-// PLACEHOLDER: shown when no product image is available for a category
-const PLACEHOLDER = '/images/placeholder-category.jpg';
-
 /**
- * Smart image resolver — tries 3 levels before giving up:
- * 1. Product matching BOTH category + theme
- * 2. Any product matching just the theme name (across all categories)
- * 3. Any product matching the category (any theme)
- * 4. Returns null → caller shows placeholder
+ * For HERO card: finds any product in this category
  */
-function resolveImage(products, categoryMatches, themeName) {
-  if (!products || products.length === 0) return null;
-
+function resolveHeroImage(products, categoryMatches) {
   const catLower = categoryMatches.map(c => c.toLowerCase());
-  const themeLower = themeName?.toLowerCase();
-
-  // Level 1: category + theme
-  if (themeLower) {
-    const exact = products.find(p =>
-      catLower.some(c => (p.category || '').toLowerCase().includes(c)) &&
-      (p.theme || '').toLowerCase().includes(themeLower)
-    );
-    if (exact?.images?.[0]) return exact.images[0];
-
-    // Level 2: theme only (any category)
-    const themeOnly = products.find(p =>
-      (p.theme || '').toLowerCase().includes(themeLower)
-    );
-    if (themeOnly?.images?.[0]) return themeOnly.images[0];
-  }
-
-  // Level 3: category only (any theme) – used for hero card
-  const catOnly = products.find(p =>
+  const match = products.find(p =>
     catLower.some(c => (p.category || '').toLowerCase().includes(c)) &&
     p.images?.[0]
   );
-  if (catOnly?.images?.[0]) return catOnly.images[0];
+  return match?.images?.[0] || null;
+}
 
+/**
+ * For THEME cards: only returns an image if a product specifically
+ * matches that theme (with or without category constraint).
+ * Returns null if no theme-specific product exists → "Coming Soon" tile shown.
+ */
+function resolveThemeImage(products, categoryMatches, themeName) {
+  const catLower = categoryMatches.map(c => c.toLowerCase());
+  const themeLower = themeName.toLowerCase();
+
+  // Level 1: category + theme match
+  const exact = products.find(p =>
+    catLower.some(c => (p.category || '').toLowerCase().includes(c)) &&
+    (p.theme || '').toLowerCase().includes(themeLower) &&
+    p.images?.[0]
+  );
+  if (exact?.images?.[0]) return exact.images[0];
+
+  // Level 2: theme match in any category (e.g. product tagged "Anime" under any type)
+  const themeOnly = products.find(p =>
+    (p.theme || '').toLowerCase().includes(themeLower) &&
+    p.images?.[0]
+  );
+  if (themeOnly?.images?.[0]) return themeOnly.images[0];
+
+  // No match → return null so a "Coming Soon" placeholder is shown
   return null;
 }
 
@@ -168,7 +167,7 @@ export default function Categories({ products = [] }) {
         {/* Three product type groups */}
         <div className="space-y-12 md:space-y-16">
           {productTypes.map((type, typeIdx) => {
-            const heroImage = resolveImage(products, type.categoryMatch, null);
+            const heroImage = resolveHeroImage(products, type.categoryMatch);
 
             return (
               <motion.div
@@ -207,7 +206,7 @@ export default function Categories({ products = [] }) {
 
                   {/* Theme sub-category cards */}
                   {type.themes.map((theme, themeIdx) => {
-                    const themeImage = resolveImage(products, type.categoryMatch, theme.name);
+                    const themeImage = resolveThemeImage(products, type.categoryMatch, theme.name);
                     return (
                       <CategoryCard
                         key={theme.slug}
