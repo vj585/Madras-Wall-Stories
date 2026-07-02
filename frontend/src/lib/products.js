@@ -9,7 +9,7 @@ import Product from '@/models/Product';
 export async function getStorefrontProducts(options = {}) {
   await connectDB();
   
-  const query = { status: 'Active' };
+  const query = { $or: [{ status: 'Active' }, { status: { $exists: false } }] };
   
   if (options.category) query.category = options.category;
   if (options.theme) query.theme = options.theme;
@@ -45,7 +45,7 @@ export async function getStorefrontProducts(options = {}) {
 export async function getProductBySlug(slug) {
   await connectDB();
   
-  const product = await Product.findOne({ slug, status: 'Active' }).lean().exec();
+  const product = await Product.findOne({ slug, $or: [{ status: 'Active' }, { status: { $exists: false } }] }).lean().exec();
   
   if (!product) return null;
   
@@ -61,7 +61,7 @@ export async function getRelatedProducts(currentProduct, limit = 4) {
   
   const products = await Product.find({ 
     slug: { $ne: currentProduct.slug },
-    status: 'Active'
+    $or: [{ status: 'Active' }, { status: { $exists: false } }]
   })
     .lean()
     .exec();

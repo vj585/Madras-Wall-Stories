@@ -23,7 +23,7 @@ export async function POST(request) {
         product = await Product.findOne({ slug: item.slug }).lean();
       }
 
-      if (!product || product.status !== 'Active') {
+      if (!product || (product.status && product.status !== 'Active')) {
         invalidItems.push(item);
       }
     }

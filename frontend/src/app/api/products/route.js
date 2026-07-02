@@ -8,7 +8,7 @@ export async function GET(request) {
     const activeOnly = searchParams.get('activeOnly');
     
     await connectDB();
-    const query = activeOnly === 'true' ? { status: 'Active' } : {};
+    const query = activeOnly === 'true' ? { $or: [{ status: 'Active' }, { status: { $exists: false } }] } : {};
     const products = await Product.find(query).sort({ displayOrder: 1, createdAt: -1 });
     
     // Migration fallback for legacy products
