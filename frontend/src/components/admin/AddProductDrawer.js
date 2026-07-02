@@ -48,6 +48,7 @@ export default function AddProductDrawer({ isOpen, onClose, editingProduct = nul
 
   const [formData, setFormData] = useState(initialFormState);
 
+  const [isCustomTheme, setIsCustomTheme] = useState(false);
   const [errors, setErrors] = useState({});
   const [primaryImage, setPrimaryImage] = useState(null);
   const [galleryImages, setGalleryImages] = useState([]);
@@ -60,13 +61,17 @@ export default function AddProductDrawer({ isOpen, onClose, editingProduct = nul
   useEffect(() => {
     if (isOpen) {
       if (editingProduct) {
+        const themeValue = editingProduct.theme || editingProduct.subcategory || '';
+        const isCustom = themeValue && !themeOptions.includes(themeValue);
+        
         setFormData({
           ...initialFormState,
           name: editingProduct.title || '',
           slug: editingProduct.slug || '',
           shortDescription: editingProduct.shortDescription || '',
           fullDescription: editingProduct.description || '',
-          category: editingProduct.category || 'Posters',
+          category: editingProduct.category || 'Standard Posters',
+          theme: themeValue,
           subcategory: editingProduct.subcategory || '',
           tags: editingProduct.tags?.join(', ') || '',
           variants: editingProduct.variants?.length > 0 ? editingProduct.variants : initialFormState.variants,
@@ -78,6 +83,7 @@ export default function AddProductDrawer({ isOpen, onClose, editingProduct = nul
           newArrival: editingProduct.newArrival || false,
         });
         setIsSlugManual(true);
+        setIsCustomTheme(isCustom);
         if (editingProduct.images && editingProduct.images.length > 0) {
           setPrimaryImage(editingProduct.images[0]);
           setGalleryImages(editingProduct.images.slice(1));
@@ -88,6 +94,7 @@ export default function AddProductDrawer({ isOpen, onClose, editingProduct = nul
       } else {
         setFormData(initialFormState);
         setIsSlugManual(false);
+        setIsCustomTheme(false);
         setPrimaryImage(null);
         setGalleryImages([]);
         setErrors({});
@@ -418,33 +425,62 @@ export default function AddProductDrawer({ isOpen, onClose, editingProduct = nul
                   <label className="block text-xs font-medium text-gray-700 mb-1">Full Description</label>
                   <textarea name="fullDescription" value={formData.fullDescription} onChange={handleChange} rows="4" className="w-full px-3 py-2 bg-white border border-gray-200 rounded-lg text-sm outline-none focus:ring-1 focus:ring-accent-blue resize-none"></textarea>
                 </div>
-                <div>
-                  <label className="block text-xs font-medium text-gray-700 mb-2">Categories *</label>
-                  <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
-                    {categoryOptions.map(cat => {
-                      const isSelected = formData.category ? formData.category.split(',').map(c => c.trim()).includes(cat) : false;
-                      return (
-                        <label key={cat} className={`flex items-center gap-2 p-2 border rounded-lg cursor-pointer text-sm transition-colors ${isSelected ? 'bg-accent-blue/10 border-accent-blue text-accent-blue font-medium' : 'bg-white border-gray-200 text-gray-700 hover:bg-gray-50'}`}>
-                          <input 
-                            type="checkbox" 
-                            className="hidden" 
-                            checked={isSelected}
-                            onChange={() => handleCategoryChange(cat)}
-                          />
-                          <div className={`w-4 h-4 rounded border flex items-center justify-center shrink-0 transition-colors ${isSelected ? 'bg-accent-blue border-accent-blue' : 'border-gray-300'}`}>
-                            {isSelected && <Check className="w-3 h-3 text-white" />}
-                          </div>
-                          <span className="truncate">{cat}</span>
-                        </label>
-                      );
-                    })}
-                  </div>
-                </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
                   <div>
-                    <label className="block text-xs font-medium text-gray-700 mb-1">Subcategory</label>
-                    <input type="text" name="subcategory" value={formData.subcategory} onChange={handleChange} className="w-full px-3 py-2 bg-white border border-gray-200 rounded-lg text-sm outline-none focus:ring-1 focus:ring-accent-blue" placeholder="e.g. Movies" />
+                    <label className="block text-xs font-medium text-gray-700 mb-1">Product Type *</label>
+                    <select 
+                      name="category" 
+                      value={formData.category} 
+                      onChange={handleChange} 
+                      className="w-full px-3 py-2 bg-white border border-gray-200 rounded-lg text-sm outline-none focus:ring-1 focus:ring-accent-blue"
+                    >
+                      {productTypeOptions.map(type => (
+                        <option key={type} value={type}>{type}</option>
+                      ))}
+                    </select>
                   </div>
+                  <div>
+                    <label className="block text-xs font-medium text-gray-700 mb-1">Theme / Collection</label>
+                    <select 
+                      name="themeSelect" 
+                      value={isCustomTheme ? 'Other' : (themeOptions.includes(formData.theme) ? formData.theme : (formData.theme ? 'Other' : ''))} 
+                      onChange={(e) => {
+                        if (e.target.value === 'Other') {
+                          setIsCustomTheme(true);
+                          if(themeOptions.includes(formData.theme)) {
+                            setFormData(prev => ({ ...prev, theme: '' }));
+                          }
+                        } else {
+                          setIsCustomTheme(false);
+                          setFormData(prev => ({ ...prev, theme: e.target.value }));
+                        }
+                      }}
+                      className="w-full px-3 py-2 bg-white border border-gray-200 rounded-lg text-sm outline-none focus:ring-1 focus:ring-accent-blue"
+                    >
+                      <option value="">Select Theme (Optional)</option>
+                      {themeOptions.map(theme => (
+                        <option key={theme} value={theme}>{theme}</option>
+                      ))}
+                      <option value="Other">Other (Specify below)</option>
+                    </select>
+                  </div>
+                </div>
+                
+                {isCustomTheme && (
+                  <div className="mt-4">
+                    <label className="block text-xs font-medium text-gray-700 mb-1">Custom Theme</label>
+                    <input 
+                      type="text" 
+                      name="theme" 
+                      value={formData.theme} 
+                      onChange={handleChange} 
+                      className="w-full px-3 py-2 bg-white border border-gray-200 rounded-lg text-sm outline-none focus:ring-1 focus:ring-accent-blue" 
+                      placeholder="e.g. Cyberpunk" 
+                    />
+                  </div>
+                )}
+
+                <div className="mt-4">
                   <div>
                     <label className="block text-xs font-medium text-gray-700 mb-1">Tags (comma separated)</label>
                     <input type="text" name="tags" value={formData.tags} onChange={handleChange} className="w-full px-3 py-2 bg-white border border-gray-200 rounded-lg text-sm outline-none focus:ring-1 focus:ring-accent-blue" placeholder="e.g. Marvel, Miles Morales, Action" />
