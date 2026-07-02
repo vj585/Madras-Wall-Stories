@@ -33,6 +33,7 @@ export default function Checkout() {
   const [isAddingNewAddress, setIsAddingNewAddress] = useState(false);
   const [isSessionLoading, setIsSessionLoading] = useState(true);
   const [invalidCartItems, setInvalidCartItems] = useState([]);
+  const [outOfStockItems, setOutOfStockItems] = useState([]);
   const [isValidatingCart, setIsValidatingCart] = useState(true);
 
   useEffect(() => {
@@ -47,10 +48,20 @@ export default function Checkout() {
     })
     .then(res => res.json())
     .then(data => {
-      if (data.success && data.invalidItems.length > 0) {
-        setInvalidCartItems(data.invalidItems);
+      if (data.success) {
+        if (data.invalidItems && data.invalidItems.length > 0) {
+          setInvalidCartItems(data.invalidItems);
+        } else {
+          setInvalidCartItems([]);
+        }
+        if (data.outOfStockItems && data.outOfStockItems.length > 0) {
+          setOutOfStockItems(data.outOfStockItems);
+        } else {
+          setOutOfStockItems([]);
+        }
       } else {
         setInvalidCartItems([]);
+        setOutOfStockItems([]);
       }
     })
     .catch(err => console.error("Cart validation failed", err))
@@ -216,6 +227,34 @@ export default function Checkout() {
                   if(idx !== -1) removeFromCart(idx);
                 }} 
                 className="text-sm bg-red-100 text-red-700 px-3 py-1.5 rounded-lg hover:bg-red-200 transition-colors font-medium shrink-0"
+              >
+                Remove
+              </button>
+            </div>
+          ))}
+        </div>
+      </div>
+    );
+  }
+
+  if (outOfStockItems.length > 0 && step < 4) {
+    return (
+      <div className="pt-32 pb-20 min-h-[70vh] bg-background flex flex-col items-center justify-center px-4">
+        <AlertCircle className="w-16 h-16 text-orange-500 mb-4" />
+        <h2 className="text-2xl font-bold mb-2 text-center">Some items are out of stock</h2>
+        <p className="text-gray-500 max-w-md text-center mb-6">
+          The following items have insufficient stock. Please remove them from your cart to proceed with checkout.
+        </p>
+        <div className="space-y-4 mb-8 w-full max-w-md">
+          {outOfStockItems.map((item, index) => (
+            <div key={`${item.id}-${index}`} className="p-4 border border-orange-200 bg-orange-50 rounded-xl flex justify-between items-center gap-4">
+              <span className="font-medium text-orange-800 line-clamp-1">{item.name}</span>
+              <button 
+                onClick={() => {
+                  const idx = cartItems.findIndex(ci => ci.id === item.id && ci.size === item.size);
+                  if(idx !== -1) removeFromCart(idx);
+                }} 
+                className="text-sm bg-orange-100 text-orange-700 px-3 py-1.5 rounded-lg hover:bg-orange-200 transition-colors font-medium shrink-0"
               >
                 Remove
               </button>
