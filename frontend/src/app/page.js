@@ -1,5 +1,6 @@
 import nextDynamic from 'next/dynamic';
 import Hero from '@/components/home/Hero';
+import Marquee from '@/components/home/Marquee';
 import Categories from '@/components/home/Categories';
 import Trending from '@/components/home/Trending';
 import Memories from '@/components/home/Memories';
@@ -19,6 +20,7 @@ export default async function Home() {
   return (
     <>
       <Hero initialBanners={banners} />
+      <Marquee />
       <Categories products={products} />
       <Memories banners={banners} />
       <Trending products={products} />
