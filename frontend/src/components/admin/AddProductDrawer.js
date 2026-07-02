@@ -12,7 +12,7 @@ const Section = ({ title, children }) => (
   </div>
 );
 
-const categoryOptions = ['Posters', 'Standard Posters', 'Premium Posters', 'Polaroids', 'Custom Prints', 'Apparel'];
+const categoryOptions = ['Posters', 'Standard Posters', 'Premium Posters', 'Polaroids', 'Stickers', 'Custom Prints', 'Apparel'];
 
 export default function AddProductDrawer({ isOpen, onClose, editingProduct = null, existingProducts = [] }) {
   // Form State
