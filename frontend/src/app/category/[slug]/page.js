@@ -1,5 +1,6 @@
 import Link from 'next/link';
-import { getStorefrontProducts, getProductDesignType } from '@/lib/products';
+import { getStorefrontProducts } from '@/lib/products';
+import { getProductDesignType } from '@/lib/productUtils';
 import Image from 'next/image';
 
 export const dynamic = 'force-dynamic';

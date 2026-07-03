@@ -52,7 +52,7 @@ const productTypes = [
   },
 ];
 
-import { getProductDesignType } from '@/lib/products';
+import { getProductDesignType } from '@/lib/productUtils';
 
 /**
  * For HERO card: finds any product in this category
