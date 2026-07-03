@@ -62,7 +62,8 @@ export async function processAndSaveOrder(orderData) {
       throw new Error("Out of stock! Someone else just purchased one of these items.");
     } else {
       // Prepaid order where inventory failed. Must create order to track the refund.
-      orderData.paymentStatus = 'Refund Required';
+      orderData.paymentStatus = 'Paid';
+      orderData.refundStatus = 'Refund Required';
       orderData.statusTimeline = [{ status: 'Payment Captured - Inventory Failed', timestamp: new Date() }];
     }
   } else {

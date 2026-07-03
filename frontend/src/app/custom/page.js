@@ -161,15 +161,15 @@ export default function CustomPrintBuilder() {
 
       const uploadData = await uploadRes.json();
       
-      if (!uploadData.success) {
-        throw new Error(uploadData.error || 'Failed to upload image');
+      if (!uploadData.success || !uploadData.imageUrl) {
+        throw new Error(uploadData.error || 'Failed to upload image correctly.');
       }
 
       addToCart({
         id: `custom-${Date.now()}`,
         name: `Custom ${productType}`,
         price: price,
-        image: uploadData.url, // Store Cloudinary URL instead of base64
+        image: uploadData.imageUrl, // Fix: use imageUrl from API response
         size: size,
         frame: frame,
         quantity: 1,

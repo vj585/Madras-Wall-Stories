@@ -37,11 +37,10 @@ const STATUS_STYLES = {
   'Shipped': 'bg-indigo-100 text-indigo-700 border-indigo-200',
   'Out For Delivery': 'bg-cyan-100 text-cyan-700 border-cyan-200',
   'Delivered': 'bg-green-100 text-green-700 border-green-200',
-  'Refund Required': 'bg-red-50 text-red-600 border-red-300 font-bold animate-pulse',
   'Cancelled': 'bg-red-100 text-red-700 border-red-200',
 };
 
-const ALL_STATUSES = ['Pending', 'Processing', 'Printing', 'Quality Check', 'Packed', 'Shipped', 'Out For Delivery', 'Delivered', 'Refund Required', 'Cancelled'];
+const ALL_STATUSES = ['Pending', 'Processing', 'Printing', 'Quality Check', 'Packed', 'Shipped', 'Out For Delivery', 'Delivered', 'Cancelled'];
 
 function ImageModal({ src, onClose }) {
   return (
@@ -688,6 +687,11 @@ This will mark the order as Shipped and notify the customer. Proceed?`;
                       order.paymentStatus === 'Pending' ? 'bg-amber-100 text-amber-700' :
                       'bg-red-100 text-red-700'
                     }`}>{order.paymentStatus}</span>
+                    {order.refundStatus === 'Refund Required' && (
+                      <span className="inline-flex px-2 py-0.5 rounded-full text-xs font-bold bg-red-50 text-red-600 border border-red-300 animate-pulse">
+                        Refund Required
+                      </span>
+                    )}
                   </div>
                   {order.razorpayPaymentId && (
                     <div className="flex items-center gap-1 mt-1">
@@ -764,8 +768,8 @@ export default function OrdersPage() {
     const matchStatus = statusFilter === 'All' || o.orderStatus === statusFilter;
     const matchPayment = paymentFilter === 'All' ||
       (paymentFilter === 'COD' && o.paymentMethod === 'COD') ||
-      (paymentFilter === 'Prepaid' && o.paymentMethod === 'Razorpay' && o.paymentStatus !== 'Refund Required') ||
-      (paymentFilter === 'Refund' && o.paymentStatus === 'Refund Required');
+      (paymentFilter === 'Prepaid' && o.paymentMethod === 'Razorpay' && o.refundStatus !== 'Refund Required') ||
+      (paymentFilter === 'Refund' && o.refundStatus === 'Refund Required');
     return matchSearch && matchStatus && matchPayment;
   });
 
@@ -897,11 +901,20 @@ export default function OrdersPage() {
                       </td>
                       <td className="p-4 font-bold text-gray-900">₹{order.amount.toLocaleString('en-IN')}</td>
                       <td className="p-4">
-                        <span className={`inline-flex px-2 py-1 rounded-full text-xs font-semibold ${
-                          order.paymentStatus === 'Paid' ? 'bg-green-100 text-green-700' :
-                          order.paymentStatus === 'Pending' ? 'bg-amber-100 text-amber-700' :
-                          'bg-red-100 text-red-700'
-                        }`}>{order.paymentStatus}</span>
+                        <div className="flex flex-col items-start">
+                          <span className={`inline-flex px-2 py-1 rounded-full text-xs font-semibold whitespace-nowrap ${
+                            order.paymentStatus === 'Paid' ? 'bg-green-100 text-green-700' :
+                            order.paymentStatus === 'Pending' ? 'bg-amber-100 text-amber-700' :
+                            'bg-red-100 text-red-700'
+                          }`}>
+                            {order.paymentStatus}
+                          </span>
+                          {order.refundStatus === 'Refund Required' && (
+                            <span className="inline-flex mt-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-red-50 text-red-600 border border-red-300 animate-pulse">
+                              Refund Required
+                            </span>
+                          )}
+                        </div>
                         <p className="text-xs text-gray-400 mt-1">{order.paymentMethod}</p>
                       </td>
                       <td className="p-4">

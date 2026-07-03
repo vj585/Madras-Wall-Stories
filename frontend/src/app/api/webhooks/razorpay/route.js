@@ -79,11 +79,6 @@ export async function POST(request) {
 
   } catch (error) {
     console.error("Webhook processing error:", error);
-    // If it's an inventory error, the order is already saved as Refund Required by processAndSaveOrder!
-    // So we STILL return 200 to Razorpay, because we successfully handled the business logic!
-    if (error.message && error.message.includes('Out of stock')) {
-       return NextResponse.json({ success: true, message: 'Processed with inventory failure' }, { status: 200 });
-    }
     // For other unexpected errors, return 500 so Razorpay retries
     return NextResponse.json({ success: false, error: 'Internal server error' }, { status: 500 });
   }

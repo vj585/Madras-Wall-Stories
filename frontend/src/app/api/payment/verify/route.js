@@ -74,10 +74,6 @@ export async function POST(request) {
 
   } catch (error) {
     console.error("Payment Verification Error full details:", error);
-    // If it's the custom inventory error
-    if (error.message.includes('Out of stock')) {
-       return NextResponse.json({ success: false, error: error.message }, { status: 400 });
-    }
     return NextResponse.json({ success: false, error: 'We encountered a temporary issue while verifying your payment. Please contact support if your account was charged.' }, { status: 500 });
   }
 }
