@@ -111,10 +111,10 @@ function CategoryCard({ href, image, label, delay = 0, isHero = false, designTyp
       + (isHero ? "rotate-[-2deg]" : "rotate-[2deg]");
     imageContainerClasses += "w-full aspect-[4/5] bg-amber-50 ";
   } else if (isSticker) {
-    // Sticker: white card, thick rounded border + dashed outer ring — classic die-cut sticker look
+    // Sticker: white card, thick purple border + soft outer ring — die-cut sticker look
     tiltClasses += "bg-white rounded-[2rem] p-2 hover:-translate-y-2 "
-      + "border-[3px] border-purple-400 outline outline-[3px] outline-dashed outline-purple-200 outline-offset-2 "
-      + "shadow-md group-hover:shadow-purple-200/60 ";
+      + "border-[3px] border-purple-400 ring-2 ring-purple-200 ring-offset-2 "
+      + "shadow-md ";
     imageContainerClasses += "w-full aspect-[3/4] bg-gray-50 rounded-[1.4rem] overflow-hidden ";
   } else {
     // Posters design: default edge-to-edge
