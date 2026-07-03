@@ -62,12 +62,31 @@ export default async function ShopPage({ searchParams }) {
         </div>
 
         {products.length === 0 ? (
-          <div className="flex flex-col items-center justify-center py-20 bg-white rounded-3xl border border-gray-100 shadow-sm">
-            <div className="w-16 h-16 bg-gray-50 rounded-full flex items-center justify-center mb-4">
-              <PackageOpen className="w-8 h-8 text-gray-300" />
+          <div className="flex flex-col items-center justify-center py-24 text-center">
+            {/* Illustrated empty state */}
+            <div className="relative mb-8">
+              <div className="text-[80px] leading-none select-none">🎨</div>
+              <div className="absolute -top-2 -right-4 text-3xl animate-bounce">✨</div>
+              <div className="absolute -bottom-2 -left-4 text-3xl animate-pulse">🖼️</div>
             </div>
-            <h3 className="text-xl font-bold text-gray-900 mb-2">No products found</h3>
-            <p className="text-gray-500 text-center max-w-sm">We are currently curating our collection. Check back soon for premium prints.</p>
+            <h3 className="text-2xl font-heading font-bold text-gray-900 mb-3">
+              {activeFilter ? `No ${activeFilter} yet` : 'Nothing here yet'}
+            </h3>
+            <p className="text-gray-500 max-w-sm mb-8 leading-relaxed">
+              We're constantly curating new prints. Check out our other collections while we prepare something epic.
+            </p>
+            {/* Suggested categories */}
+            <div className="flex flex-wrap gap-3 justify-center">
+              <Link href="/posters" className="flex items-center gap-2 px-5 py-2.5 bg-white border border-gray-200 rounded-full text-sm font-medium text-gray-700 hover:border-accent-blue hover:text-accent-blue transition-all shadow-sm">
+                🎌 Posters
+              </Link>
+              <Link href="/polaroids" className="flex items-center gap-2 px-5 py-2.5 bg-white border border-gray-200 rounded-full text-sm font-medium text-gray-700 hover:border-accent-blue hover:text-accent-blue transition-all shadow-sm">
+                📸 Polaroids
+              </Link>
+              <Link href="/custom" className="flex items-center gap-2 px-5 py-2.5 bg-black text-white rounded-full text-sm font-medium hover:bg-gray-800 transition-all shadow-sm">
+                ✦ Custom Print
+              </Link>
+            </div>
           </div>
         ) : (
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">

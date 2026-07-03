@@ -68,10 +68,10 @@ export default React.memo(function Trending({ products = [] }) {
                   )}
                   <button 
                     onClick={(e) => handleWishlist(e, product)}
-                    className={`absolute top-3 right-3 z-10 p-2 backdrop-blur-md rounded-full transition-all translate-y-2 group-hover:translate-y-0 ${
+                    className={`absolute top-3 right-3 z-10 p-2 backdrop-blur-md rounded-full transition-all md:translate-y-2 md:group-hover:translate-y-0 ${
                       isInWishlist(product.slug) 
                         ? 'text-red-500 bg-white opacity-100' 
-                        : 'text-gray-600 bg-white/50 hover:text-red-500 hover:bg-white opacity-0 group-hover:opacity-100'
+                        : 'text-gray-600 bg-white/80 hover:text-red-500 hover:bg-white opacity-100 md:opacity-0 md:group-hover:opacity-100'
                     }`}
                   >
                     <Heart className={`w-4 h-4 ${isInWishlist(product.slug) ? 'fill-current' : ''}`} />

@@ -14,15 +14,49 @@ export default async function PostersPage() {
   );
 
   return (
-    <div className="pt-24 pb-20 min-h-screen bg-background">
-      <div className="container mx-auto px-4 lg:px-8 max-w-6xl">
-        
-        {/* Header Section */}
-        <div className="text-center mb-12 mt-8">
-          <h1 className="text-4xl md:text-5xl font-heading font-bold text-gray-900 mb-4">Posters</h1>
-          <p className="text-gray-500 max-w-2xl mx-auto text-lg">High-quality, museum-grade posters to elevate your space. Explore our curated collections or design your own masterpiece.</p>
+    <div className="min-h-screen bg-background">
+
+      {/* ── Cinematic Hero Banner ── */}
+      <div className="relative h-[60vh] md:h-[70vh] overflow-hidden">
+        <Image
+          src="/images/batman.jpg"
+          alt="Posters hero"
+          fill
+          className="object-cover object-center scale-105"
+          priority
+        />
+        {/* Dark gradient overlay */}
+        <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/40 to-black/80" />
+
+        {/* Content */}
+        <div className="absolute inset-0 flex flex-col items-center justify-center text-center px-6 pt-16">
+          <p className="text-amber-400 text-xs font-bold uppercase tracking-[0.3em] mb-4 opacity-90">
+            ✦ Premium Wall Art ✦
+          </p>
+          <h1 className="text-5xl md:text-7xl lg:text-8xl font-heading font-black text-white leading-none mb-6 drop-shadow-2xl">
+            Your Walls<br />Deserve a Story
+          </h1>
+          <p className="text-white/70 text-base md:text-lg max-w-xl mb-10 font-light leading-relaxed">
+            Museum-grade posters, delivered to your door. From anime to cinema, find the artwork that speaks to you.
+          </p>
+          <div className="flex flex-col sm:flex-row gap-4">
+            <a href="#posters-grid" className="px-8 py-4 bg-white text-black rounded-full font-bold hover:bg-amber-400 transition-all duration-300 shadow-2xl hover:shadow-amber-400/30 text-sm tracking-wide">
+              Shop Posters ↓
+            </a>
+            <Link href="/custom" className="px-8 py-4 bg-white/10 backdrop-blur-md text-white border border-white/30 rounded-full font-semibold hover:bg-white/20 transition-all duration-300 text-sm tracking-wide">
+              Custom Print →
+            </Link>
+          </div>
         </div>
 
+        {/* Scroll indicator */}
+        <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 text-white/50">
+          <div className="w-px h-10 bg-gradient-to-b from-transparent to-white/40" />
+        </div>
+      </div>
+
+      <div id="posters-grid" className="container mx-auto px-4 lg:px-8 max-w-6xl pt-16 pb-20">
+        
         {/* Custom Poster Banner */}
         <div className="mb-16 bg-gradient-to-br from-blue-50 to-indigo-50 rounded-3xl p-8 md:p-12 relative overflow-hidden flex flex-col md:flex-row items-center justify-between gap-8 border border-blue-100">
           <div className="relative z-10 max-w-lg">
@@ -51,12 +85,24 @@ export default async function PostersPage() {
         <h3 className="text-2xl font-heading font-bold mb-6">Shop Posters</h3>
         
         {posters.length === 0 ? (
-          <div className="flex flex-col items-center justify-center py-20 bg-white rounded-3xl border border-gray-100 shadow-sm">
-            <div className="w-16 h-16 bg-gray-50 rounded-full flex items-center justify-center mb-4">
-              <PackageOpen className="w-8 h-8 text-gray-300" />
+          <div className="flex flex-col items-center justify-center py-24 text-center">
+            <div className="relative mb-8">
+              <div className="text-[80px] leading-none select-none">🎌</div>
+              <div className="absolute -top-2 -right-4 text-3xl animate-bounce">✨</div>
+              <div className="absolute -bottom-2 -left-4 text-3xl animate-pulse">🖼️</div>
             </div>
-            <h3 className="text-xl font-bold text-gray-900 mb-2">No posters available yet</h3>
-            <p className="text-gray-500 text-center max-w-sm">We are currently curating our collection. Check back soon for premium prints.</p>
+            <h3 className="text-2xl font-heading font-bold text-gray-900 mb-3">Posters dropping soon</h3>
+            <p className="text-gray-500 max-w-sm mb-8 leading-relaxed">
+              We're selecting only the most premium pieces. Come back soon — or design your own!
+            </p>
+            <div className="flex flex-wrap gap-3 justify-center">
+              <Link href="/custom" className="px-6 py-3 bg-black text-white rounded-full text-sm font-medium hover:bg-gray-800 transition-all">
+                ✦ Design Custom Poster
+              </Link>
+              <Link href="/shop" className="px-6 py-3 bg-white border border-gray-200 rounded-full text-sm font-medium text-gray-700 hover:border-black transition-all">
+                Browse All Prints
+              </Link>
+            </div>
           </div>
         ) : (
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
