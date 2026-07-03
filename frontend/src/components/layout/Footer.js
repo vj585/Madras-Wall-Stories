@@ -52,7 +52,6 @@ export default function Footer() {
               <li><Link href="/returns" className="text-gray-400 hover:text-white transition-colors">Returns & Refunds</Link></li>
               <li><Link href="/faq" className="text-gray-400 hover:text-white transition-colors">FAQ</Link></li>
               <li><Link href="/contact" className="text-gray-400 hover:text-white transition-colors">Contact Us</Link></li>
-              <li><Link href="/admin" className="text-accent-yellow hover:text-white transition-colors mt-2 block font-medium">Admin Portal</Link></li>
             </ul>
           </div>
 
