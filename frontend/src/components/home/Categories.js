@@ -94,8 +94,29 @@ function resolveThemeImage(products, categoryMatches, themeName, fallbackImage) 
   return fallbackImage;
 }
 
-function CategoryCard({ href, image, label, delay = 0, isHero = false }) {
+function CategoryCard({ href, image, label, delay = 0, isHero = false, designType = 'posters' }) {
   const hasImage = !!image;
+
+  // Visual styles based on designType
+  const isPolaroid = designType === 'polaroids';
+  const isSticker = designType === 'stickers';
+
+  let tiltClasses = "w-full relative shadow-sm transition-all duration-300 group-hover:shadow-lg ";
+  let imageContainerClasses = "relative ";
+
+  if (isPolaroid) {
+    // Polaroid design: white background, thick bottom padding, slight rotation
+    tiltClasses += "bg-white p-2 pb-10 md:p-3 md:pb-12 hover:-translate-y-2 group-hover:rotate-0 " + (isHero ? "rotate-[-2deg]" : "rotate-[2deg]");
+    imageContainerClasses += "w-full aspect-[4/5] bg-gray-100 ";
+  } else if (isSticker) {
+    // Sticker design: thick white outline, rounded corners
+    tiltClasses += "bg-white rounded-3xl p-2 hover:-translate-y-2 border-2 border-gray-100 drop-shadow-sm ";
+    imageContainerClasses += "w-full aspect-[3/4] bg-gray-50 rounded-[1.25rem] overflow-hidden ";
+  } else {
+    // Posters design: default edge-to-edge
+    tiltClasses += "rounded-2xl overflow-hidden border border-gray-100 aspect-[3/4] ";
+    imageContainerClasses += "w-full h-full bg-gray-50 ";
+  }
 
   return (
     <Link href={href} className="snap-start shrink-0 group w-36 md:w-44">
@@ -106,41 +127,51 @@ function CategoryCard({ href, image, label, delay = 0, isHero = false }) {
         transition={{ delay }}
         className="flex flex-col gap-3"
       >
-        <TiltWrapper className="w-full aspect-[3/4] rounded-2xl overflow-hidden relative shadow-sm border border-gray-100 group-hover:shadow-lg transition-all duration-300">
-          {hasImage ? (
-            <Image
-              src={image}
-              alt={label}
-              fill
-              sizes="(max-width: 768px) 144px, 176px"
-              className="object-cover transition-transform duration-700 group-hover:scale-105"
-            />
-          ) : (
-            // Placeholder state — shows a branded "No products yet" tile
-            <div className="w-full h-full bg-gradient-to-br from-gray-100 to-gray-50 flex flex-col items-center justify-center gap-2 p-3">
-              <div className="w-10 h-10 rounded-full bg-white border border-gray-200 flex items-center justify-center">
-                <svg className="w-5 h-5 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                </svg>
+        <TiltWrapper className={tiltClasses}>
+          <div className={imageContainerClasses}>
+            {hasImage ? (
+              <Image
+                src={image}
+                alt={label}
+                fill
+                sizes="(max-width: 768px) 144px, 176px"
+                className={`object-cover transition-transform duration-700 group-hover:scale-105`}
+              />
+            ) : (
+              // Placeholder state
+              <div className="w-full h-full bg-gradient-to-br from-gray-100 to-gray-50 flex flex-col items-center justify-center gap-2 p-3">
+                <div className="w-10 h-10 rounded-full bg-white border border-gray-200 flex items-center justify-center">
+                  <svg className="w-5 h-5 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                  </svg>
+                </div>
+                <span className="text-[10px] text-gray-400 text-center font-medium leading-tight">Coming Soon</span>
               </div>
-              <span className="text-[10px] text-gray-400 text-center font-medium leading-tight">Coming Soon</span>
+            )}
+          </div>
+
+          {/* On hero card: overlay with type name (only for posters and stickers) */}
+          {isHero && hasImage && !isPolaroid && (
+            <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent z-10 flex items-end p-3 pointer-events-none rounded-[inherit]">
+              <span className="text-white font-heading font-bold text-sm tracking-wide">{label}</span>
             </div>
           )}
 
-          {/* On hero card: overlay with type name */}
-          {isHero && hasImage && (
-            <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent z-10 flex items-end p-3">
-              <span className="text-white font-heading font-bold text-sm tracking-wide">{label}</span>
+          {/* Polaroid label is placed on the white border itself */}
+          {isPolaroid && (
+            <div className="absolute bottom-2 md:bottom-3 left-0 right-0 text-center pointer-events-none">
+              <span className="text-gray-800 font-medium text-sm tracking-wide">{label}</span>
             </div>
           )}
 
           {/* Subtle hover overlay */}
           {!isHero && (
-            <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors duration-300 z-10" />
+            <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors duration-300 z-10 pointer-events-none rounded-[inherit]" />
           )}
         </TiltWrapper>
 
-        {!isHero && (
+        {/* Labels underneath for Posters and Stickers */}
+        {(!isHero && !isPolaroid) && (
           <span className="font-heading font-medium text-sm text-gray-800 group-hover:text-accent-blue transition-colors text-center">
             {label}
           </span>
@@ -204,7 +235,7 @@ export default function Categories({ products = [] }) {
                 </div>
 
                 {/* Horizontal scroll row */}
-                <div className="flex overflow-x-auto pb-4 hide-scrollbar gap-4 snap-x">
+                <div className="flex overflow-x-auto pb-6 pt-4 px-2 -mx-2 hide-scrollbar gap-4 snap-x">
                   {/* Hero / Type card */}
                   <CategoryCard
                     href={type.link}
@@ -212,6 +243,7 @@ export default function Categories({ products = [] }) {
                     label={type.name}
                     delay={0}
                     isHero
+                    designType={type.name.toLowerCase()}
                   />
 
                   {/* Theme sub-category cards */}
@@ -225,6 +257,7 @@ export default function Categories({ products = [] }) {
                         label={theme.name}
                         delay={themeIdx * 0.05 + 0.05}
                         isHero={false}
+                        designType={type.name.toLowerCase()}
                       />
                     );
                   })}
