@@ -97,30 +97,12 @@ function resolveThemeImage(products, categoryMatches, themeName, fallbackImage) 
 function CategoryCard({ href, image, label, delay = 0, isHero = false, designType = 'posters' }) {
   const hasImage = !!image;
 
-  // Visual styles based on designType
   const isPolaroid = designType === 'polaroids';
   const isSticker = designType === 'stickers';
 
-  let tiltClasses = "w-full relative shadow-sm transition-all duration-300 group-hover:shadow-lg ";
-  let imageContainerClasses = "relative ";
-
-  if (isPolaroid) {
-    // Polaroid: white card, warm amber offset drop-shadow like a real film photo
-    tiltClasses += "bg-white p-2 pb-10 md:p-3 md:pb-12 hover:-translate-y-2 group-hover:rotate-0 "
-      + "border border-amber-200 shadow-[3px_4px_0px_#d4a843] group-hover:shadow-[5px_7px_0px_#d4a843] "
-      + (isHero ? "rotate-[-2deg]" : "rotate-[2deg]");
-    imageContainerClasses += "w-full aspect-[4/5] bg-amber-50 ";
-  } else if (isSticker) {
-    // Sticker: white card, thick purple border + soft outer ring — die-cut sticker look
-    tiltClasses += "bg-white rounded-[2rem] p-2 hover:-translate-y-2 "
-      + "border-[3px] border-purple-400 ring-2 ring-purple-200 ring-offset-2 "
-      + "shadow-md ";
-    imageContainerClasses += "w-full aspect-[3/4] bg-gray-50 rounded-[1.4rem] overflow-hidden ";
-  } else {
-    // Posters design: default edge-to-edge
-    tiltClasses += "rounded-2xl overflow-hidden border border-gray-100 aspect-[3/4] ";
-    imageContainerClasses += "w-full h-full bg-gray-50 ";
-  }
+  // For Posters: TiltWrapper handles the full card shape
+  // For Polaroids/Stickers: TiltWrapper is just a plain animation wrapper, inner div handles shape
+  const tiltWrapperClass = isPolaroid || isSticker ? "" : "";
 
   return (
     <Link href={href} className="snap-start shrink-0 group w-36 md:w-44">
@@ -131,18 +113,62 @@ function CategoryCard({ href, image, label, delay = 0, isHero = false, designTyp
         transition={{ delay }}
         className="flex flex-col gap-3"
       >
-        <TiltWrapper className={tiltClasses}>
-          <div className={imageContainerClasses}>
+
+        {isPolaroid ? (
+          /* ── POLAROID CARD ── */
+          <div className={
+            "relative bg-white p-2 pb-10 md:p-2.5 md:pb-12 shadow-[3px_4px_0px_#d4a843] hover:shadow-[6px_8px_0px_#d4a843] "
+            + "border border-amber-200 transition-all duration-300 hover:-translate-y-1 "
+            + (isHero ? "rotate-[-2deg] hover:rotate-[-1deg]" : "rotate-[2deg] hover:rotate-[1deg]")
+          }>
+            <div className="relative w-full aspect-[4/5] bg-amber-50 overflow-hidden">
+              {hasImage ? (
+                <Image src={image} alt={label} fill sizes="(max-width: 768px) 144px, 176px"
+                  className="object-cover" />
+              ) : (
+                <div className="w-full h-full flex flex-col items-center justify-center gap-2 bg-amber-50">
+                  <span className="text-[10px] text-amber-300 font-medium">Coming Soon</span>
+                </div>
+              )}
+            </div>
+            {/* Polaroid text label on white bottom strip */}
+            <div className="absolute bottom-2 md:bottom-3 left-0 right-0 text-center">
+              <span className="text-gray-700 text-xs md:text-sm font-medium tracking-wider">{label}</span>
+            </div>
+          </div>
+
+        ) : isSticker ? (
+          /* ── STICKER CARD ── */
+          <div className={
+            "relative bg-white rounded-[2rem] p-2 "
+            + "border-[3px] border-purple-400 ring-2 ring-purple-200 ring-offset-2 "
+            + "shadow-md hover:shadow-lg hover:shadow-purple-200/50 hover:-translate-y-1 transition-all duration-300"
+          }>
+            <div className="relative w-full aspect-[3/4] rounded-[1.4rem] overflow-hidden bg-gray-50">
+              {hasImage ? (
+                <Image src={image} alt={label} fill sizes="(max-width: 768px) 144px, 176px"
+                  className="object-cover transition-transform duration-700 group-hover:scale-105" />
+              ) : (
+                <div className="w-full h-full flex flex-col items-center justify-center gap-2">
+                  <span className="text-[10px] text-purple-300 font-medium">Coming Soon</span>
+                </div>
+              )}
+              {/* Hero label overlay */}
+              {isHero && hasImage && (
+                <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent z-10 flex items-end p-3">
+                  <span className="text-white font-heading font-bold text-sm">{label}</span>
+                </div>
+              )}
+            </div>
+          </div>
+
+        ) : (
+          /* ── POSTER CARD (unchanged) ── */
+          <TiltWrapper className="w-full aspect-[3/4] rounded-2xl overflow-hidden relative shadow-sm border border-gray-100 group-hover:shadow-lg transition-all duration-300">
             {hasImage ? (
-              <Image
-                src={image}
-                alt={label}
-                fill
-                sizes="(max-width: 768px) 144px, 176px"
-                className={`object-cover transition-transform duration-700 group-hover:scale-105`}
-              />
+              <Image src={image} alt={label} fill sizes="(max-width: 768px) 144px, 176px"
+                className="object-cover transition-transform duration-700 group-hover:scale-105" />
             ) : (
-              // Placeholder state
               <div className="w-full h-full bg-gradient-to-br from-gray-100 to-gray-50 flex flex-col items-center justify-center gap-2 p-3">
                 <div className="w-10 h-10 rounded-full bg-white border border-gray-200 flex items-center justify-center">
                   <svg className="w-5 h-5 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -152,30 +178,19 @@ function CategoryCard({ href, image, label, delay = 0, isHero = false, designTyp
                 <span className="text-[10px] text-gray-400 text-center font-medium leading-tight">Coming Soon</span>
               </div>
             )}
-          </div>
+            {isHero && hasImage && (
+              <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent z-10 flex items-end p-3">
+                <span className="text-white font-heading font-bold text-sm tracking-wide">{label}</span>
+              </div>
+            )}
+            {!isHero && (
+              <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors duration-300 z-10" />
+            )}
+          </TiltWrapper>
+        )}
 
-          {/* On hero card: overlay with type name (only for posters and stickers) */}
-          {isHero && hasImage && !isPolaroid && (
-            <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent z-10 flex items-end p-3 pointer-events-none rounded-[inherit]">
-              <span className="text-white font-heading font-bold text-sm tracking-wide">{label}</span>
-            </div>
-          )}
-
-          {/* Polaroid label is placed on the white border itself */}
-          {isPolaroid && (
-            <div className="absolute bottom-2 md:bottom-3 left-0 right-0 text-center pointer-events-none">
-              <span className="text-gray-800 font-medium text-sm tracking-wide">{label}</span>
-            </div>
-          )}
-
-          {/* Subtle hover overlay */}
-          {!isHero && (
-            <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors duration-300 z-10 pointer-events-none rounded-[inherit]" />
-          )}
-        </TiltWrapper>
-
-        {/* Labels underneath for Posters and Stickers */}
-        {(!isHero && !isPolaroid) && (
+        {/* Label below card (Posters non-hero + Stickers non-hero) */}
+        {!isHero && !isPolaroid && (
           <span className="font-heading font-medium text-sm text-gray-800 group-hover:text-accent-blue transition-colors text-center">
             {label}
           </span>
