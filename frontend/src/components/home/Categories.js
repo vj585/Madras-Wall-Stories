@@ -105,13 +105,17 @@ function CategoryCard({ href, image, label, delay = 0, isHero = false, designTyp
   let imageContainerClasses = "relative ";
 
   if (isPolaroid) {
-    // Polaroid design: warm cream background, thick bottom padding, slight rotation
-    tiltClasses += "bg-[#fdf8f0] p-2 pb-10 md:p-3 md:pb-12 hover:-translate-y-2 group-hover:rotate-0 border border-[#e8dcc8] " + (isHero ? "rotate-[-2deg]" : "rotate-[2deg]");
-    imageContainerClasses += "w-full aspect-[4/5] bg-[#e8dcc8] ";
+    // Polaroid: white card, warm amber offset drop-shadow like a real film photo
+    tiltClasses += "bg-white p-2 pb-10 md:p-3 md:pb-12 hover:-translate-y-2 group-hover:rotate-0 "
+      + "border border-amber-200 shadow-[3px_4px_0px_#d4a843] group-hover:shadow-[5px_7px_0px_#d4a843] "
+      + (isHero ? "rotate-[-2deg]" : "rotate-[2deg]");
+    imageContainerClasses += "w-full aspect-[4/5] bg-amber-50 ";
   } else if (isSticker) {
-    // Sticker design: soft lavender-tinted background, thick border, rounded die-cut shape
-    tiltClasses += "bg-[#f0eeff] rounded-3xl p-2 hover:-translate-y-2 border-2 border-[#c9c0f0] drop-shadow-md ";
-    imageContainerClasses += "w-full aspect-[3/4] bg-[#e2ddf8] rounded-[1.25rem] overflow-hidden ";
+    // Sticker: white card, thick rounded border + dashed outer ring — classic die-cut sticker look
+    tiltClasses += "bg-white rounded-[2rem] p-2 hover:-translate-y-2 "
+      + "border-[3px] border-purple-400 outline outline-[3px] outline-dashed outline-purple-200 outline-offset-2 "
+      + "shadow-md group-hover:shadow-purple-200/60 ";
+    imageContainerClasses += "w-full aspect-[3/4] bg-gray-50 rounded-[1.4rem] overflow-hidden ";
   } else {
     // Posters design: default edge-to-edge
     tiltClasses += "rounded-2xl overflow-hidden border border-gray-100 aspect-[3/4] ";
@@ -210,14 +214,6 @@ export default function Categories({ products = [] }) {
           {productTypes.map((type, typeIdx) => {
             const heroImage = resolveHeroImage(products, type.categoryMatch, type.fallbackImage);
 
-            const isPolaroidRow = type.name === 'Polaroids';
-            const isStickerRow = type.name === 'Stickers';
-            const rowBg = isPolaroidRow
-              ? 'bg-gradient-to-r from-[#fdf5e6] via-[#fdf8f0] to-[#fef9ef]'
-              : isStickerRow
-              ? 'bg-gradient-to-r from-[#f3f0ff] via-[#ede8ff] to-[#f0eeff]'
-              : '';
-
             return (
               <motion.div
                 key={type.name}
@@ -225,7 +221,6 @@ export default function Categories({ products = [] }) {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: typeIdx * 0.1 }}
-                className={`${rowBg ? rowBg + ' -mx-4 px-4 py-6 rounded-3xl' : ''}`}
               >
                 {/* Type heading row */}
                 <div className="flex items-center justify-between mb-6">
