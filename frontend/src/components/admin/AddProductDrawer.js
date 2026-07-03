@@ -197,6 +197,13 @@ export default function AddProductDrawer({ isOpen, onClose, editingProduct = nul
         body: formDataUpload,
       });
 
+      if (!res.ok) {
+        if (res.status === 413) {
+          throw new Error('Image is too large (exceeds Vercel 4.5MB limit). Please compress the image.');
+        }
+        throw new Error(`Upload failed with status ${res.status}`);
+      }
+
       const data = await res.json();
       
       if (data.success) {
@@ -207,7 +214,7 @@ export default function AddProductDrawer({ isOpen, onClose, editingProduct = nul
       }
     } catch (error) {
       console.error('Upload error:', error);
-      alert('An error occurred during upload.');
+      alert(error.message || 'An error occurred during upload.');
     } finally {
       setIsUploading(false);
     }
@@ -227,6 +234,12 @@ export default function AddProductDrawer({ isOpen, onClose, editingProduct = nul
           method: 'POST',
           body: formDataUpload,
         });
+        
+        if (!res.ok) {
+          if (res.status === 413) throw new Error('One or more images are too large (exceeds Vercel 4.5MB limit).');
+          throw new Error(`Upload failed with status ${res.status}`);
+        }
+
         const data = await res.json();
         if (data.success) return data.imageUrl;
         throw new Error(data.error);
