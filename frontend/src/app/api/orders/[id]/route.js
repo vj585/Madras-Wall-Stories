@@ -3,9 +3,21 @@ import { connectDB } from '@/lib/mongodb';
 import Order from '@/models/Order';
 import mongoose from 'mongoose';
 import { sendStatusUpdateNotification } from '@/lib/orderUtils';
+import { getServerSession } from "next-auth/next";
+import { authOptions } from "@/app/api/auth/[...nextauth]/route";
+
+async function requireAdmin() {
+  const session = await getServerSession(authOptions);
+  if (!session || session.user?.role?.toUpperCase() !== 'ADMIN') {
+    return false;
+  }
+  return true;
+}
 
 export async function GET(request, { params }) {
   try {
+    if (!(await requireAdmin())) return NextResponse.json({ success: false, error: 'Unauthorized' }, { status: 401 });
+    
     const { id } = await params;
     if (!mongoose.Types.ObjectId.isValid(id)) {
       return NextResponse.json({ success: false, error: 'Invalid Order ID format' }, { status: 400 });
@@ -26,6 +38,8 @@ export async function GET(request, { params }) {
 
 export async function PUT(request, { params }) {
   try {
+    if (!(await requireAdmin())) return NextResponse.json({ success: false, error: 'Unauthorized' }, { status: 401 });
+
     const { id } = await params;
     if (!mongoose.Types.ObjectId.isValid(id)) {
       return NextResponse.json({ success: false, error: 'Invalid Order ID format' }, { status: 400 });
@@ -51,6 +65,8 @@ export async function PUT(request, { params }) {
 
 export async function DELETE(request, { params }) {
   try {
+    if (!(await requireAdmin())) return NextResponse.json({ success: false, error: 'Unauthorized' }, { status: 401 });
+
     const { id } = await params;
     if (!mongoose.Types.ObjectId.isValid(id)) {
       return NextResponse.json({ success: false, error: 'Invalid Order ID format' }, { status: 400 });
@@ -71,6 +87,8 @@ export async function DELETE(request, { params }) {
 
 export async function PATCH(request, { params }) {
   try {
+    if (!(await requireAdmin())) return NextResponse.json({ success: false, error: 'Unauthorized' }, { status: 401 });
+
     const { id } = await params;
     if (!mongoose.Types.ObjectId.isValid(id)) {
       return NextResponse.json({ success: false, error: 'Invalid Order ID format' }, { status: 400 });
@@ -79,7 +97,6 @@ export async function PATCH(request, { params }) {
     await connectDB();
     const body = await request.json();
 
-    // Only allow safe partial updates via PATCH (e.g. orderStatus, trackingNumber)
     const allowedFields = ['orderStatus', 'shippingStatus', 'trackingNumber', 'trackingUrl', 'dispatchDate', 'estimatedDelivery', 'shippingNotes', 'courierCharge', 'packageWeight', 'courierName', 'deliveryPartner'];
     const updateData = {};
     for (const field of allowedFields) {
@@ -105,7 +122,6 @@ export async function PATCH(request, { params }) {
       return NextResponse.json({ success: false, error: 'Order not found' }, { status: 404 });
     }
 
-    // Trigger Notification asynchronously
     if (newTimelineStatus && ['Packed', 'Shipped', 'Out For Delivery', 'Delivered'].includes(newTimelineStatus)) {
       await sendStatusUpdateNotification(order, newTimelineStatus);
     }

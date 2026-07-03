@@ -4,9 +4,17 @@ import Order from '@/models/Order';
 import { processAndSaveOrder } from '@/lib/orderUtils';
 import { calculateSecureOrderTotal } from '@/lib/serverPricing';
 import { calculateShippingFee } from '@/utils/shippingUtils';
+import { getServerSession } from "next-auth/next";
+import { authOptions } from "@/app/api/auth/[...nextauth]/route";
+import { checkRateLimit, getClientIp } from '@/lib/rateLimit';
 
 export async function GET() {
   try {
+    const session = await getServerSession(authOptions);
+    if (!session || session.user?.role?.toUpperCase() !== 'ADMIN') {
+      return NextResponse.json({ success: false, error: 'Unauthorized' }, { status: 401 });
+    }
+
     await connectDB();
     const orders = await Order.find({}).sort({ createdAt: -1 });
     return NextResponse.json({ success: true, data: orders }, { status: 200 });
@@ -17,6 +25,13 @@ export async function GET() {
 
 export async function POST(request) {
   try {
+    const ip = getClientIp(request);
+    // Limit COD spam: 5 orders per 10 minutes per IP
+    const allowed = await checkRateLimit(ip, 'create-cod-order', 5, 600000);
+    if (!allowed) {
+      return NextResponse.json({ success: false, error: 'Too many orders placed recently. Please try again later.' }, { status: 429 });
+    }
+
     await connectDB();
     const body = await request.json();
 

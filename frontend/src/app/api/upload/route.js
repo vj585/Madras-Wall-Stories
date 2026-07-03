@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import cloudinary from '@/lib/cloudinary';
+import { checkRateLimit, getClientIp } from '@/lib/rateLimit';
 
 export const runtime = 'nodejs'; // Use Node.js runtime for streams and Buffer
 
@@ -8,6 +9,13 @@ const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
 
 export async function POST(request) {
   try {
+    const ip = getClientIp(request);
+    // Limit to 10 uploads per hour per IP
+    const allowed = await checkRateLimit(ip, 'image-upload', 10, 3600000);
+    if (!allowed) {
+      return NextResponse.json({ success: false, error: 'Too many upload attempts. Please try again later.' }, { status: 429 });
+    }
+
     const formData = await request.formData();
     const file = formData.get('image'); // Expecting 'image' field in form
 
@@ -25,16 +33,30 @@ export async function POST(request) {
       return NextResponse.json({ success: false, error: 'File exceeds 10MB limit.' }, { status: 400 });
     }
 
-    // Convert Web API File to Base64 String
+    // Convert Web API File to Node.js Buffer
     const arrayBuffer = await file.arrayBuffer();
     const buffer = Buffer.from(arrayBuffer);
-    const base64Data = buffer.toString('base64');
-    const fileUri = `data:${file.type};base64,${base64Data}`;
 
-    // Upload to Cloudinary using base64 string
-    const uploadResult = await cloudinary.uploader.upload(fileUri, {
-      folder: 'madras_wall_stories',
-      resource_type: 'auto'
+    // Upload to Cloudinary using upload_stream with a readable stream
+    const uploadResult = await new Promise((resolve, reject) => {
+      const uploadStream = cloudinary.uploader.upload_stream(
+        { folder: 'madras_wall_stories' },
+        (error, result) => {
+          if (error) return reject(error);
+          resolve(result);
+        }
+      );
+
+      // Create a readable stream from the buffer and pipe it to Cloudinary
+      const { Readable } = require('stream');
+      const readableStream = new Readable({
+        read() {
+          this.push(buffer);
+          this.push(null);
+        }
+      });
+      
+      readableStream.pipe(uploadStream);
     });
 
     return NextResponse.json({ 

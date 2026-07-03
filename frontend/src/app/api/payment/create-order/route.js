@@ -3,19 +3,28 @@ import razorpay from '@/lib/razorpay';
 import { calculateSecureOrderTotal } from '@/lib/serverPricing';
 import { calculateShippingFee } from '@/utils/shippingUtils';
 import { connectDB } from '@/lib/mongodb';
+import PendingPayment from '@/models/PendingPayment';
+import { checkRateLimit, getClientIp } from '@/lib/rateLimit';
 
 export async function POST(request) {
   try {
-    const { amount, products } = await request.json();
+    const ip = getClientIp(request);
+    // Max 10 attempts per IP per 5 minutes (300000 ms)
+    const allowed = await checkRateLimit(ip, 'create-order', 10, 300000);
+    if (!allowed) {
+      return NextResponse.json({ success: false, error: 'Too many requests. Please try again later.' }, { status: 429 });
+    }
 
-    if (!amount || amount <= 0 || !products || !products.length) {
+    const { amount, orderDetails } = await request.json();
+
+    if (!amount || amount <= 0 || !orderDetails || !orderDetails.products || !orderDetails.products.length) {
       return NextResponse.json({ success: false, error: 'Invalid payload' }, { status: 400 });
     }
 
     await connectDB();
 
     // 1. Calculate secure subtotal from DB
-    const { subtotal } = await calculateSecureOrderTotal(products);
+    const { subtotal, recalculatedProducts } = await calculateSecureOrderTotal(orderDetails.products);
     
     // 2. Calculate secure shipping
     const shipping = calculateShippingFee(subtotal);
@@ -29,6 +38,18 @@ export async function POST(request) {
       return NextResponse.json({ success: false, error: 'Price mismatch detected. Please refresh the page.' }, { status: 400 });
     }
 
+    // Prepare complete secure order data snapshot
+    const secureOrderData = {
+      ...orderDetails,
+      products: recalculatedProducts,
+      subtotal,
+      shipping,
+      grandTotal,
+      amount: grandTotal,
+      freeShippingApplied: shipping === 0,
+      paymentMethod: 'Razorpay',
+    };
+
     // 5. Razorpay amount is in paise (₹1 = 100 paise)
     const options = {
       amount: grandTotal * 100, 
@@ -37,7 +58,15 @@ export async function POST(request) {
     };
 
     const order = await razorpay.orders.create(options);
-    console.log("Create order payload successful:", order.id);
+    
+    // 6. Store PendingPayment for Webhook and Verification processing
+    await PendingPayment.create({
+      razorpayOrderId: order.id,
+      amount: grandTotal,
+      orderData: secureOrderData
+    });
+
+    console.log("Create order payload successful, PendingPayment stored:", order.id);
 
     return NextResponse.json({
       success: true,

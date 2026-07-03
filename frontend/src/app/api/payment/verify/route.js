@@ -2,20 +2,25 @@ import { NextResponse } from 'next/server';
 import crypto from 'crypto';
 import { connectDB } from '@/lib/mongodb';
 import Order from '@/models/Order';
+import PendingPayment from '@/models/PendingPayment';
 import { processAndSaveOrder } from '@/lib/orderUtils';
-import { calculateSecureOrderTotal } from '@/lib/serverPricing';
-import { calculateShippingFee } from '@/utils/shippingUtils';
+import { checkRateLimit, getClientIp } from '@/lib/rateLimit';
+import { logStructured } from '@/lib/logger';
 
 export async function POST(request) {
   try {
+    const ip = getClientIp(request);
+    const allowed = await checkRateLimit(ip, 'verify-payment', 20, 300000);
+    if (!allowed) {
+      return NextResponse.json({ success: false, error: 'Too many requests. Please try again later.' }, { status: 429 });
+    }
+
     const body = await request.json();
-    const { razorpay_order_id, razorpay_payment_id, razorpay_signature, orderDetails } = body;
+    const { razorpay_order_id, razorpay_payment_id, razorpay_signature } = body;
 
     if (!razorpay_order_id || !razorpay_payment_id || !razorpay_signature) {
       return NextResponse.json({ success: false, error: 'Missing payment verification details.' }, { status: 400 });
     }
-
-    console.log("Verify payload received:", { razorpay_order_id, razorpay_payment_id, razorpay_signature });
 
     // Phase 4: Verify Signature
     const secret = process.env.RAZORPAY_KEY_SECRET;
@@ -30,47 +35,48 @@ export async function POST(request) {
       .digest('hex');
 
     if (generated_signature !== razorpay_signature) {
-      console.error("Signature mismatch:", { generated: generated_signature, received: razorpay_signature });
+      logStructured('PAYMENT', { status: 'failed', reason: 'signature_mismatch', razorpay_order_id });
       return NextResponse.json({ success: false, error: 'Invalid payment signature. Payment verification failed.' }, { status: 400 });
     }
 
     await connectDB();
 
-    // Phase 8: Duplicate Payment Protection
-    const existingOrder = await Order.findOne({ razorpayOrderId: razorpay_order_id });
-    if (existingOrder) {
-      return NextResponse.json({ success: false, error: 'Order for this payment already exists.' }, { status: 400 });
+    // Idempotency: Find and Delete the pending payment ATOMICALLY
+    const pendingPayment = await PendingPayment.findOneAndDelete({ razorpayOrderId: razorpay_order_id });
+    
+    if (!pendingPayment) {
+      // If we don't find it, it means EITHER it was already processed (by webhook or retry), OR it expired/didn't exist.
+      // Let's check if the Order actually exists.
+      const existingOrder = await Order.findOne({ razorpayOrderId: razorpay_order_id });
+      if (existingOrder) {
+        logStructured('PAYMENT', { status: 'success', message: 'Already processed', razorpay_order_id });
+        return NextResponse.json({ success: true, data: existingOrder }, { status: 200 });
+      } else {
+        logStructured('PAYMENT', { status: 'failed', reason: 'pending_payment_not_found', razorpay_order_id });
+        return NextResponse.json({ success: false, error: 'Payment session expired or invalid.' }, { status: 400 });
+      }
     }
 
-    // Phase 5 & 6: Immutable Server-Side Pricing Verification
-    const { subtotal, recalculatedProducts } = await calculateSecureOrderTotal(orderDetails.products || []);
-    const shipping = calculateShippingFee(subtotal);
-    const grandTotal = subtotal + shipping;
-
+    // Build the final order using the secure snapshot from PendingPayment
     const finalOrder = {
-      ...orderDetails,
-      products: recalculatedProducts,
-      subtotal,
-      shipping,
-      grandTotal,
-      amount: grandTotal, // Backwards compatibility
-      freeShippingApplied: shipping === 0,
+      ...pendingPayment.orderData,
       paymentMethod: 'Razorpay',
-      paymentStatus: 'Paid',
       razorpayOrderId: razorpay_order_id,
       razorpayPaymentId: razorpay_payment_id,
       paymentTimestamp: new Date(),
     };
 
+    // Process order (includes atomic stock deduction and emails)
     const newOrder = await processAndSaveOrder(finalOrder);
 
+    logStructured('PAYMENT', { status: 'success', orderId: newOrder._id, razorpay_order_id });
     return NextResponse.json({ success: true, data: newOrder }, { status: 201 });
 
   } catch (error) {
     console.error("Payment Verification Error full details:", error);
-    // Code 11000 is duplicate key in MongoDB, which handles our unique constraint safety net
-    if (error.code === 11000) {
-      return NextResponse.json({ success: false, error: 'Order for this payment already exists.' }, { status: 400 });
+    // If it's the custom inventory error
+    if (error.message.includes('Out of stock')) {
+       return NextResponse.json({ success: false, error: error.message }, { status: 400 });
     }
     return NextResponse.json({ success: false, error: 'We encountered a temporary issue while verifying your payment. Please contact support if your account was charged.' }, { status: 500 });
   }

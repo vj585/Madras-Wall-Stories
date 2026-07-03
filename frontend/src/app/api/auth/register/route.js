@@ -5,9 +5,17 @@ import { connectDB } from '@/lib/mongodb';
 import Customer from '@/models/Customer';
 import VerificationToken from '@/models/VerificationToken';
 import { sendVerificationEmail } from '@/lib/mail';
+import { checkRateLimit, getClientIp } from '@/lib/rateLimit';
 
 export async function POST(req) {
   try {
+    const ip = getClientIp(req);
+    // Max 3 registrations per IP per hour
+    const allowed = await checkRateLimit(ip, 'register', 3, 3600000);
+    if (!allowed) {
+      return NextResponse.json({ error: 'Too many registration attempts. Please try again later.' }, { status: 429 });
+    }
+
     const { name, email, phone, password } = await req.json();
 
     if (!name || !email || !phone || !password) {

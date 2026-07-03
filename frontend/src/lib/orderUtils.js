@@ -6,29 +6,78 @@ import { sendOrderSMS } from '@/lib/sms';
 import Customer from '@/models/Customer';
 
 export async function processAndSaveOrder(orderData) {
-  // 1. Process custom images to Cloudinary
+  // Cloudinary Base64 upload logic removed. Client now uploads directly and sends secure URL.
+  
+  // 1. Atomic Stock Deduction
+  const rollbacks = [];
+  let inventoryFailed = false;
+
   if (orderData.products && Array.isArray(orderData.products)) {
-    for (let i = 0; i < orderData.products.length; i++) {
-      const item = orderData.products[i];
-      if (item.image && item.image.startsWith('data:image/')) {
-        console.log('Uploading custom image to Cloudinary for item:', item.title);
-        const uploadResponse = await cloudinary.uploader.upload(item.image, {
-          folder: 'custom_prints',
-        });
-        orderData.products[i].image = uploadResponse.secure_url;
-        orderData.products[i].isCustom = true;
-        console.log('Cloudinary upload complete:', uploadResponse.secure_url);
+    for (const item of orderData.products) {
+      if (item.productId && !item.isCustom) {
+        let updated;
+        if (item.size) {
+          updated = await Product.findOneAndUpdate(
+            { _id: item.productId, "variants.size": item.size, "variants.stock": { $gte: item.quantity } },
+            { $inc: { "variants.$.stock": -item.quantity } },
+            { new: true }
+          );
+        } else {
+          updated = await Product.findOneAndUpdate(
+            { _id: item.productId, stock: { $gte: item.quantity } },
+            { $inc: { stock: -item.quantity } },
+            { new: true }
+          );
+        }
+
+        if (updated) {
+          rollbacks.push(item);
+        } else {
+          console.error(`Inventory deduction failed for product ID: ${item.productId}, Size: ${item.size}. Requested: ${item.quantity}`);
+          inventoryFailed = true;
+          break; // Stop processing further items
+        }
       }
     }
   }
 
-  // 2. Create the order
-  console.log('Creating order in MongoDB with data:', { customerName: orderData.customerName, email: orderData.email, amount: orderData.amount, paymentMethod: orderData.paymentMethod });
-  orderData.statusTimeline = [{ status: 'Order Confirmed', timestamp: new Date() }];
+  // 2. Handle Inventory Failure
+  if (inventoryFailed) {
+    // Rollback any successfully deducted stock
+    for (const item of rollbacks) {
+      if (item.size) {
+        await Product.findOneAndUpdate(
+          { _id: item.productId, "variants.size": item.size },
+          { $inc: { "variants.$.stock": item.quantity } }
+        );
+      } else {
+        await Product.findByIdAndUpdate(
+          item.productId,
+          { $inc: { stock: item.quantity } }
+        );
+      }
+    }
+
+    if (orderData.paymentMethod === 'COD') {
+      throw new Error("Out of stock! Someone else just purchased one of these items.");
+    } else {
+      // Prepaid order where inventory failed. Must create order to track the refund.
+      orderData.paymentStatus = 'Refund Required';
+      orderData.statusTimeline = [{ status: 'Payment Captured - Inventory Failed', timestamp: new Date() }];
+    }
+  } else {
+    orderData.statusTimeline = [{ status: 'Order Confirmed', timestamp: new Date() }];
+    if (orderData.paymentMethod !== 'COD') {
+      orderData.paymentStatus = 'Paid';
+    }
+  }
+
+  // 3. Create the order
+  console.log('Creating order in MongoDB with data:', { customerName: orderData.customerName, email: orderData.email, amount: orderData.amount, paymentMethod: orderData.paymentMethod, status: orderData.paymentStatus });
   const newOrder = await Order.create(orderData);
   console.log('Order created successfully in MongoDB. Order ID:', newOrder._id.toString());
 
-  // 2.5 Auto-update or create Customer for this order
+  // 4. Auto-update or create Customer for this order
   try {
     let customer = await Customer.findOne({ email: orderData.email.toLowerCase() });
     const addr = orderData.addressSnapshot;
@@ -103,36 +152,8 @@ export async function processAndSaveOrder(orderData) {
     console.error("Error auto-updating customer during order processing:", err);
   }
 
-  // 3. Decrement stock for non-custom products
-  if (newOrder.products && Array.isArray(newOrder.products)) {
-    for (const item of newOrder.products) {
-      if (item.productId && !item.isCustom) {
-        console.log(`Decrementing stock for product ID: ${item.productId} by ${item.quantity}`);
-        
-        if (item.size) {
-          // Decrement specific variant stock if size is provided
-          await Product.findOneAndUpdate(
-            { _id: item.productId, "variants.size": item.size },
-            { $inc: { "variants.$.stock": -item.quantity } },
-            { new: true }
-          );
-        } else {
-          // Fallback to top-level stock if no size (legacy)
-          await Product.findByIdAndUpdate(
-            item.productId,
-            { $inc: { stock: -item.quantity } },
-            { new: true }
-          );
-        }
-        console.log('Stock updated successfully for product:', item.productId, 'size:', item.size || 'default');
-      }
-    }
-  }
-
-  // 4. Fire email + SMS (failure-safe — never blocks order response)
+  // 5. Fire email + SMS (failure-safe — never blocks order response)
   const plainOrder = newOrder.toObject ? newOrder.toObject() : newOrder;
-  // Await the dispatch so serverless functions (e.g. Vercel) don't exit prematurely,
-  // but it remains failure-safe because the inner functions catch their own errors.
   await Promise.all([
     sendOrderConfirmationEmail(plainOrder),
     sendOrderSMS(plainOrder),

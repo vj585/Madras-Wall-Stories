@@ -26,6 +26,7 @@ export default function CustomPrintBuilder() {
   const [price, setPrice] = useState(0);
   const [pricingConfig, setPricingConfig] = useState(null);
   const [isDragging, setIsDragging] = useState(false);
+  const [isUploading, setIsUploading] = useState(false);
 
   // Options
   const productTypes = ['Poster', 'Polaroid', 'Mini Prints', 'Photo Booth Strip'];
@@ -137,22 +138,53 @@ export default function CustomPrintBuilder() {
     reader.readAsDataURL(file);
   };
 
-  const handleAddToCart = () => {
+  const handleAddToCart = async () => {
     if (!image) {
       alert("Please upload an image first!");
       return;
     }
-    addToCart({
-      id: `custom-${Date.now()}`,
-      name: `Custom ${productType}`,
-      price: price,
-      image: image,
-      size: size,
-      frame: frame,
-      quantity: 1,
-      isCustom: true,
-      customDetails: { finish, caption }
-    });
+    
+    setIsUploading(true);
+    try {
+      // Convert base64 to Blob
+      const response = await fetch(image);
+      const blob = await response.blob();
+      const file = new File([blob], 'custom-print.jpg', { type: 'image/jpeg' });
+
+      const formData = new FormData();
+      formData.append('image', file);
+
+      const uploadRes = await fetch('/api/upload', {
+        method: 'POST',
+        body: formData,
+      });
+
+      const uploadData = await uploadRes.json();
+      
+      if (!uploadData.success) {
+        throw new Error(uploadData.error || 'Failed to upload image');
+      }
+
+      addToCart({
+        id: `custom-${Date.now()}`,
+        name: `Custom ${productType}`,
+        price: price,
+        image: uploadData.url, // Store Cloudinary URL instead of base64
+        size: size,
+        frame: frame,
+        quantity: 1,
+        isCustom: true,
+        customDetails: { finish, caption }
+      });
+      
+      // Provide visual feedback instead of an alert, or a small toast
+      alert("Added to cart successfully!");
+    } catch (err) {
+      console.error("Upload error:", err);
+      alert("There was an issue processing your image: " + err.message);
+    } finally {
+      setIsUploading(false);
+    }
   };
 
   return (
@@ -415,9 +447,10 @@ export default function CustomPrintBuilder() {
                 </div>
                 <button 
                   onClick={handleAddToCart}
-                  className="flex-1 md:w-full bg-primary text-secondary h-14 rounded-2xl font-bold text-lg flex items-center justify-center gap-2 hover:bg-accent-blue hover:text-white transition-all shadow-lg hover:shadow-xl"
+                  disabled={isUploading}
+                  className={`flex-1 md:w-full h-14 rounded-2xl font-bold text-lg flex items-center justify-center gap-2 transition-all shadow-lg hover:shadow-xl ${isUploading ? 'bg-gray-300 text-gray-500 cursor-not-allowed' : 'bg-primary text-secondary hover:bg-accent-blue hover:text-white'}`}
                 >
-                  <ShoppingCart className="w-5 h-5" /> Add to Cart
+                  <ShoppingCart className="w-5 h-5" /> {isUploading ? 'Processing...' : 'Add to Cart'}
                 </button>
               </div>
             </div>

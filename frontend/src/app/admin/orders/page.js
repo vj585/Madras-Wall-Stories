@@ -37,10 +37,11 @@ const STATUS_STYLES = {
   'Shipped': 'bg-indigo-100 text-indigo-700 border-indigo-200',
   'Out For Delivery': 'bg-cyan-100 text-cyan-700 border-cyan-200',
   'Delivered': 'bg-green-100 text-green-700 border-green-200',
+  'Refund Required': 'bg-red-50 text-red-600 border-red-300 font-bold animate-pulse',
   'Cancelled': 'bg-red-100 text-red-700 border-red-200',
 };
 
-const ALL_STATUSES = ['Pending', 'Processing', 'Printing', 'Quality Check', 'Packed', 'Shipped', 'Out For Delivery', 'Delivered', 'Cancelled'];
+const ALL_STATUSES = ['Pending', 'Processing', 'Printing', 'Quality Check', 'Packed', 'Shipped', 'Out For Delivery', 'Delivered', 'Refund Required', 'Cancelled'];
 
 function ImageModal({ src, onClose }) {
   return (
@@ -763,7 +764,8 @@ export default function OrdersPage() {
     const matchStatus = statusFilter === 'All' || o.orderStatus === statusFilter;
     const matchPayment = paymentFilter === 'All' ||
       (paymentFilter === 'COD' && o.paymentMethod === 'COD') ||
-      (paymentFilter === 'Prepaid' && o.paymentMethod === 'Razorpay');
+      (paymentFilter === 'Prepaid' && o.paymentMethod === 'Razorpay' && o.paymentStatus !== 'Refund Required') ||
+      (paymentFilter === 'Refund' && o.paymentStatus === 'Refund Required');
     return matchSearch && matchStatus && matchPayment;
   });
 
@@ -820,6 +822,7 @@ export default function OrdersPage() {
               <option value="All">All Payment</option>
               <option value="Prepaid">Razorpay</option>
               <option value="COD">Cash on Delivery</option>
+              <option value="Refund">Refund Queue</option>
             </select>
           </div>
         </div>
