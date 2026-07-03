@@ -25,22 +25,16 @@ export async function POST(request) {
       return NextResponse.json({ success: false, error: 'File exceeds 10MB limit.' }, { status: 400 });
     }
 
-    // Convert Web API File to Node.js Buffer
+    // Convert Web API File to Base64 String
     const arrayBuffer = await file.arrayBuffer();
     const buffer = Buffer.from(arrayBuffer);
+    const base64Data = buffer.toString('base64');
+    const fileUri = `data:${file.type};base64,${base64Data}`;
 
-    // Upload to Cloudinary via upload_stream (bypasses disk storage)
-    const uploadResult = await new Promise((resolve, reject) => {
-      const uploadStream = cloudinary.uploader.upload_stream(
-        { folder: 'madras_wall_stories' },
-        (error, result) => {
-          if (error) return reject(error);
-          resolve(result);
-        }
-      );
-      
-      // End the stream with the buffer
-      uploadStream.end(buffer);
+    // Upload to Cloudinary using base64 string
+    const uploadResult = await cloudinary.uploader.upload(fileUri, {
+      folder: 'madras_wall_stories',
+      resource_type: 'auto'
     });
 
     return NextResponse.json({ 

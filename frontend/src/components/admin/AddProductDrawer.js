@@ -368,7 +368,7 @@ export default function AddProductDrawer({ isOpen, onClose, editingProduct = nul
             animate={{ x: 0 }}
             exit={{ x: '100%' }}
             transition={{ type: 'spring', bounce: 0, duration: 0.4 }}
-            className="fixed inset-y-0 right-0 z-[110] w-full md:w-[80%] lg:w-[600px] bg-gray-50 flex flex-col shadow-2xl safe-top safe-bottom"
+            className="fixed top-0 right-0 z-[110] w-full md:w-[80%] lg:w-[600px] h-[100dvh] bg-gray-50 flex flex-col shadow-2xl"
           >
             {/* Header - Fixed */}
             <div className="bg-white p-4 border-b border-gray-100 flex justify-between items-center z-10 shrink-0">
