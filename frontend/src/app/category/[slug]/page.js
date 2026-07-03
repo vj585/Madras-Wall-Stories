@@ -1,12 +1,14 @@
 import Link from 'next/link';
-import { getStorefrontProducts } from '@/lib/products';
+import { getStorefrontProducts, getProductDesignType } from '@/lib/products';
 import Image from 'next/image';
 
 export const dynamic = 'force-dynamic';
 
-export async function generateMetadata({ params }) {
+export async function generateMetadata({ params, searchParams }) {
   const resolvedParams = await params;
+  const resolvedSearchParams = await searchParams;
   const slug = decodeURIComponent(resolvedParams?.slug || '');
+  const type = resolvedSearchParams?.type || 'posters';
   
   const categoryNames = {
     'anime': 'Anime',
@@ -27,8 +29,9 @@ export async function generateMetadata({ params }) {
   };
 
   const displayName = categoryNames[slug] || slug?.replace(/-/g, ' ');
-  const title = `${displayName} Posters | Madras Wall Stories`;
-  const description = `Shop the best premium ${displayName} posters and prints at Madras Wall Stories. Upgrade your wall decor today!`;
+  const displayType = type === 'stickers' ? 'Stickers' : type === 'polaroids' ? 'Polaroids' : 'Posters';
+  const title = `${displayName} ${displayType} | Madras Wall Stories`;
+  const description = `Shop the best premium ${displayName} ${displayType.toLowerCase()} and prints at Madras Wall Stories. Upgrade your decor today!`;
 
   return {
     title,
@@ -46,9 +49,11 @@ export async function generateMetadata({ params }) {
   };
 }
 
-export default async function CategoryPage({ params }) {
+export default async function CategoryPage({ params, searchParams }) {
   const resolvedParams = await params;
+  const resolvedSearchParams = await searchParams;
   const slug = decodeURIComponent(resolvedParams?.slug || '');
+  const type = (resolvedSearchParams?.type || 'posters').toLowerCase();
 
   // Map slugs to display names
   const categoryMap = {
@@ -75,10 +80,18 @@ export default async function CategoryPage({ params }) {
   };
   
   const displayName = categoryInfo.display;
+  const displayType = type === 'stickers' ? 'Stickers' : type === 'polaroids' ? 'Polaroids' : 'Posters';
 
   const allProducts = await getStorefrontProducts();
 
   const filtered = allProducts.filter(p => {
+    // 1. Filter by product type using robust utility
+    const productType = getProductDesignType(p);
+    
+    // The `type` variable from searchParams is already normalized to 'stickers', 'polaroids', or 'posters'
+    if (productType !== type) return false;
+
+    // 2. Filter by theme
     const fieldsToSearch = [
       p.category,
       p.theme,
@@ -93,7 +106,6 @@ export default async function CategoryPage({ params }) {
     });
   });
 
-  // Fallback to empty array if no match
   const display = filtered;
 
   return (
@@ -101,8 +113,8 @@ export default async function CategoryPage({ params }) {
       <div className="container mx-auto px-4 max-w-6xl">
         <div className="mb-12">
           <Link href="/" className="text-sm text-gray-400 hover:text-black transition-colors">← Back to Home</Link>
-          <h1 className="text-4xl md:text-5xl font-heading font-bold mt-4 mb-4 capitalize">{displayName}</h1>
-          <p className="text-gray-500">{display.length} prints available</p>
+          <h1 className="text-4xl md:text-5xl font-heading font-bold mt-4 mb-4 capitalize">{displayName} {displayType}</h1>
+          <p className="text-gray-500">{display.length} items available</p>
         </div>
         {display.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-20 bg-white rounded-3xl border border-gray-100 shadow-sm mt-8 text-center">
@@ -111,10 +123,10 @@ export default async function CategoryPage({ params }) {
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
               </svg>
             </div>
-            <h3 className="text-xl font-bold text-gray-900 mb-2">No posters available yet</h3>
-            <p className="text-gray-500 max-w-sm mb-6">We are currently curating our {displayName} collection. Check back soon for premium prints.</p>
+            <h3 className="text-xl font-bold text-gray-900 mb-2">No {displayType.toLowerCase()} available yet</h3>
+            <p className="text-gray-500 max-w-sm mb-6">We are currently curating our {displayName} collection. Check back soon for premium {displayType.toLowerCase()}.</p>
             <Link href="/shop" className="px-6 py-3 bg-black text-white font-bold rounded-xl hover:bg-gray-800 transition-colors shadow-sm">
-              Browse Posters
+              Browse {displayType}
             </Link>
           </div>
         ) : (

@@ -52,13 +52,14 @@ const productTypes = [
   },
 ];
 
+import { getProductDesignType } from '@/lib/products';
+
 /**
  * For HERO card: finds any product in this category
  */
-function resolveHeroImage(products, categoryMatches, fallbackImage) {
-  const catLower = categoryMatches.map(c => c.toLowerCase());
+function resolveHeroImage(products, designType, fallbackImage) {
   const match = products.find(p =>
-    catLower.some(c => (p.category || '').toLowerCase().includes(c)) &&
+    getProductDesignType(p) === designType &&
     p.images?.[0]
   );
   return match?.images?.[0] || fallbackImage;
@@ -69,31 +70,32 @@ function resolveHeroImage(products, categoryMatches, fallbackImage) {
  * matches that theme (with or without category constraint).
  * Returns null if no theme-specific product exists → "Coming Soon" tile shown.
  */
-function resolveThemeImage(products, categoryMatches, themeName, fallbackImage) {
-  const catLower = categoryMatches.map(c => c.toLowerCase());
+function resolveThemeImage(products, designType, themeName, fallbackImage) {
   const themeLower = themeName.toLowerCase();
+  
+  // Filter products to only those matching the requested designType (posters, polaroids, stickers)
+  const validProducts = products.filter(p => getProductDesignType(p) === designType);
 
-  // Level 1: category + theme match
-  const exact = products.find(p =>
-    catLower.some(c => (p.category || '').toLowerCase().includes(c)) &&
+  // Level 1: Theme field exact match
+  const exact = validProducts.find(p =>
     (p.theme || '').toLowerCase().includes(themeLower) &&
     p.images?.[0]
   );
   if (exact?.images?.[0]) return exact.images[0];
 
-  // Level 2: theme match in any category (e.g. product tagged "Anime" under any type)
-  const themeOnly = products.find(p =>
-    (p.theme || '').toLowerCase().includes(themeLower) &&
-    p.images?.[0]
-  );
-  if (themeOnly?.images?.[0]) return themeOnly.images[0];
-
-  // Level 3 (Legacy Support): Old products stored the theme name in the category field itself
-  const legacyCategory = products.find(p =>
+  // Level 2 (Legacy Support): Old products stored the theme name in the category field itself
+  const legacyCategory = validProducts.find(p =>
     (p.category || '').toLowerCase().includes(themeLower) &&
     p.images?.[0]
   );
   if (legacyCategory?.images?.[0]) return legacyCategory.images[0];
+
+  // Level 3: Match tags
+  const tagsMatch = validProducts.find(p =>
+    (p.tags || []).some(t => t.toLowerCase().includes(themeLower)) &&
+    p.images?.[0]
+  );
+  if (tagsMatch?.images?.[0]) return tagsMatch.images[0];
 
   // No match → return fallback so the original images are shown
   return fallbackImage;
@@ -232,7 +234,8 @@ export default function Categories({ products = [] }) {
         {/* Three product type groups */}
         <div className="space-y-12 md:space-y-16">
           {productTypes.map((type, typeIdx) => {
-            const heroImage = resolveHeroImage(products, type.categoryMatch, type.fallbackImage);
+            const designType = type.name.toLowerCase();
+            const heroImage = resolveHeroImage(products, designType, type.fallbackImage);
             const isPolaroidRow = type.name === 'Polaroids';
             const isStickerRow = type.name === 'Stickers';
 
@@ -269,21 +272,21 @@ export default function Categories({ products = [] }) {
                     label={type.name}
                     delay={0}
                     isHero
-                    designType={type.name.toLowerCase()}
+                    designType={designType}
                   />
 
                   {/* Theme sub-category cards */}
                   {type.themes.map((theme, themeIdx) => {
-                    const themeImage = resolveThemeImage(products, type.categoryMatch, theme.name, theme.fallbackImage);
+                    const themeImage = resolveThemeImage(products, designType, theme.name, theme.fallbackImage);
                     return (
                       <CategoryCard
                         key={theme.slug}
-                        href={`/category/${theme.slug}`}
+                        href={`/category/${theme.slug}?type=${designType}`}
                         image={themeImage}
                         label={theme.name}
                         delay={themeIdx * 0.05 + 0.05}
                         isHero={false}
-                        designType={type.name.toLowerCase()}
+                        designType={designType}
                       />
                     );
                   })}
