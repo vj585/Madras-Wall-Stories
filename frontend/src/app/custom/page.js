@@ -105,6 +105,9 @@ export default function CustomPrintBuilder() {
     if (productType === 'Mini Prints') {
       return size.includes('Square') ? 1/1 : 4/6;
     }
+    if (productType === 'Photo Booth Strip') {
+      return 1/1; // Crop as a square, which will be repeated 3 times in the strip
+    }
     return 1;
   };
 
@@ -258,17 +261,25 @@ export default function CustomPrintBuilder() {
                   </div>
 
                   {/* Real-time Mockup Renderer based on Product Type and Frame */}
-                  <div className={`relative transition-all duration-500 ${productType === 'Polaroid' ? 'p-4 pb-12 bg-white shadow-xl' : ''} ${frame === 'Black Frame' ? 'border-[16px] border-[#1a1a1a] shadow-2xl' : frame === 'White Frame' ? 'border-[16px] border-[#f5f5f5] shadow-2xl' : frame === 'Wooden Frame' ? 'border-[16px] border-[#8b5a2b] shadow-2xl' : 'shadow-lg'}`}>
+                  <div className={`relative transition-all duration-500 ${productType === 'Polaroid' ? 'p-4 pb-12 bg-white shadow-xl' : productType === 'Photo Booth Strip' ? 'p-4 bg-white shadow-xl' : ''} ${productType === 'Poster' && frame === 'Black Frame' ? 'border-[16px] border-[#1a1a1a] shadow-2xl' : productType === 'Poster' && frame === 'White Frame' ? 'border-[16px] border-[#f5f5f5] shadow-2xl' : productType === 'Poster' && frame === 'Wooden Frame' ? 'border-[16px] border-[#8b5a2b] shadow-2xl' : 'shadow-lg'}`}>
                     
                     {finish === 'Glossy' && (
                       <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/20 to-transparent pointer-events-none z-10 mix-blend-overlay"></div>
                     )}
 
-                    <img 
-                      src={image} 
-                      alt="Preview" 
-                      className={`object-cover ${productType === 'Poster' ? 'w-[300px] h-[400px] md:w-[400px] md:h-[550px]' : productType === 'Polaroid' ? 'w-[250px] h-[250px]' : 'w-[300px] h-[300px]'}`} 
-                    />
+                    {productType === 'Photo Booth Strip' ? (
+                      <div className="flex flex-col gap-2 bg-white">
+                         <img src={image} alt="Preview" className="w-[120px] h-[120px] object-cover" />
+                         <img src={image} alt="Preview" className="w-[120px] h-[120px] object-cover" />
+                         <img src={image} alt="Preview" className="w-[120px] h-[120px] object-cover" />
+                      </div>
+                    ) : (
+                      <img 
+                        src={image} 
+                        alt="Preview" 
+                        className={`object-cover ${productType === 'Poster' ? 'w-[300px] h-[400px] md:w-[400px] md:h-[550px]' : productType === 'Polaroid' ? 'w-[250px] h-[250px]' : 'w-[300px] h-[300px]'}`} 
+                      />
+                    )}
 
                     {productType === 'Polaroid' && caption && (
                       <div className="absolute bottom-4 left-0 right-0 text-center font-heading font-medium text-black text-xl px-4 truncate">
