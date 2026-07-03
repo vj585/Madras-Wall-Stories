@@ -40,9 +40,14 @@ const productTypes = [
     link: '/shop?category=stickers',
     fallbackImage: '/images/spiderman.jpg',
     themes: [
-      { name: 'Anime', slug: 'sticker-anime', fallbackImage: '/images/master.jpg' },
-      { name: 'Pop Culture', slug: 'pop-culture', fallbackImage: '/images/batman.jpg' },
-      { name: 'Minimal', slug: 'minimal', fallbackImage: '/images/michael.jpg' },
+      { name: 'Anime', slug: 'anime', fallbackImage: '/images/master.jpg' },
+      { name: 'Movies', slug: 'movies', fallbackImage: '/images/pennywise.jpg' },
+      { name: 'Marvel', slug: 'marvel', fallbackImage: '/images/batman.jpg' },
+      { name: 'Gaming', slug: 'gaming', fallbackImage: '/images/spiderman.jpg' },
+      { name: 'Music', slug: 'music', fallbackImage: '/images/michael.jpg' },
+      { name: 'Sports', slug: 'sports', fallbackImage: '/images/batman.jpg' },
+      { name: 'Nature', slug: 'nature', fallbackImage: '/images/master.jpg' },
+      { name: 'Quotes', slug: 'quotes', fallbackImage: '/images/master.jpg' },
     ],
   },
 ];

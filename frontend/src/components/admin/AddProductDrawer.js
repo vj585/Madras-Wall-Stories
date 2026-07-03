@@ -143,6 +143,36 @@ export default function AddProductDrawer({ isOpen, onClose, editingProduct = nul
     'Anime', 'Movies', 'Marvel', 'Gaming', 'Cars', 'Music', 'Quotes', 'Sports', 'Nature', 'Travel', 'Minimal', 'Abstract', 'Vintage'
   ];
 
+  const getProductConfig = (category) => {
+    const isPolaroid = category?.includes('Polaroid');
+    const isSticker = category?.includes('Sticker');
+
+    if (isPolaroid) {
+      return {
+        sizes: ['Standard (3.5x4.2")', 'Mini (2.1x3.4")'],
+        finishes: ['Matte', 'Glossy'],
+        showFrames: false,
+        showOrientation: false
+      };
+    } else if (isSticker) {
+      return {
+        sizes: ['Small (3x3")', 'Medium (4x4")', 'Large (5x5")'],
+        finishes: ['Matte', 'Glossy', 'Holographic', 'Transparent'],
+        showFrames: false,
+        showOrientation: false
+      };
+    } else {
+      return {
+        sizes: ['A5', 'A4', 'A3', 'A2', '13x19', 'Custom'],
+        finishes: ['Matte', 'Glossy', 'Premium Matte'],
+        showFrames: true,
+        showOrientation: true
+      };
+    }
+  };
+
+  const productConfig = getProductConfig(formData.category);
+
   const handleVariantChange = (index, field, value) => {
     setFormData(prev => {
       const newVariants = [...prev.variants];
@@ -171,7 +201,7 @@ export default function AddProductDrawer({ isOpen, onClose, editingProduct = nul
       ...prev,
       variants: [
         ...prev.variants,
-        { size: 'A3', price: '', salePrice: '', costPrice: '', stock: '', gst: '0', frames: [], enabled: true }
+        { size: getProductConfig(prev.category).sizes[0], price: '', salePrice: '', costPrice: '', stock: '', gst: '0', frames: [], enabled: true }
       ]
     }));
   };
@@ -497,7 +527,15 @@ export default function AddProductDrawer({ isOpen, onClose, editingProduct = nul
                     <select 
                       name="category" 
                       value={formData.category} 
-                      onChange={handleChange} 
+                      onChange={(e) => {
+                        handleChange(e);
+                        // Optional: Reset variant sizes when changing product type so they don't have an invalid size selected
+                        const newConfig = getProductConfig(e.target.value);
+                        setFormData(prev => ({
+                          ...prev,
+                          variants: prev.variants.map(v => ({ ...v, size: newConfig.sizes[0] }))
+                        }));
+                      }} 
                       className="w-full px-3 py-2 bg-white border border-gray-200 rounded-lg text-sm outline-none focus:ring-1 focus:ring-accent-blue"
                     >
                       {productTypeOptions.map(type => (
@@ -578,12 +616,9 @@ export default function AddProductDrawer({ isOpen, onClose, editingProduct = nul
                             onChange={(e) => handleVariantChange(index, 'size', e.target.value)}
                             className="w-full px-3 py-2 bg-white border border-gray-200 rounded-lg text-sm outline-none focus:ring-1 focus:ring-accent-blue"
                           >
-                            <option>A5</option>
-                            <option>A4</option>
-                            <option>A3</option>
-                            <option>A2</option>
-                            <option>13x19</option>
-                            <option>Custom</option>
+                            {productConfig.sizes.map(sizeOption => (
+                              <option key={sizeOption} value={sizeOption}>{sizeOption}</option>
+                            ))}
                           </select>
                         </div>
                         <div>
@@ -628,22 +663,24 @@ export default function AddProductDrawer({ isOpen, onClose, editingProduct = nul
 
                       </div>
 
-                      <div className="border-t border-gray-200 pt-3 mt-1">
-                        <label className="block text-xs font-medium text-gray-700 mb-2">Frames Available</label>
-                        <div className="flex flex-wrap gap-2">
-                          {['Black', 'White', 'Wood', 'No Frame'].map(frame => (
-                            <label key={frame} className="flex items-center gap-1.5 px-3 py-1.5 border border-gray-200 bg-white rounded-lg text-xs cursor-pointer hover:bg-gray-50 transition-colors">
-                              <input 
-                                type="checkbox" 
-                                checked={(variant.frames || []).includes(frame)} 
-                                onChange={() => handleVariantFrameToggle(index, frame)} 
-                                className="rounded text-accent-blue" 
-                              />
-                              {frame}
-                            </label>
-                          ))}
+                      {productConfig.showFrames && (
+                        <div className="border-t border-gray-200 pt-3 mt-1">
+                          <label className="block text-xs font-medium text-gray-700 mb-2">Frames Available</label>
+                          <div className="flex flex-wrap gap-2">
+                            {['Black', 'White', 'Wood', 'No Frame'].map(frame => (
+                              <label key={frame} className="flex items-center gap-1.5 px-3 py-1.5 border border-gray-200 bg-white rounded-lg text-xs cursor-pointer hover:bg-gray-50 transition-colors">
+                                <input 
+                                  type="checkbox" 
+                                  checked={(variant.frames || []).includes(frame)} 
+                                  onChange={() => handleVariantFrameToggle(index, frame)} 
+                                  className="rounded text-accent-blue" 
+                                />
+                                {frame}
+                              </label>
+                            ))}
+                          </div>
                         </div>
-                      </div>
+                      )}
                     </div>
                   ))}
                   
@@ -710,26 +747,27 @@ export default function AddProductDrawer({ isOpen, onClose, editingProduct = nul
                 </div>
               </Section>
 
-              <Section title="4. Poster Settings">
+              <Section title="4. Print Settings">
                 <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <label className="block text-xs font-medium text-gray-700 mb-1">Orientation</label>
-                    <select name="orientation" value={formData.orientation} onChange={handleChange} className="w-full px-3 py-2 bg-white border border-gray-200 rounded-lg text-sm outline-none focus:ring-1 focus:ring-accent-blue">
-                      <option>Portrait</option>
-                      <option>Landscape</option>
-                      <option>Square</option>
-                    </select>
-                  </div>
+                  {productConfig.showOrientation && (
+                    <div>
+                      <label className="block text-xs font-medium text-gray-700 mb-1">Orientation</label>
+                      <select name="orientation" value={formData.orientation} onChange={handleChange} className="w-full px-3 py-2 bg-white border border-gray-200 rounded-lg text-sm outline-none focus:ring-1 focus:ring-accent-blue">
+                        <option>Portrait</option>
+                        <option>Landscape</option>
+                        <option>Square</option>
+                      </select>
+                    </div>
+                  )}
                   <div>
                     <label className="block text-xs font-medium text-gray-700 mb-1">Print Finish</label>
                     <select name="finish" value={formData.finish} onChange={handleChange} className="w-full px-3 py-2 bg-white border border-gray-200 rounded-lg text-sm outline-none focus:ring-1 focus:ring-accent-blue">
-                      <option>Matte</option>
-                      <option>Glossy</option>
-                      <option>Premium Matte</option>
+                      {productConfig.finishes.map(finishOption => (
+                        <option key={finishOption}>{finishOption}</option>
+                      ))}
                     </select>
                   </div>
                 </div>
-                
               </Section>
 
               <Section title="5. Visibility & Ordering">
