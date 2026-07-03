@@ -12,7 +12,7 @@ const Section = ({ title, children }) => (
   </div>
 );
 
-export default function CreateCouponDrawer({ isOpen, onClose }) {
+export default function CreateCouponDrawer({ isOpen, onClose, onSuccess }) {
   const [formData, setFormData] = useState({
     code: '',
     discountType: 'Percentage',
@@ -44,10 +44,51 @@ export default function CreateCouponDrawer({ isOpen, onClose }) {
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSave = (status) => {
+  const [isSaving, setIsSaving] = useState(false);
+
+  const handleSave = async (status) => {
     if (!validate()) return;
-    console.log("Saving Coupon:", { ...formData, status });
-    onClose();
+    
+    setIsSaving(true);
+    try {
+      const res = await fetch('/api/coupons', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          ...formData,
+          active: status === 'Active',
+          discountValue: Number(formData.discountValue),
+          usageLimit: formData.usageLimit ? Number(formData.usageLimit) : null,
+          minOrderAmount: formData.minOrderAmount ? Number(formData.minOrderAmount) : null,
+        })
+      });
+
+      const data = await res.json();
+      
+      if (data.success) {
+        if (onSuccess) onSuccess();
+        onClose();
+        // Reset form
+        setFormData({
+          code: '',
+          discountType: 'Percentage',
+          discountValue: '',
+          minOrderAmount: '',
+          usageLimit: '',
+          startDate: '',
+          endDate: '',
+          status: 'Active'
+        });
+      } else {
+        setErrors({ submit: data.error || 'Failed to create coupon' });
+      }
+    } catch (err) {
+      setErrors({ submit: 'An error occurred while saving' });
+    } finally {
+      setIsSaving(false);
+    }
   };
 
   useEffect(() => {
@@ -140,21 +181,26 @@ export default function CreateCouponDrawer({ isOpen, onClose }) {
             <div className="bg-white p-4 border-t border-gray-100 flex flex-col sm:flex-row justify-end items-center gap-3 z-10 shrink-0">
               <button 
                 onClick={onClose}
-                className="w-full sm:w-auto px-5 py-2.5 text-gray-600 font-medium hover:bg-gray-100 rounded-xl transition-colors text-sm"
+                disabled={isSaving}
+                className="w-full sm:w-auto px-5 py-2.5 text-gray-600 font-medium hover:bg-gray-100 rounded-xl transition-colors text-sm disabled:opacity-50"
               >
                 Cancel
               </button>
-              <div className="flex gap-3 w-full sm:w-auto">
+              <div className="flex gap-3 w-full sm:w-auto items-center">
+                {errors.submit && <span className="text-red-500 text-xs font-medium mr-2">{errors.submit}</span>}
                 <button 
                   onClick={() => handleSave('Draft')}
-                  className="flex-1 sm:flex-none px-5 py-2.5 bg-gray-100 text-gray-900 font-medium hover:bg-gray-200 rounded-xl transition-colors text-sm"
+                  disabled={isSaving}
+                  className="flex-1 sm:flex-none px-5 py-2.5 bg-gray-100 text-gray-900 font-medium hover:bg-gray-200 rounded-xl transition-colors text-sm disabled:opacity-50"
                 >
                   Save Draft
                 </button>
                 <button 
                   onClick={() => handleSave('Active')}
-                  className="flex-1 sm:flex-none px-5 py-2.5 bg-black text-white font-medium hover:bg-gray-800 rounded-xl transition-colors text-sm shadow-sm"
+                  disabled={isSaving}
+                  className="flex-1 sm:flex-none px-5 py-2.5 bg-black text-white font-medium hover:bg-gray-800 rounded-xl transition-colors text-sm shadow-sm disabled:opacity-50 flex items-center justify-center gap-2"
                 >
+                  {isSaving && <div className="w-3.5 h-3.5 border-2 border-gray-400 border-t-white rounded-full animate-spin"></div>}
                   Create Coupon
                 </button>
               </div>
