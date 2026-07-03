@@ -1,7 +1,7 @@
 import { connectDB } from '@/lib/mongodb';
 import Order from '@/models/Order';
 import { notFound } from 'next/navigation';
-
+import PrintButton from '@/components/ui/PrintButton';
 export default async function PackingSlipPage({ params }) {
   const { id } = await params;
   
@@ -73,11 +73,7 @@ export default async function PackingSlipPage({ params }) {
         </div>
       )}
 
-      <div className="fixed bottom-8 right-8 print:hidden">
-        <button onClick={() => window.print()} className="bg-black text-white px-6 py-3 rounded-full shadow-lg hover:bg-gray-800 font-bold transition-all">
-          Print Packing Slip
-        </button>
-      </div>
+      <PrintButton label="Print Packing Slip" />
     </div>
   );
 }

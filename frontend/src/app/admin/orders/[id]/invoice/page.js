@@ -1,7 +1,7 @@
 import { connectDB } from '@/lib/mongodb';
 import Order from '@/models/Order';
 import { notFound } from 'next/navigation';
-
+import PrintButton from '@/components/ui/PrintButton';
 export default async function InvoicePage({ params }) {
   const { id } = await params;
   
@@ -99,11 +99,7 @@ export default async function InvoicePage({ params }) {
         <p className="mt-1">This is a computer-generated invoice.</p>
       </div>
 
-      <div className="fixed bottom-8 right-8 print:hidden">
-        <button onClick={() => window.print()} className="bg-black text-white px-6 py-3 rounded-full shadow-lg hover:bg-gray-800 font-bold transition-all">
-          Print Invoice
-        </button>
-      </div>
+      <PrintButton label="Print Invoice" />
     </div>
   );
 }
