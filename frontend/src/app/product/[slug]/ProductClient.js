@@ -293,7 +293,13 @@ export default function ProductClient({ product, related = [], framePricing = []
               <button
                 onClick={handleAddToCart}
                 disabled={currentStock <= 0}
-                className={`flex-1 h-14 rounded-xl font-bold text-base flex items-center justify-center gap-2 transition-all shadow-md ${currentStock <= 0 ? 'bg-gray-100 text-gray-400 cursor-not-allowed' : addedToCart ? 'bg-green-500 text-white' : 'bg-black text-white hover:bg-gray-800'}`}
+                className={`flex-1 flex items-center justify-center gap-2 rounded-xl font-bold transition-all h-14 btn-premium ${
+                  addedToCart
+                    ? 'bg-green-600 text-white'
+                    : currentStock <= 0
+                    ? 'bg-gray-200 text-gray-500 cursor-not-allowed'
+                    : 'bg-black text-white hover:bg-gray-900 shadow-xl'
+                }`}
               >
                 <ShoppingCart className="w-5 h-5" />
                 {currentStock <= 0 ? 'Out of Stock' : addedToCart ? 'Added! ✓' : `Add to Cart — ₹${calculatePrice()}`}
