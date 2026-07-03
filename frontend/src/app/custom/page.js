@@ -150,6 +150,7 @@ export default function CustomPrintBuilder() {
       size: size,
       frame: frame,
       quantity: 1,
+      isCustom: true,
       customDetails: { finish, caption }
     });
   };

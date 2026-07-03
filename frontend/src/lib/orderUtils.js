@@ -108,12 +108,23 @@ export async function processAndSaveOrder(orderData) {
     for (const item of newOrder.products) {
       if (item.productId && !item.isCustom) {
         console.log(`Decrementing stock for product ID: ${item.productId} by ${item.quantity}`);
-        await Product.findByIdAndUpdate(
-          item.productId,
-          { $inc: { stock: -item.quantity } },
-          { new: true }
-        );
-        console.log('Stock updated successfully for product:', item.productId);
+        
+        if (item.size) {
+          // Decrement specific variant stock if size is provided
+          await Product.findOneAndUpdate(
+            { _id: item.productId, "variants.size": item.size },
+            { $inc: { "variants.$.stock": -item.quantity } },
+            { new: true }
+          );
+        } else {
+          // Fallback to top-level stock if no size (legacy)
+          await Product.findByIdAndUpdate(
+            item.productId,
+            { $inc: { stock: -item.quantity } },
+            { new: true }
+          );
+        }
+        console.log('Stock updated successfully for product:', item.productId, 'size:', item.size || 'default');
       }
     }
   }
