@@ -47,7 +47,8 @@ export function WishlistProvider({ children }) {
       wishlistItems,
       toggleWishlist,
       removeFromWishlist,
-      isInWishlist
+      isInWishlist,
+      mounted
     }}>
       {children}
     </WishlistContext.Provider>

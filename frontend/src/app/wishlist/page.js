@@ -6,7 +6,7 @@ import { useCart } from '@/context/CartContext';
 import { Heart, Trash2, ShoppingBag } from 'lucide-react';
 
 export default function WishlistPage() {
-  const { wishlistItems, removeFromWishlist } = useWishlist();
+  const { wishlistItems, removeFromWishlist, mounted } = useWishlist();
   const { addToCart } = useCart();
 
   const handleAddToCart = (product) => {
@@ -20,6 +20,24 @@ export default function WishlistPage() {
       quantity: 1,
     });
   };
+
+  if (!mounted) {
+    return (
+      <div className="pt-32 pb-20 min-h-screen bg-background">
+        <div className="container mx-auto px-4 max-w-5xl">
+          <div className="mb-12 flex items-center gap-3">
+            <Heart className="w-8 h-8 text-red-500 fill-current" />
+            <h1 className="text-4xl md:text-5xl font-heading font-bold">Your Wishlist</h1>
+          </div>
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-4 md:gap-6 animate-pulse">
+             {[...Array(3)].map((_, i) => (
+               <div key={i} className="bg-gray-100 rounded-2xl aspect-[3/4]"></div>
+             ))}
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="pt-32 pb-20 min-h-screen bg-background">
@@ -52,7 +70,7 @@ export default function WishlistPage() {
                   </button>
                     <Link href={`/product/${product.slug}`} className="block w-full h-full">
                       <Image
-                        src={product.images[0]}
+                        src={product.images && product.images.length > 0 ? product.images[0] : '/placeholder.jpg'}
                         alt={product.title}
                         fill
                         sizes="(max-width: 640px) 50vw, 33vw"
@@ -72,13 +90,15 @@ export default function WishlistPage() {
                     <h3 className="font-semibold text-sm line-clamp-1 group-hover:text-accent-blue transition-colors mb-2">{product.title}</h3>
                   </Link>
                   <div className="mt-auto mb-4 flex items-center gap-2">
-                    <span className="font-bold">₹{product.salePrice}</span>
-                    <span className="text-sm text-gray-400 line-through">₹{product.price}</span>
+                    <span className="font-bold">₹{product.salePrice || product.price}</span>
+                    {product.salePrice && product.price > product.salePrice && (
+                      <span className="text-sm text-gray-400 line-through">₹{product.price}</span>
+                    )}
                   </div>
                     <button
                       onClick={() => handleAddToCart(product)}
                       disabled={product.stock <= 0}
-                      className={`w-full py-2.5 rounded-xl text-sm font-medium transition-colors flex items-center justify-center gap-2 shadow-sm ${product.stock <= 0 ? 'bg-gray-100 text-gray-400 cursor-not-allowed' : 'bg-black text-white hover:bg-gray-800'}`}
+                      className={`w-full py-2.5 rounded-xl text-sm font-medium transition-colors flex items-center justify-center gap-2 shadow-sm ${product.stock <= 0 ? 'bg-gray-100 text-gray-400 cursor-not-allowed' : 'bg-black text-white hover:bg-gray-800 btn-premium'}`}
                     >
                       <ShoppingBag className="w-4 h-4" /> {product.stock <= 0 ? 'Out of Stock' : 'Move to Cart'}
                     </button>
