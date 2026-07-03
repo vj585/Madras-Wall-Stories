@@ -183,12 +183,64 @@ export default function AddProductDrawer({ isOpen, onClose, editingProduct = nul
     }));
   };
 
+  // Utility to compress images client-side before upload
+  const compressImage = async (file) => {
+    return new Promise((resolve) => {
+      // If file is already small (< 2MB), skip compression
+      if (file.size < 2 * 1024 * 1024) {
+        resolve(file);
+        return;
+      }
+
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = (event) => {
+        const img = new window.Image(); // Use window.Image to avoid conflict with lucide-react Image
+        img.src = event.target.result;
+        img.onload = () => {
+          const canvas = document.createElement('canvas');
+          let width = img.width;
+          let height = img.height;
+          
+          // Max dimensions (e.g., 2000px max width/height for web viewing)
+          const MAX_SIZE = 2000;
+          if (width > height) {
+            if (width > MAX_SIZE) {
+              height *= MAX_SIZE / width;
+              width = MAX_SIZE;
+            }
+          } else {
+            if (height > MAX_SIZE) {
+              width *= MAX_SIZE / height;
+              height = MAX_SIZE;
+            }
+          }
+
+          canvas.width = width;
+          canvas.height = height;
+          const ctx = canvas.getContext('2d');
+          ctx.drawImage(img, 0, 0, width, height);
+          
+          // Compress to JPEG with 80% quality
+          canvas.toBlob((blob) => {
+            const compressedFile = new File([blob], file.name.replace(/\.[^/.]+$/, "") + ".jpg", {
+              type: 'image/jpeg',
+              lastModified: Date.now(),
+            });
+            resolve(compressedFile);
+          }, 'image/jpeg', 0.8);
+        };
+      };
+    });
+  };
+
   const handleImageUpload = async (e) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
+    const rawFile = e.target.files?.[0];
+    if (!rawFile) return;
 
     try {
       setIsUploading(true);
+      const file = await compressImage(rawFile);
       const formDataUpload = new FormData();
       formDataUpload.append('image', file);
 
@@ -227,7 +279,8 @@ export default function AddProductDrawer({ isOpen, onClose, editingProduct = nul
     try {
       setIsUploadingGallery(true);
       
-      const uploadPromises = files.map(async (file) => {
+      const uploadPromises = files.map(async (rawFile) => {
+        const file = await compressImage(rawFile);
         const formDataUpload = new FormData();
         formDataUpload.append('image', file);
         const res = await fetch('/api/upload', {
