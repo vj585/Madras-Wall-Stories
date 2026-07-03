@@ -1,9 +1,11 @@
 import Product from '@/models/Product';
 import CustomPricing from '@/models/CustomPricing';
 import StoreSettings from '@/models/StoreSettings';
+import Coupon from '@/models/Coupon';
 
-export async function calculateSecureOrderTotal(cartItems) {
+export async function calculateSecureOrderTotal(cartItems, couponCode = null) {
   let subtotal = 0;
+  let discountAmount = 0;
   const recalculatedProducts = [];
 
   // Fetch configs once
@@ -100,5 +102,28 @@ export async function calculateSecureOrderTotal(cartItems) {
     });
   }
 
-  return { subtotal, recalculatedProducts };
+  // Handle coupon validation on server side
+  if (couponCode) {
+    const coupon = await Coupon.findOne({ code: couponCode.toUpperCase() });
+    if (coupon && coupon.active) {
+      const isExpired = coupon.expiryDate && new Date(coupon.expiryDate) < new Date();
+      const isLimitReached = coupon.usageLimit !== null && coupon.usageLimit !== undefined && coupon.usedCount >= coupon.usageLimit;
+      const meetsMinOrder = !coupon.minOrderAmount || subtotal >= coupon.minOrderAmount;
+      
+      if (!isExpired && !isLimitReached && meetsMinOrder) {
+        if (coupon.discountType === 'Percentage') {
+          discountAmount = Math.floor((subtotal * coupon.discountValue) / 100);
+        } else if (coupon.discountType === 'Fixed Amount') {
+          discountAmount = coupon.discountValue;
+        }
+        
+        // Cap discount to subtotal
+        if (discountAmount > subtotal) {
+          discountAmount = subtotal;
+        }
+      }
+    }
+  }
+
+  return { subtotal, discountAmount, recalculatedProducts };
 }

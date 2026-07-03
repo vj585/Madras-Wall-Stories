@@ -4,6 +4,7 @@ import cloudinary from '@/lib/cloudinary';
 import { sendOrderConfirmationEmail } from '@/lib/email';
 import { sendOrderSMS } from '@/lib/sms';
 import Customer from '@/models/Customer';
+import Coupon from '@/models/Coupon';
 
 export async function processAndSaveOrder(orderData) {
   // Cloudinary Base64 upload logic removed. Client now uploads directly and sends secure URL.
@@ -77,6 +78,18 @@ export async function processAndSaveOrder(orderData) {
   console.log('Creating order in MongoDB with data:', { customerName: orderData.customerName, email: orderData.email, amount: orderData.amount, paymentMethod: orderData.paymentMethod, status: orderData.paymentStatus });
   const newOrder = await Order.create(orderData);
   console.log('Order created successfully in MongoDB. Order ID:', newOrder._id.toString());
+
+  // 3b. Increment Coupon Usage
+  if (orderData.coupon) {
+    try {
+      await Coupon.findOneAndUpdate(
+        { code: orderData.coupon.toUpperCase() },
+        { $inc: { usedCount: 1 } }
+      );
+    } catch (err) {
+      console.error('Failed to increment coupon usage count:', err);
+    }
+  }
 
   // 4. Auto-update or create Customer for this order
   try {

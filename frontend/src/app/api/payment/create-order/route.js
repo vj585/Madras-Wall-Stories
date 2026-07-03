@@ -24,17 +24,17 @@ export async function POST(request) {
     await connectDB();
 
     // 1. Calculate secure subtotal from DB
-    const { subtotal, recalculatedProducts } = await calculateSecureOrderTotal(orderDetails.products);
+    const { subtotal, discountAmount, recalculatedProducts } = await calculateSecureOrderTotal(orderDetails.products, orderDetails.coupon);
     
     // 2. Calculate secure shipping
     const shipping = calculateShippingFee(subtotal);
     
     // 3. Compute true grand total
-    const grandTotal = subtotal + shipping;
+    const grandTotal = subtotal - discountAmount + shipping;
 
     // 4. Reject mismatch (Tamper protection)
     if (grandTotal !== amount) {
-      console.error(`Price mismatch detected! Frontend sent: ${amount}, Backend computed: ${grandTotal}`);
+      console.error(`Price mismatch detected! Frontend sent: ${amount}, Backend computed: ${grandTotal} (Subtotal: ${subtotal}, Discount: ${discountAmount}, Shipping: ${shipping})`);
       return NextResponse.json({ success: false, error: 'Price mismatch detected. Please refresh the page.' }, { status: 400 });
     }
 
@@ -43,6 +43,7 @@ export async function POST(request) {
       ...orderDetails,
       products: recalculatedProducts,
       subtotal,
+      discountAmount,
       shipping,
       grandTotal,
       amount: grandTotal,

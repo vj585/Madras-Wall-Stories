@@ -4,7 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { signIn } from 'next-auth/react';
-import { Mail, Lock, User, CheckCircle2, XCircle, Loader2 } from 'lucide-react';
+import { Mail, Lock, User, CheckCircle2, XCircle, Loader2, Eye, EyeOff } from 'lucide-react';
 
 export default function Register() {
   const router = useRouter();
@@ -12,6 +12,8 @@ export default function Register() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
   const [successMsg, setSuccessMsg] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   // Password requirements
   const reqLength = formData.password.length >= 8;
@@ -185,13 +187,20 @@ export default function Register() {
                 <Lock className="h-5 w-5" />
               </div>
               <input 
-                type="password" 
+                type={showPassword ? "text" : "password"} 
                 required
                 value={formData.password}
                 onChange={(e) => setFormData({...formData, password: e.target.value})}
-                className="w-full pl-11 pr-4 py-3.5 bg-gray-50 border border-gray-200 rounded-xl focus:bg-white focus:border-accent-blue focus:ring-1 focus:ring-accent-blue outline-none transition-all text-sm" 
+                className="w-full pl-11 pr-12 py-3.5 bg-gray-50 border border-gray-200 rounded-xl focus:bg-white focus:border-accent-blue focus:ring-1 focus:ring-accent-blue outline-none transition-all text-sm" 
                 placeholder="••••••••" 
               />
+              <button 
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className="absolute inset-y-0 right-0 pr-4 flex items-center text-gray-400 hover:text-gray-600 transition-colors"
+              >
+                {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
+              </button>
             </div>
             {/* Password Validation Requirements */}
             {formData.password.length > 0 && (
@@ -219,13 +228,20 @@ export default function Register() {
                 <Lock className="h-5 w-5" />
               </div>
               <input 
-                type="password" 
+                type={showConfirmPassword ? "text" : "password"} 
                 required
                 value={formData.confirmPassword}
                 onChange={(e) => setFormData({...formData, confirmPassword: e.target.value})}
-                className={`w-full pl-11 pr-4 py-3.5 bg-gray-50 border rounded-xl focus:bg-white focus:outline-none transition-all text-sm ${formData.confirmPassword.length > 0 ? (isMatch ? 'border-green-300 focus:ring-1 focus:ring-green-400' : 'border-red-300 focus:ring-1 focus:ring-red-400') : 'border-gray-200 focus:border-accent-blue focus:ring-1 focus:ring-accent-blue'}`} 
+                className={`w-full pl-11 pr-12 py-3.5 bg-gray-50 border rounded-xl focus:bg-white focus:outline-none transition-all text-sm ${formData.confirmPassword.length > 0 ? (isMatch ? 'border-green-300 focus:ring-1 focus:ring-green-400' : 'border-red-300 focus:ring-1 focus:ring-red-400') : 'border-gray-200 focus:border-accent-blue focus:ring-1 focus:ring-accent-blue'}`} 
                 placeholder="••••••••" 
               />
+              <button 
+                type="button"
+                onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                className="absolute inset-y-0 right-0 pr-4 flex items-center text-gray-400 hover:text-gray-600 transition-colors"
+              >
+                {showConfirmPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
+              </button>
             </div>
           </div>
 

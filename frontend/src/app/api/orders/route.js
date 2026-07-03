@@ -47,16 +47,17 @@ export async function POST(request) {
     }
 
     // Phase 5 & 6: Immutable Server-Side Pricing Verification (COD)
-    const { subtotal, recalculatedProducts } = await calculateSecureOrderTotal(body.products || []);
-    const shipping = calculateShippingFee(subtotal);
-    const grandTotal = subtotal + shipping;
+    const { subtotal, discountAmount, recalculatedProducts } = await calculateSecureOrderTotal(body.products || [], body.coupon);
+    const shipping = calculateShippingFee(subtotal); // Note: shipping is often calculated on subtotal before discount, depending on business logic. 
+    // Wait, let's keep it based on subtotal.
+    const grandTotal = subtotal - discountAmount + shipping;
 
     // Phase 5 & 6: Reject mismatch (Tamper protection)
     // Coerce to Numbers in case the payload sent them as strings
     if (Number(body.amount) !== grandTotal || 
         (body.shipping !== undefined && Number(body.shipping) !== shipping) || 
         (body.subtotal !== undefined && Number(body.subtotal) !== subtotal)) {
-      console.error(`COD Price mismatch! Amount sent: ${body.amount}, Subtotal sent: ${body.subtotal}, Shipping sent: ${body.shipping}. Backend computed GrandTotal: ${grandTotal}, Subtotal: ${subtotal}, Shipping: ${shipping}`);
+      console.error(`COD Price mismatch! Amount sent: ${body.amount}, Subtotal sent: ${body.subtotal}, Shipping sent: ${body.shipping}. Backend computed GrandTotal: ${grandTotal}, Subtotal: ${subtotal}, Discount: ${discountAmount}, Shipping: ${shipping}`);
       return NextResponse.json({ success: false, error: 'Price mismatch detected. Order rejected.' }, { status: 400 });
     }
 
@@ -64,6 +65,7 @@ export async function POST(request) {
       ...body,
       products: recalculatedProducts,
       subtotal,
+      discountAmount,
       shipping,
       grandTotal,
       amount: grandTotal, // Backwards compatibility
