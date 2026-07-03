@@ -228,6 +228,8 @@ export default function Categories({ products = [] }) {
         <div className="space-y-12 md:space-y-16">
           {productTypes.map((type, typeIdx) => {
             const heroImage = resolveHeroImage(products, type.categoryMatch, type.fallbackImage);
+            const isPolaroidRow = type.name === 'Polaroids';
+            const isStickerRow = type.name === 'Stickers';
 
             return (
               <motion.div
