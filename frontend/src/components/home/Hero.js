@@ -128,7 +128,11 @@ export default function Hero({ initialBanners = [] }) {
             
             <motion.span 
               variants={glowVariants}
-              className="inline-block mt-2 text-transparent bg-clip-text bg-gradient-to-r from-accent-blue via-purple-500 to-accent-yellow italic font-bold pr-2 animate-gradient-text font-fancy will-change-transform will-change-opacity"
+              className="inline-block mt-2 text-transparent bg-clip-text italic font-bold pr-2 animate-gradient-text font-fancy will-change-transform will-change-opacity"
+              style={{
+                backgroundImage: 'linear-gradient(90deg, #1A365D 0%, #E8682A 14%, #D4AF37 26%, #C5385A 38%, #F0A140 50%, #9333EA 62%, #1A7A8C 74%, #E8682A 86%, #D4AF37 100%)',
+                backgroundSize: '200% auto'
+              }}
             >
               Into Stories.
             </motion.span>
