@@ -80,6 +80,23 @@ export default function Footer() {
             <p className="text-gray-600 text-xs flex items-center gap-1">
               Made with <span className="text-red-400">♥</span> in Chennai, India
             </p>
+            <div className="mt-2 pt-2 border-t border-white/5 flex flex-col gap-1">
+              <p className="text-gray-500 text-[10px] uppercase tracking-wider font-semibold">Developed by Vijay</p>
+              <div className="flex items-center gap-3 text-gray-500 text-xs">
+                <a href="tel:8148224345" className="hover:text-accent-blue transition-colors flex items-center gap-1">
+                  <Phone className="w-3 h-3" /> 8148224345
+                </a>
+                <span className="text-gray-700">|</span>
+                <a href="mailto:vijaym0520@gmail.com" className="hover:text-accent-blue transition-colors flex items-center gap-1">
+                  <Mail className="w-3 h-3" /> vijaym0520@gmail.com
+                </a>
+                <span className="text-gray-700">|</span>
+                <a href="https://instagram.com/vijay.05_" target="_blank" rel="noopener noreferrer" className="hover:text-accent-blue transition-colors flex items-center gap-1">
+                  <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect width="20" height="20" x="2" y="2" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" x2="17.51" y1="6.5" y2="6.5"/></svg>
+                  vijay.05_
+                </a>
+              </div>
+            </div>
           </div>
           <div className="flex space-x-6 text-sm text-gray-500">
             <Link href="/privacy" className="hover:text-white transition-colors">Privacy Policy</Link>
