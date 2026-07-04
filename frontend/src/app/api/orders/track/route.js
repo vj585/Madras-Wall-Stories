@@ -13,6 +13,13 @@ export async function POST(request) {
       );
     }
 
+    if (orderId.length !== 24) {
+      return NextResponse.json(
+        { success: false, error: 'Invalid Order ID format.' },
+        { status: 400 }
+      );
+    }
+
     await connectDB();
 
     const order = await Order.findOne({ 
