@@ -32,9 +32,10 @@ export default async function PolaroidsPage() {
             <h2 className="text-3xl font-heading font-bold mb-4 text-gray-900">Create Custom Polaroids</h2>
             <p className="text-gray-700 mb-6">Upload your favorite photos from your camera roll, and we'll print them on authentic-feeling premium polaroid stock.</p>
             <Link 
-              href="/custom"
-              className="inline-flex items-center justify-center px-8 py-4 bg-black text-white rounded-xl font-semibold hover:bg-gray-800 transition-all shadow-lg hover:shadow-xl hover:-translate-y-1"
+              href="/custom" 
+              className="btn-primary inline-flex items-center justify-center px-8 py-4 bg-black text-white rounded-xl font-semibold shadow-lg"
             >
+              <div className="btn-primary-inner"></div>
               Start Creating <Camera className="w-5 h-5 ml-2" />
             </Link>
           </div>

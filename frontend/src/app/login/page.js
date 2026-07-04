@@ -103,11 +103,11 @@ export default function Login() {
         {/* Social Login */}
         <motion.button 
           type="button"
-          whileHover={{ scale: 1.015, y: -2 }}
           whileTap={{ scale: 0.98 }}
           onClick={() => signIn('google')}
-          className="w-full flex items-center justify-center gap-3 bg-white border border-gray-200 text-gray-700 hover:bg-gray-50 hover:border-gray-300 hover:shadow-md px-4 py-3.5 rounded-xl font-medium transition-all duration-300 mb-6 shadow-sm"
+          className="btn-secondary w-full flex items-center justify-center gap-3 px-4 py-3.5 rounded-xl font-medium mb-6 shadow-sm"
         >
+          <div className="btn-primary-inner"></div>
           <svg className="w-5 h-5" viewBox="0 0 24 24">
             <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
             <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
@@ -201,8 +201,9 @@ export default function Login() {
                 <button 
                   type="submit" 
                   disabled={isLoading}
-                  className="w-full flex justify-center py-3.5 px-4 border border-transparent rounded-xl shadow-sm text-sm font-bold text-white bg-black hover:bg-gray-800 focus:outline-none transition-colors mt-6 disabled:opacity-70 disabled:cursor-not-allowed"
+                  className="btn-primary w-full flex justify-center py-3.5 px-4 border border-transparent rounded-xl shadow-sm text-sm font-bold text-white bg-black focus:outline-none transition-colors mt-6 disabled:opacity-70 disabled:cursor-not-allowed"
                 >
+                  <div className="btn-primary-inner"></div>
                   {isLoading ? <Loader2 className="w-5 h-5 animate-spin" /> : 'Sign In'}
                 </button>
               </motion.form>
@@ -224,7 +225,8 @@ export default function Login() {
                   <input type="tel" className="flex-1 min-w-0 block w-full px-4 py-3.5 rounded-none rounded-r-xl bg-gray-50 border border-gray-200 focus:bg-white focus:border-accent-blue focus:ring-1 focus:ring-accent-blue outline-none transition-all text-sm" placeholder="98765 43210" />
                 </div>
               </div>
-              <button type="button" className="w-full flex justify-center items-center gap-2 py-3.5 px-4 border border-transparent rounded-xl shadow-sm text-sm font-bold text-white bg-black hover:bg-gray-800 focus:outline-none transition-colors mt-6">
+              <button type="button" className="btn-primary w-full flex justify-center items-center gap-2 py-3.5 px-4 border border-transparent rounded-xl shadow-sm text-sm font-bold text-white bg-black focus:outline-none transition-colors mt-6">
+                <div className="btn-primary-inner"></div>
                 Send OTP <ArrowRight className="w-4 h-4" />
               </button>
             </motion.form>

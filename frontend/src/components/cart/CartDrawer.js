@@ -142,7 +142,8 @@ export default function CartDrawer() {
                   <span className="font-bold text-lg">₹{cartTotal}</span>
                 </div>
                 <Link href="/checkout" onClick={() => setIsCartOpen(false)}>
-                  <button className="w-full py-4 bg-primary text-secondary rounded-xl font-semibold flex items-center justify-center gap-2 hover:bg-accent-blue hover:text-white transition-all shadow-lg hover:shadow-xl btn-premium">
+                  <button className="btn-primary w-full py-4 bg-black text-white rounded-xl font-semibold flex items-center justify-center gap-2 shadow-lg">
+                    <div className="btn-primary-inner"></div>
                     Checkout Now <ArrowRight className="w-5 h-5" />
                   </button>
                 </Link>

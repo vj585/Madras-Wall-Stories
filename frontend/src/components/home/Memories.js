@@ -60,7 +60,8 @@ export default function Memories({ banners = [] }) {
               We believe walls shouldn't be blank. They should tell the story of who you are, what you love, and the moments you cherish. Turn your digital photos into physical treasures.
             </p>
             <Link href="/custom">
-              <button className="px-8 py-4 bg-black text-white rounded-full font-semibold flex items-center gap-3 hover:bg-gray-800 transition-all shadow-lg hover:shadow-xl hover:-translate-y-1 mt-4">
+              <button className="btn-primary px-8 py-4 bg-black text-white rounded-full font-semibold flex items-center gap-3 mt-4">
+                <div className="btn-primary-inner"></div>
                 Start Creating <ArrowRight className="w-5 h-5" />
               </button>
             </Link>

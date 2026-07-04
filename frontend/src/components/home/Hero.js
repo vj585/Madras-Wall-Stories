@@ -4,7 +4,6 @@ import { motion, AnimatePresence } from 'framer-motion';
 import Link from 'next/link';
 import Image from 'next/image';
 import { ArrowRight, Star, Truck, ShieldCheck, ChevronDown } from 'lucide-react';
-import MagneticButton from '@/components/ui/MagneticButton';
 import { useMobileAdaptive } from '@/hooks/useMobileAdaptive';
 import { getUniqueBanners } from '@/utils/bannerUtils';
 
@@ -147,11 +146,10 @@ export default function Hero({ initialBanners = [] }) {
             transition={{ delay: 0.6, duration: 0.6 }}
             className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4"
           >
-            <MagneticButton>
-              <Link href="/shop" className="w-full sm:w-auto px-8 py-4 bg-black text-white font-semibold rounded-2xl hover:bg-gray-900 transition-all shadow-[0_8px_30px_rgb(0,0,0,0.12)] hover:shadow-[0_8px_30px_rgb(0,0,0,0.2)] hover:-translate-y-1 flex items-center justify-center gap-2">
-                Shop Collection <ArrowRight className="w-4 h-4" />
-              </Link>
-            </MagneticButton>
+            <Link href="/shop" className="btn-primary w-full sm:w-auto px-8 py-4 bg-black text-white font-semibold rounded-2xl flex items-center justify-center gap-2">
+              <div className="btn-primary-inner"></div>
+              Shop Collection <ArrowRight className="w-4 h-4" />
+            </Link>
           </motion.div>
 
           <motion.div 

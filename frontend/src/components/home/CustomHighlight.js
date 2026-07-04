@@ -73,7 +73,8 @@ export default function CustomHighlight({ banners = [] }) {
             </div>
 
             <Link href="/custom">
-              <button className="px-8 py-4 bg-black text-white rounded-full font-bold flex items-center gap-3 hover:bg-gray-800 transition-all shadow-lg hover:shadow-xl hover:-translate-y-1 w-fit">
+              <button className="btn-primary px-8 py-4 bg-black text-white rounded-full font-bold flex items-center gap-3 w-fit">
+                <div className="btn-primary-inner"></div>
                 Open Print Studio <ArrowRight className="w-5 h-5" />
               </button>
             </Link>

@@ -138,29 +138,78 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 /* Global Premium Button Style */
-.btn-premium {
+.btn-primary {
   position: relative;
-  overflow: hidden;
-  transition: all 0.3s ease;
+  overflow: visible; /* changed from hidden so pseudo-element hit area works */
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   z-index: 1;
 }
 
-.btn-premium::after {
+/* Expanded hit area to prevent jitter on transform */
+.btn-primary::before {
+  content: '';
+  position: absolute;
+  top: -10px; right: -10px; bottom: -10px; left: -10px;
+  z-index: -1;
+}
+
+/* Inner overflow container for the shine effect */
+.btn-primary-inner {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  overflow: hidden;
+  z-index: -1;
+  pointer-events: none;
+}
+
+.btn-primary-inner::after {
   content: '';
   position: absolute;
   top: 0;
   left: -100%;
   width: 100%;
   height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-  transition: all 0.5s ease;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.25), transparent);
+  transition: all 0.6s ease;
+}
+
+.btn-primary:hover .btn-primary-inner::after {
+  left: 100%;
+}
+.btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 24px -8px rgba(0,0,0,0.4);
+}
+.btn-primary:active {
+  transform: translateY(0);
+  box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+}
+
+/* Secondary Premium Button (Outline) */
+.btn-secondary {
+  position: relative;
+  overflow: visible;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  z-index: 1;
+  background-color: #ffffff;
+  color: #111111;
+  border: 1px solid #e5e7eb;
+}
+
+.btn-secondary::before {
+  content: '';
+  position: absolute;
+  top: -10px; right: -10px; bottom: -10px; left: -10px;
   z-index: -1;
 }
 
-.btn-premium:hover::after {
-  left: 100%;
-}
-.btn-premium:hover {
+.btn-secondary:hover {
   transform: translateY(-2px);
-  box-shadow: 0 10px 20px -10px rgba(0,0,0,0.5);
+  box-shadow: 0 10px 20px -10px rgba(0,0,0,0.15);
+  border-color: #d1d5db;
+}
+.btn-secondary:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
 }
