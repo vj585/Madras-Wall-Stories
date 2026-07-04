@@ -4,13 +4,15 @@
 @theme inline {
   --color-primary: #111111;
   --color-secondary: #ffffff;
-  --color-accent-blue: #1A365D; /* Premium Deep Navy */
-  --color-accent-yellow: #D4AF37; /* Premium Gold */
+  --color-accent-blue: #1A365D;     /* Premium Deep Navy */
+  --color-accent-yellow: #D4AF37;   /* Premium Gold */
+  --color-accent-saffron: #E8682A;  /* Chennai Terracotta-Saffron */
+  --color-accent-warm: #F0A140;     /* Warm Amber */
   --color-background: #FAFAF8;
   --color-foreground: #111111;
   --color-surface: #ffffff;
   --color-surface-alt: #FFFDF7;
-  --color-surface-warm: #F5F1EA;
+  --color-surface-warm: #F7F2E8;    /* Warmer — closer to turmeric cream */
   --font-sans: 'Inter', sans-serif;
   --font-heading: 'Poppins', sans-serif;
 }
@@ -212,4 +214,42 @@ h1, h2, h3, h4, h5, h6 {
 .btn-secondary:active {
   transform: translateY(0);
   box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+
+/* ─── Madras Check Texture ────────────────────────────────────────────────────
+   The Madras check (the iconic plaid fabric from Chennai) rendered as a subtle
+   CSS background pattern — brand-derived texture for the scrapbook board.
+   Colors at very low opacity so it reads as texture, not distraction.
+──────────────────────────────────────────────────────────────────────────────*/
+.madras-bg {
+  background-color: #FAF7F2;
+  background-image:
+    /* Vertical stripes — saffron, gold, navy in Madras check rhythm */
+    repeating-linear-gradient(90deg,
+      transparent 0px,        transparent 9px,
+      rgba(232,104,42,0.055)  9px,  rgba(232,104,42,0.055)  10px,
+      transparent 10px,       transparent 17px,
+      rgba(212,175,55,0.065)  17px, rgba(212,175,55,0.065)  18px,
+      transparent 18px,       transparent 27px,
+      rgba(26,54,93,0.050)    27px, rgba(26,54,93,0.050)    29px,
+      transparent 29px,       transparent 38px,
+      rgba(232,104,42,0.040)  38px, rgba(232,104,42,0.040)  39px,
+      transparent 39px,       transparent 47px,
+      rgba(212,175,55,0.055)  47px, rgba(212,175,55,0.055)  48px,
+      transparent 48px,       transparent 56px
+    ),
+    /* Horizontal stripes — same rhythm, perpendicular */
+    repeating-linear-gradient(180deg,
+      transparent 0px,        transparent 9px,
+      rgba(232,104,42,0.055)  9px,  rgba(232,104,42,0.055)  10px,
+      transparent 10px,       transparent 17px,
+      rgba(212,175,55,0.065)  17px, rgba(212,175,55,0.065)  18px,
+      transparent 18px,       transparent 27px,
+      rgba(26,54,93,0.050)    27px, rgba(26,54,93,0.050)    29px,
+      transparent 29px,       transparent 38px,
+      rgba(232,104,42,0.040)  38px, rgba(232,104,42,0.040)  39px,
+      transparent 39px,       transparent 47px,
+      rgba(212,175,55,0.055)  47px, rgba(212,175,55,0.055)  48px,
+      transparent 48px,       transparent 56px
+    );
 }

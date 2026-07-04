@@ -67,61 +67,114 @@ export default function Memories({ banners = [] }) {
             </Link>
           </motion.div>
 
-          <div className="relative">
-            {/* Main Image */}
-            <motion.div 
-              initial={{ opacity: 0, scale: 0.9 }}
-              whileInView={{ opacity: 1, scale: 1 }}
+          {/* ─── Scrapbook Clothesline Board ─────────────────────────────────────
+               Madras-textured board with a twine clothesline. Photos hang from 
+               wooden clothespins; one rests pinned with tape. A living mood board
+               that captures the "Stories" brand promise visually.
+          ─────────────────────────────────────────────────────────────────────── */}
+          <div className="relative min-h-[520px] lg:min-h-[560px]">
+
+            {/* Madras check board background */}
+            <div className="absolute inset-0 rounded-3xl madras-bg border border-amber-100/60 overflow-hidden" />
+
+            {/* Clothesline rope — twine string across the top third */}
+            <div className="absolute z-10 left-6 right-6" style={{ top: '90px' }}>
+              <div
+                className="w-full rounded-full"
+                style={{
+                  height: '1.5px',
+                  background: 'linear-gradient(90deg, transparent, rgba(120,60,10,0.4) 12%, rgba(120,60,10,0.55) 50%, rgba(120,60,10,0.4) 88%, transparent)',
+                  boxShadow: '0 1.5px 4px rgba(100,40,5,0.18)'
+                }}
+              />
+            </div>
+
+            {/* ── Center polaroid — hung from the line ── */}
+            <motion.div
+              initial={{ opacity: 0, y: -20, rotate: 1 }}
+              whileInView={{ opacity: 1, y: 0, rotate: 1 }}
               viewport={{ once: true }}
-              className="relative rounded-[2rem] overflow-hidden shadow-2xl z-10 bg-white p-4"
+              transition={{ duration: 0.7, type: 'spring', bounce: 0.3 }}
+              className="absolute z-20"
+              style={{ top: '64px', left: 'calc(50% - 96px)' }}
             >
-              <div className="w-full aspect-[4/5] relative rounded-xl overflow-hidden">
-                <Image 
-                  src={img1} 
-                  alt="Master Poster" 
-                  fill
-                  sizes="(max-width: 768px) 100vw, 50vw"
-                  className="object-cover"
-                />
+              {/* Wooden clothespin */}
+              <div className="absolute -top-3 left-1/2 -translate-x-1/2 z-30 flex flex-col items-center gap-px">
+                <div className="w-3 h-6 rounded-[2px] shadow-sm" style={{ background: 'linear-gradient(180deg, #92400e 0%, #78350f 100%)' }} />
+                <div className="w-5 h-[1.5px] rounded-full" style={{ background: 'rgba(120,60,10,0.4)' }} />
+              </div>
+              {/* Polaroid */}
+              <div className="w-48 bg-white" style={{ boxShadow: '3px 6px 28px rgba(0,0,0,0.18), 0 1px 4px rgba(0,0,0,0.08)' }}>
+                <div className="p-2.5 pb-0">
+                  <div className="w-full aspect-[3/4] relative overflow-hidden bg-gray-100">
+                    <Image src={img1} fill sizes="192px" className="object-cover" alt="Memory" />
+                  </div>
+                </div>
+                <div className="px-3 py-3 text-center">
+                  <p className="font-script text-sm text-gray-400">my story ✨</p>
+                </div>
               </div>
             </motion.div>
 
-            {/* Floating Polaroids */}
-            <motion.div 
-              initial={{ opacity: 0, y: 50, rotate: -15 }}
-              whileInView={{ opacity: 1, y: 0, rotate: -10 }}
+            {/* ── Left polaroid — hung, tilted left ── */}
+            <motion.div
+              initial={{ opacity: 0, x: -16, rotate: -8 }}
+              whileInView={{ opacity: 1, x: 0, rotate: -8 }}
               viewport={{ once: true }}
-              transition={{ delay: 0.2 }}
-              className="absolute -bottom-10 -left-10 w-48 p-4 bg-white rounded-xl shadow-2xl z-20 border border-gray-100"
+              transition={{ duration: 0.7, delay: 0.2, type: 'spring', bounce: 0.25 }}
+              className="absolute z-10"
+              style={{ top: '62px', left: '7%' }}
             >
-              <div className="w-full aspect-square relative mb-4 rounded-lg overflow-hidden">
-                <Image 
-                  src={img2} 
-                  alt="Michael Jackson Polaroid" 
-                  fill
-                  sizes="200px"
-                  className="object-cover"
-                />
+              {/* Clothespin */}
+              <div className="absolute -top-2.5 left-1/2 -translate-x-1/2 z-30">
+                <div className="w-2.5 h-5 rounded-[2px] shadow-sm" style={{ background: 'linear-gradient(180deg, #92400e, #78350f)' }} />
+              </div>
+              {/* Polaroid */}
+              <div className="w-36 bg-white" style={{ boxShadow: '2px 4px 18px rgba(0,0,0,0.14)' }}>
+                <div className="p-2 pb-0">
+                  <div className="w-full aspect-square relative overflow-hidden bg-gray-100">
+                    <Image src={img2} fill sizes="144px" className="object-cover" alt="Memory 2" />
+                  </div>
+                </div>
+                <div className="h-8" />
+              </div>
+              {/* Tape strip — amber translucent */}
+              <div
+                className="absolute -top-1 right-0 w-8 h-3 rounded-sm"
+                style={{ background: 'rgba(245,217,90,0.52)', transform: 'rotate(8deg) translateX(6px)' }}
+              />
+            </motion.div>
+
+            {/* ── Bottom-right photo — taped, resting at an angle ── */}
+            <motion.div
+              initial={{ opacity: 0, x: 16, rotate: 7 }}
+              whileInView={{ opacity: 1, x: 0, rotate: 7 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.7, delay: 0.4, type: 'spring', bounce: 0.25 }}
+              className="absolute z-10"
+              style={{ bottom: '28px', right: '6%' }}
+            >
+              {/* Tape across top */}
+              <div
+                className="absolute -top-2 left-1/2 -translate-x-1/2 w-10 h-3 rounded-sm"
+                style={{ background: 'rgba(245,217,90,0.52)', transform: 'rotate(-7deg)' }}
+              />
+              {/* Polaroid */}
+              <div className="w-40 bg-white" style={{ boxShadow: '2px 4px 18px rgba(0,0,0,0.14)' }}>
+                <div className="p-2 pb-0">
+                  <div className="w-full aspect-[4/3] relative overflow-hidden bg-gray-100">
+                    <Image src={img3} fill sizes="160px" className="object-cover" alt="Memory 3" />
+                  </div>
+                </div>
+                <div className="px-2 py-2.5 text-center">
+                  <p className="font-script text-xs text-gray-400">Chennai 🌊</p>
+                </div>
               </div>
             </motion.div>
 
-            <motion.div 
-              initial={{ opacity: 0, y: -50, rotate: 15 }}
-              whileInView={{ opacity: 1, y: 0, rotate: 12 }}
-              viewport={{ once: true }}
-              transition={{ delay: 0.4 }}
-              className="absolute -top-10 -right-10 w-40 p-3 bg-white rounded-xl shadow-2xl z-20 border border-gray-100"
-            >
-              <div className="w-full aspect-square relative mb-3 rounded-lg overflow-hidden">
-                <Image 
-                  src={img3} 
-                  alt="Batman Polaroid" 
-                  fill
-                  sizes="160px"
-                  className="object-cover"
-                />
-              </div>
-            </motion.div>
+            {/* Decorative — subtle pushpin and gold star accents */}
+            <div className="absolute bottom-10 left-10 text-xl select-none" style={{ opacity: 0.18 }}>📌</div>
+            <div className="absolute top-1/3 right-8 font-bold text-2xl select-none" style={{ color: 'rgba(212,175,55,0.22)' }}>✦</div>
           </div>
 
         </div>

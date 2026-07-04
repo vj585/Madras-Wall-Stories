@@ -98,14 +98,17 @@ export default function Hero({ initialBanners = [] }) {
   return (
     <motion.section 
       animate={{ 
-        backgroundColor: ["#fff0d4", "#e3efff", "#ffe3ea", "#eafaf1", "#fff0d4"] 
+        backgroundColor: ["#fef3e2", "#fde4c8", "#e8f3ff", "#fff8ed", "#fef3e2"] 
       }}
       transition={{ duration: 12, repeat: Infinity, ease: "linear" }}
       className="relative w-full min-h-[100svh] lg:min-h-[90vh] flex items-center justify-center overflow-hidden text-foreground pt-20"
     >
-      {/* Background Soft Gradients */}
-      <div className="absolute top-[-10%] right-[-5%] w-[40rem] h-[40rem] bg-accent-yellow/10 rounded-full blur-[100px] pointer-events-none"></div>
+      {/* Warm saffron glow — top right (Chennai sunrise) */}
+      <div className="absolute top-[-10%] right-[-5%] w-[40rem] h-[40rem] rounded-full blur-[100px] pointer-events-none" style={{ background: 'radial-gradient(circle, rgba(232,104,42,0.12) 0%, rgba(240,161,64,0.06) 60%, transparent 100%)' }}></div>
+      {/* Deep navy glow — bottom left (Bay of Bengal night) */}
       <div className="absolute bottom-[-10%] left-[-5%] w-[40rem] h-[40rem] bg-accent-blue/5 rounded-full blur-[100px] pointer-events-none"></div>
+      {/* Gold shimmer — centre */}
+      <div className="absolute top-1/3 left-1/3 w-64 h-64 rounded-full blur-[80px] pointer-events-none" style={{ background: 'radial-gradient(circle, rgba(212,175,55,0.07) 0%, transparent 70%)' }}></div>
 
       <div className="container relative z-10 px-4 mx-auto grid grid-cols-1 lg:grid-cols-2 gap-4 lg:gap-12 items-center">
         
