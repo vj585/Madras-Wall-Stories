@@ -543,7 +543,7 @@ export default function Checkout() {
               View Orders
             </Link>
           ) : (
-            <Link href="/track" className="block w-full py-4 bg-black text-white rounded-xl font-bold hover:bg-gray-800 transition-all text-center mb-4 shadow-md">
+            <Link href={`/track?orderId=${placedOrder._id}`} className="block w-full py-4 bg-black text-white rounded-xl font-bold hover:bg-gray-800 transition-all text-center mb-4 shadow-md">
               Track Order
             </Link>
           )}
