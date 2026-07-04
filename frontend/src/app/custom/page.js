@@ -3,7 +3,7 @@ import { useState, useRef, useEffect, useCallback } from 'react';
 import Cropper from 'react-easy-crop';
 import { getCroppedImg } from '@/utils/cropImage';
 import { motion } from 'framer-motion';
-import { Upload, X, Crop, Type, Image as ImageIcon, ShoppingCart, Frame, Maximize2 } from 'lucide-react';
+import { Upload, X, Crop, Type, Image as ImageIcon, ShoppingCart, Frame, Maximize2, Film } from 'lucide-react';
 import { useCart } from '@/context/CartContext';
 
 export default function CustomPrintBuilder() {
@@ -27,6 +27,7 @@ export default function CustomPrintBuilder() {
   const [pricingConfig, setPricingConfig] = useState(null);
   const [isDragging, setIsDragging] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
+  const [stripCount, setStripCount] = useState(3);
 
   // Options
   const productTypes = ['Poster', 'Polaroid', 'Mini Prints', 'Photo Booth Strip'];
@@ -34,8 +35,9 @@ export default function CustomPrintBuilder() {
     'Poster': ['A5 (6x8")', 'A4 (8x12")', 'A3 (12x18")', 'A2 (16x24")'],
     'Polaroid': ['Standard (3.5x4.2")', 'Mini (2.1x3.4")'],
     'Mini Prints': ['Square (4x4")', 'Landscape (4x6")'],
-    'Photo Booth Strip': ['Standard (2x6")']
+    'Photo Booth Strip': ['Standard (2x6")', 'Large (2x8")']
   };
+  const stripCountOptions = [2, 3, 4, 5, 6];
   const frames = ['No Frame', 'Black Frame', 'White Frame', 'Wooden Frame'];
   const finishes = ['Matte', 'Glossy'];
 
@@ -169,12 +171,16 @@ export default function CustomPrintBuilder() {
         id: `custom-${Date.now()}`,
         name: `Custom ${productType}`,
         price: price,
-        image: uploadData.imageUrl, // Fix: use imageUrl from API response
-        size: size,
+        image: uploadData.imageUrl,
+        size: productType === 'Photo Booth Strip' ? `${size} · ${stripCount} photos` : size,
         frame: frame,
         quantity: 1,
         isCustom: true,
-        customDetails: { finish, caption }
+        customDetails: {
+          finish,
+          caption,
+          ...(productType === 'Photo Booth Strip' ? { stripCount } : {})
+        }
       });
       
       // Provide visual feedback instead of an alert, or a small toast
@@ -301,10 +307,11 @@ export default function CustomPrintBuilder() {
                     )}
 
                     {productType === 'Photo Booth Strip' ? (
-                      <div className="flex flex-col gap-2 bg-white">
-                         <img src={image} alt="Preview" className="w-[120px] h-[120px] object-cover" />
-                         <img src={image} alt="Preview" className="w-[120px] h-[120px] object-cover" />
-                         <img src={image} alt="Preview" className="w-[120px] h-[120px] object-cover" />
+                      <div className="flex flex-col gap-1 bg-white p-2 shadow-xl rounded">
+                        {Array.from({ length: stripCount }).map((_, i) => (
+                          <img key={i} src={image} alt={`Strip photo ${i + 1}`} className="w-[120px] h-[96px] object-cover" />
+                        ))}
+                        <p className="text-center text-[10px] text-gray-400 mt-1 font-medium">{stripCount}-Photo Strip</p>
                       </div>
                     ) : (
                       <img 
@@ -396,6 +403,44 @@ export default function CustomPrintBuilder() {
                 </div>
               </div>
             </div>
+
+            {/* Strip Count — only for Photo Booth Strip */}
+            {productType === 'Photo Booth Strip' && (
+              <div className="bg-white p-6 rounded-3xl shadow-sm border border-gray-200">
+                <h3 className="font-semibold text-lg mb-4 flex items-center gap-2">
+                  <Film className="w-5 h-5" /> Photos on Strip
+                </h3>
+                <div className="grid grid-cols-5 gap-2">
+                  {stripCountOptions.map(count => (
+                    <button
+                      key={count}
+                      onClick={() => setStripCount(count)}
+                      className={`py-4 px-2 flex flex-col items-center gap-2 rounded-xl border font-bold transition-all ${
+                        stripCount === count
+                          ? 'border-accent-blue bg-accent-blue/10 text-accent-blue'
+                          : 'border-gray-200 hover:border-gray-300 text-gray-600'
+                      }`}
+                    >
+                      {/* Mini visual strip icon */}
+                      <div className="flex flex-col gap-[2.5px]">
+                        {Array.from({ length: count }).map((_, i) => (
+                          <div
+                            key={i}
+                            className={`w-5 h-2 rounded-[2px] transition-colors ${
+                              stripCount === count ? 'bg-accent-blue/60' : 'bg-gray-300'
+                            }`}
+                          />
+                        ))}
+                      </div>
+                      <span className="text-xs">{count}</span>
+                    </button>
+                  ))}
+                </div>
+                <p className="text-xs text-gray-400 mt-3">
+                  Your photo will be repeated <span className="font-semibold text-gray-600">{stripCount} times</span> on the printed strip.
+                </p>
+              </div>
+            )}
 
             {/* Frame Options (Only for Poster) */}
             {productType === 'Poster' && (
