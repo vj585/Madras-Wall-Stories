@@ -53,7 +53,7 @@ export default function Marquee() {
           x: {
             repeat: Infinity,
             repeatType: "loop",
-            duration: 50,
+            duration: 28,
             ease: "linear",
           },
         }}
@@ -64,8 +64,8 @@ export default function Marquee() {
             <span className="inline-flex items-center gap-1.5 bg-white/5 border border-white/10 rounded-full px-3 py-0.5 mx-2">
               <span className="text-sm leading-none">{item.icon}</span>
               <span
-                className="font-heading font-semibold tracking-[0.18em] text-[10px] sm:text-[11px] uppercase"
-                style={{ color: "#e2e8f0" }}
+                className="font-heading font-semibold tracking-[0.20em] text-[10px] sm:text-[11px] uppercase"
+                style={{ color: "#D4AF37", textShadow: "0 0 12px rgba(212,175,55,0.35)" }}
               >
                 {item.text}
               </span>
