@@ -95,13 +95,16 @@ export default function ProductsPage() {
     return matchesSearch && matchesCategory && matchesStatus;
   });
 
-  const isAllSelected = filteredProducts.length > 0 && selectedIds.length === filteredProducts.length;
+  const isAllSelected = filteredProducts.length > 0 && filteredProducts.every(p => selectedIds.includes(p._id));
 
   const handleSelectAll = (e) => {
     if (e.target.checked) {
-      setSelectedIds(filteredProducts.map(p => p._id));
+      const newIds = new Set(selectedIds);
+      filteredProducts.forEach(p => newIds.add(p._id));
+      setSelectedIds(Array.from(newIds));
     } else {
-      setSelectedIds([]);
+      const visibleIds = new Set(filteredProducts.map(p => p._id));
+      setSelectedIds(selectedIds.filter(id => !visibleIds.has(id)));
     }
   };
 
