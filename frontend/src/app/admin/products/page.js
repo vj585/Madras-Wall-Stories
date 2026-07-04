@@ -11,6 +11,7 @@ export default function ProductsPage() {
   const [statusFilter, setStatusFilter] = useState('All');
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [editingProduct, setEditingProduct] = useState(null);
+  const [selectedIds, setSelectedIds] = useState([]);
 
   const fetchProducts = async () => {
     setIsLoading(true);
@@ -66,9 +67,51 @@ export default function ProductsPage() {
     }
   };
 
+  const handleBulkDelete = async () => {
+    if (confirm(`Are you sure you want to delete ${selectedIds.length} products?`)) {
+      setIsLoading(true);
+      try {
+        await Promise.all(selectedIds.map(id => fetch(`/api/products/${id}`, { method: 'DELETE' })));
+        setSelectedIds([]);
+        fetchProducts();
+      } catch (error) {
+        console.error("Failed to bulk delete products", error);
+        setIsLoading(false);
+      }
+    }
+  };
+
   useEffect(() => {
     fetchProducts();
   }, []);
+
+  const filteredProducts = products.filter(product => {
+    const matchesSearch = product.title.toLowerCase().includes(searchQuery.toLowerCase()) || 
+                          (product.slug && product.slug.toLowerCase().includes(searchQuery.toLowerCase()));
+    const matchesCategory = categoryFilter === 'All' || product.category === categoryFilter;
+    const displayStock = product.variants?.length > 0 ? product.variants.reduce((acc, v) => acc + (v.stock || 0), 0) : product.stock;
+    const status = displayStock > 0 ? 'Active' : 'Out of Stock';
+    const matchesStatus = statusFilter === 'All' || status === statusFilter || (statusFilter === 'Draft' && false); 
+    return matchesSearch && matchesCategory && matchesStatus;
+  });
+
+  const isAllSelected = filteredProducts.length > 0 && selectedIds.length === filteredProducts.length;
+
+  const handleSelectAll = (e) => {
+    if (e.target.checked) {
+      setSelectedIds(filteredProducts.map(p => p._id));
+    } else {
+      setSelectedIds([]);
+    }
+  };
+
+  const handleSelectOne = (id) => {
+    if (selectedIds.includes(id)) {
+      setSelectedIds(selectedIds.filter(selectedId => selectedId !== id));
+    } else {
+      setSelectedIds([...selectedIds, id]);
+    }
+  };
 
   return (
     <div className="space-y-8 pb-10">
@@ -127,6 +170,21 @@ export default function ProductsPage() {
         </div>
       </div>
 
+      {/* Bulk Actions */}
+      {selectedIds.length > 0 && (
+        <div className="bg-black text-white px-6 py-3 rounded-xl flex items-center justify-between shadow-lg">
+          <div className="flex items-center gap-2">
+            <span className="font-medium bg-white/20 px-2 py-0.5 rounded text-sm">{selectedIds.length}</span>
+            <span className="text-sm">products selected</span>
+          </div>
+          <div className="flex items-center gap-4">
+            <button onClick={handleBulkDelete} className="text-sm text-red-400 hover:text-red-300 font-medium">Delete Selected</button>
+            <button onClick={() => alert('Bulk edit coming soon!')} className="text-sm hover:text-gray-300 font-medium">Edit Selected</button>
+            <button onClick={() => setSelectedIds([])} className="text-sm text-gray-400 hover:text-white ml-2 border-l border-gray-700 pl-4">Cancel</button>
+          </div>
+        </div>
+      )}
+
       {/* Products Content */}
       <div className="bg-white rounded-3xl shadow-sm border border-gray-100 overflow-hidden min-h-[400px] flex flex-col">
         {isLoading ? (
@@ -155,6 +213,14 @@ export default function ProductsPage() {
             <table className="w-full text-left text-sm whitespace-nowrap">
               <thead className="bg-gray-50/50 border-b border-gray-100 text-gray-500">
                 <tr>
+                  <th className="px-6 py-4 w-12">
+                    <input 
+                      type="checkbox" 
+                      checked={isAllSelected}
+                      onChange={handleSelectAll}
+                      className="rounded border-gray-300 text-black focus:ring-black cursor-pointer"
+                    />
+                  </th>
                   <th className="px-6 py-4 font-medium">Product</th>
                   <th className="px-6 py-4 font-medium">Category</th>
                   <th className="px-6 py-4 font-medium">Price</th>
@@ -163,20 +229,20 @@ export default function ProductsPage() {
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-100">
-                {products.filter(product => {
-                  const matchesSearch = product.title.toLowerCase().includes(searchQuery.toLowerCase()) || 
-                                        (product.slug && product.slug.toLowerCase().includes(searchQuery.toLowerCase()));
-                  const matchesCategory = categoryFilter === 'All' || product.category === categoryFilter;
-                  const displayStock = product.variants?.length > 0 ? product.variants.reduce((acc, v) => acc + (v.stock || 0), 0) : product.stock;
-                  const status = displayStock > 0 ? 'Active' : 'Out of Stock'; // Note: simplistic mapping for demo purposes
-                  const matchesStatus = statusFilter === 'All' || status === statusFilter || (statusFilter === 'Draft' && false); 
-                  return matchesSearch && matchesCategory && matchesStatus;
-                }).map((product) => {
+                {filteredProducts.map((product) => {
                   const displayPrice = product.variants?.length > 0 ? product.variants[0].price : product.price;
                   const displayStock = product.variants?.length > 0 ? product.variants.reduce((acc, v) => acc + (v.stock || 0), 0) : product.stock;
                   
                   return (
-                  <tr key={product._id} className="hover:bg-gray-50/30 transition-colors">
+                  <tr key={product._id} className={`hover:bg-gray-50/30 transition-colors ${selectedIds.includes(product._id) ? 'bg-gray-50' : ''}`}>
+                    <td className="px-6 py-4">
+                      <input 
+                        type="checkbox" 
+                        checked={selectedIds.includes(product._id)}
+                        onChange={() => handleSelectOne(product._id)}
+                        className="rounded border-gray-300 text-black focus:ring-black cursor-pointer"
+                      />
+                    </td>
                     <td className="px-6 py-4">
                       <div className="flex items-center gap-3">
                         <div className="w-10 h-10 rounded-lg overflow-hidden bg-gray-100 shrink-0">
