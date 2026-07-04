@@ -712,11 +712,11 @@ export default function Checkout() {
                       <div className="grid grid-cols-2 gap-4">
                         <div>
                           <label className="block text-sm font-medium text-gray-700 mb-1">First Name</label>
-                          <input type="text" value={address.firstName} onChange={e => setAddress({...address, firstName: e.target.value})} className={inputClass} placeholder="Riya" />
+                          <input type="text" value={address.firstName} onChange={e => setAddress({...address, firstName: e.target.value})} className={inputClass} placeholder="Leo" />
                         </div>
                         <div>
                           <label className="block text-sm font-medium text-gray-700 mb-1">Last Name</label>
-                          <input type="text" value={address.lastName} onChange={e => setAddress({...address, lastName: e.target.value})} className={inputClass} placeholder="Kumar" />
+                          <input type="text" value={address.lastName} onChange={e => setAddress({...address, lastName: e.target.value})} className={inputClass} placeholder="Das" />
                         </div>
                       </div>
                       <div>

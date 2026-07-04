@@ -141,7 +141,7 @@ export default function Register() {
                 value={formData.name}
                 onChange={(e) => setFormData({...formData, name: e.target.value})}
                 className="w-full pl-11 pr-4 py-3.5 bg-gray-50 border border-gray-200 rounded-xl focus:bg-white focus:border-accent-blue focus:ring-1 focus:ring-accent-blue outline-none transition-all text-sm" 
-                placeholder="Riya Kumar" 
+                placeholder="Leo Das" 
               />
             </div>
           </div>
