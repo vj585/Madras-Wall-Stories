@@ -2,6 +2,7 @@
 import { useState, useEffect } from 'react';
 import { Search, Plus, Filter, PackageOpen } from 'lucide-react';
 import AddProductDrawer from '@/components/admin/AddProductDrawer';
+import BulkEditDrawer from '@/components/admin/BulkEditDrawer';
 
 export default function ProductsPage() {
   const [products, setProducts] = useState([]);
@@ -12,6 +13,7 @@ export default function ProductsPage() {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [editingProduct, setEditingProduct] = useState(null);
   const [selectedIds, setSelectedIds] = useState([]);
+  const [isBulkEditDrawerOpen, setIsBulkEditDrawerOpen] = useState(false);
 
   const fetchProducts = async () => {
     setIsLoading(true);
@@ -182,7 +184,7 @@ export default function ProductsPage() {
           </div>
           <div className="flex items-center gap-4">
             <button onClick={handleBulkDelete} className="text-sm text-red-400 hover:text-red-300 font-medium">Delete Selected</button>
-            <button onClick={() => alert('Bulk edit coming soon!')} className="text-sm hover:text-gray-300 font-medium">Edit Selected</button>
+            <button onClick={() => setIsBulkEditDrawerOpen(true)} className="text-sm hover:text-gray-300 font-medium">Edit Selected</button>
             <button onClick={() => setSelectedIds([])} className="text-sm text-gray-400 hover:text-white ml-2 border-l border-gray-700 pl-4">Cancel</button>
           </div>
         </div>
@@ -316,6 +318,19 @@ export default function ProductsPage() {
           setEditingProduct(null);
           if (shouldRefresh === true) fetchProducts();
         }} 
+      />
+
+      <BulkEditDrawer 
+        isOpen={isBulkEditDrawerOpen}
+        selectedIds={selectedIds}
+        existingProducts={products}
+        onClose={(shouldRefresh) => {
+          setIsBulkEditDrawerOpen(false);
+          if (shouldRefresh === true) {
+            setSelectedIds([]); // Clear selection after successful edit
+            fetchProducts();
+          }
+        }}
       />
     </div>
   );
