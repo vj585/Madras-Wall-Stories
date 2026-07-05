@@ -28,8 +28,10 @@ export default function SearchPage() {
           
           const filtered = activeProducts.filter(p => 
             p.title.toLowerCase().includes(lowerQ) || 
-            p.category.toLowerCase().includes(lowerQ) ||
-            p.tags?.some(tag => tag.toLowerCase().includes(lowerQ))
+            (p.slug && p.slug.toLowerCase().includes(lowerQ)) ||
+            (p.category && p.category.toLowerCase().includes(lowerQ)) ||
+            (p.tags && p.tags.some(tag => tag.toLowerCase().includes(lowerQ))) ||
+            (p.shortDescription && p.shortDescription.toLowerCase().includes(lowerQ))
           );
           setResults(filtered);
         }

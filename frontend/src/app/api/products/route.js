@@ -41,6 +41,14 @@ export async function GET(request) {
            }];
         }
       }
+      
+      // Always compute aggregate stock and lowest price for frontend convenience
+      if (prod.variants && prod.variants.length > 0) {
+        prod.stock = prod.variants.reduce((acc, v) => acc + (v.stock || 0), 0);
+        prod.price = Math.min(...prod.variants.map(v => v.price || Infinity));
+        // Fallback if price is infinity (e.g., bad data)
+        if (prod.price === Infinity) prod.price = 0;
+      }
       return prod;
     });
 

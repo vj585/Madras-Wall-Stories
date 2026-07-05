@@ -88,10 +88,14 @@ export default function ProductsPage() {
   }, []);
 
   const filteredProducts = products.filter(product => {
-    const matchesSearch = product.title.toLowerCase().includes(searchQuery.toLowerCase()) || 
-                          (product.slug && product.slug.toLowerCase().includes(searchQuery.toLowerCase()));
+    const lowerQ = searchQuery.toLowerCase();
+    const matchesSearch = !lowerQ || product.title.toLowerCase().includes(lowerQ) || 
+                          (product.slug && product.slug.toLowerCase().includes(lowerQ)) ||
+                          (product.category && product.category.toLowerCase().includes(lowerQ)) ||
+                          (product.tags && product.tags.some(tag => tag.toLowerCase().includes(lowerQ))) ||
+                          (product.shortDescription && product.shortDescription.toLowerCase().includes(lowerQ));
     const matchesCategory = categoryFilter === 'All' || product.category === categoryFilter;
-    const displayStock = product.variants?.length > 0 ? product.variants.reduce((acc, v) => acc + (v.stock || 0), 0) : product.stock;
+    const displayStock = product.stock || 0;
     const status = displayStock > 0 ? 'Active' : 'Out of Stock';
     const matchesStatus = statusFilter === 'All' || status === statusFilter || (statusFilter === 'Draft' && false); 
     return matchesSearch && matchesCategory && matchesStatus;
@@ -235,8 +239,8 @@ export default function ProductsPage() {
               </thead>
               <tbody className="divide-y divide-gray-100">
                 {filteredProducts.map((product) => {
-                  const displayPrice = product.variants?.length > 0 ? product.variants[0].price : product.price;
-                  const displayStock = product.variants?.length > 0 ? product.variants.reduce((acc, v) => acc + (v.stock || 0), 0) : product.stock;
+                  const displayPrice = product.price || 0;
+                  const displayStock = product.stock || 0;
                   
                   return (
                   <tr key={product._id} className={`hover:bg-gray-50/30 transition-colors ${selectedIds.includes(product._id) ? 'bg-gray-50' : ''}`}>
