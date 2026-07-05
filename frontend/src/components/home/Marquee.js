@@ -47,7 +47,7 @@ export default function Marquee() {
         style={{ background: "linear-gradient(to left, #111827, transparent)" }} />
 
       <motion.div
-        className="flex whitespace-nowrap items-center py-2.5"
+        className="flex whitespace-nowrap items-center py-2.5 will-change-transform transform-gpu"
         animate={shouldReduce ? {} : { x: ["0%", "-33.333333%"] }}
         transition={{
           x: {

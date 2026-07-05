@@ -104,11 +104,11 @@ export default function Hero({ initialBanners = [] }) {
       className="relative w-full min-h-[100svh] lg:min-h-[90vh] flex items-center justify-center overflow-hidden text-foreground pt-20"
     >
       {/* Warm saffron glow — top right (Chennai sunrise) */}
-      <div className="absolute top-[-10%] right-[-5%] w-[40rem] h-[40rem] rounded-full blur-[100px] pointer-events-none" style={{ background: 'radial-gradient(circle, rgba(232,104,42,0.12) 0%, rgba(240,161,64,0.06) 60%, transparent 100%)' }}></div>
+      <div className="absolute top-[-10%] right-[-5%] w-[40rem] h-[40rem] rounded-full blur-[60px] md:blur-[100px] pointer-events-none transform-gpu will-change-transform" style={{ background: 'radial-gradient(circle, rgba(232,104,42,0.12) 0%, rgba(240,161,64,0.06) 60%, transparent 100%)' }}></div>
       {/* Deep navy glow — bottom left (Bay of Bengal night) */}
-      <div className="absolute bottom-[-10%] left-[-5%] w-[40rem] h-[40rem] bg-accent-blue/5 rounded-full blur-[100px] pointer-events-none"></div>
+      <div className="absolute bottom-[-10%] left-[-5%] w-[40rem] h-[40rem] bg-accent-blue/5 rounded-full blur-[60px] md:blur-[100px] pointer-events-none transform-gpu will-change-transform"></div>
       {/* Gold shimmer — centre */}
-      <div className="absolute top-1/3 left-1/3 w-64 h-64 rounded-full blur-[80px] pointer-events-none" style={{ background: 'radial-gradient(circle, rgba(212,175,55,0.07) 0%, transparent 70%)' }}></div>
+      <div className="absolute top-1/3 left-1/3 w-64 h-64 rounded-full blur-[50px] md:blur-[80px] pointer-events-none transform-gpu will-change-transform" style={{ background: 'radial-gradient(circle, rgba(212,175,55,0.07) 0%, transparent 70%)' }}></div>
 
       <div className="container relative z-10 px-4 mx-auto grid grid-cols-1 lg:grid-cols-2 gap-4 lg:gap-12 items-center">
         
@@ -128,7 +128,7 @@ export default function Hero({ initialBanners = [] }) {
             
             <motion.span 
               variants={glowVariants}
-              className="inline-block mt-2 text-transparent bg-clip-text italic font-bold pr-2 animate-gradient-text font-fancy will-change-transform will-change-opacity"
+              className="inline-block mt-2 text-transparent bg-clip-text italic font-bold pr-2 animate-gradient-text font-fancy will-change-transform transform-gpu"
               style={{
                 backgroundImage: 'linear-gradient(90deg, #1A365D 0%, #E8682A 14%, #D4AF37 26%, #C5385A 38%, #F0A140 50%, #9333EA 62%, #1A7A8C 74%, #E8682A 86%, #D4AF37 100%)',
                 backgroundSize: '200% auto'
@@ -195,7 +195,7 @@ export default function Hero({ initialBanners = [] }) {
             initial={{ opacity: 0, scale: 0.9, y: 50 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             transition={{ duration: 0.8 }}
-            className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-48 sm:w-72 h-64 sm:h-96 bg-white p-2 sm:p-3 rounded-2xl shadow-2xl border border-gray-100 z-20 will-change-transform"
+            className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-48 sm:w-72 h-64 sm:h-96 bg-white p-2 sm:p-3 rounded-2xl shadow-2xl border border-gray-100 z-20 will-change-transform transform-gpu"
           >
             <div className="w-full h-full relative rounded-xl overflow-hidden">
               <AnimatePresence mode="popLayout">
@@ -227,7 +227,7 @@ export default function Hero({ initialBanners = [] }) {
               rotate: [-10, getValue(-12, -11), -10] 
             }}
             transition={{ repeat: Infinity, duration: getValue(5, 7), ease: "easeInOut" }}
-            className="absolute top-8 sm:top-16 left-6 sm:left-20 w-28 sm:w-40 p-2 sm:p-3 bg-white rounded-xl shadow-xl border border-gray-100 z-30 will-change-transform"
+            className="absolute top-8 sm:top-16 left-6 sm:left-20 w-28 sm:w-40 p-2 sm:p-3 bg-white rounded-xl shadow-xl border border-gray-100 z-30 will-change-transform transform-gpu"
           >
             <div className="w-full aspect-[3/4] relative mb-2 sm:mb-3 rounded-lg overflow-hidden bg-gray-100">
               <AnimatePresence mode="popLayout">
@@ -259,7 +259,7 @@ export default function Hero({ initialBanners = [] }) {
               rotate: [12, getValue(15, 13), 12] 
             }}
             transition={{ repeat: Infinity, duration: getValue(6, 8), ease: "easeInOut", delay: 1 }}
-            className="absolute bottom-8 sm:bottom-16 right-4 sm:right-16 w-32 sm:w-48 p-2 bg-white rounded-xl shadow-xl border border-gray-100 z-10 will-change-transform"
+            className="absolute bottom-8 sm:bottom-16 right-4 sm:right-16 w-32 sm:w-48 p-2 bg-white rounded-xl shadow-xl border border-gray-100 z-10 will-change-transform transform-gpu"
           >
             <div className="w-full h-40 sm:h-64 relative rounded-lg overflow-hidden bg-gray-100">
               <AnimatePresence mode="popLayout">

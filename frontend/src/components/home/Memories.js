@@ -95,7 +95,7 @@ export default function Memories({ banners = [] }) {
               whileInView={{ opacity: 1, y: 0, rotate: 1 }}
               viewport={{ once: true }}
               transition={{ duration: 0.7, type: 'spring', bounce: 0.3 }}
-              className="absolute z-20"
+              className="absolute z-20 will-change-transform transform-gpu"
               style={{ top: '64px', left: 'calc(50% - 96px)' }}
             >
               {/* Wooden clothespin */}
@@ -122,7 +122,7 @@ export default function Memories({ banners = [] }) {
               whileInView={{ opacity: 1, x: 0, rotate: -8 }}
               viewport={{ once: true }}
               transition={{ duration: 0.7, delay: 0.2, type: 'spring', bounce: 0.25 }}
-              className="absolute z-10"
+              className="absolute z-10 will-change-transform transform-gpu"
               style={{ top: '62px', left: '7%' }}
             >
               {/* Clothespin */}
@@ -151,7 +151,7 @@ export default function Memories({ banners = [] }) {
               whileInView={{ opacity: 1, x: 0, rotate: 7 }}
               viewport={{ once: true }}
               transition={{ duration: 0.7, delay: 0.4, type: 'spring', bounce: 0.25 }}
-              className="absolute z-10"
+              className="absolute z-10 will-change-transform transform-gpu"
               style={{ bottom: '28px', right: '6%' }}
             >
               {/* Tape across top */}
