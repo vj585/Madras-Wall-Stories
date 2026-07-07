@@ -25,8 +25,10 @@ export async function proxy(req) {
   const isAdminApiRoute = adminApiRoutes.some(route => pathname.startsWith(route));
 
   if (isAdminApiRoute && req.method !== 'GET') {
-    // Exception: Anyone can create a COD order
+    // Exception: Anyone can create a COD order or validate a coupon
     if (pathname === '/api/orders' && req.method === 'POST') {
+      // Allow through
+    } else if (pathname === '/api/coupons/validate' && req.method === 'POST') {
       // Allow through
     } else if (!token || token.role !== 'ADMIN') {
       return NextResponse.json({ success: false, error: 'Unauthorized: Admin access required' }, { status: 401 });
