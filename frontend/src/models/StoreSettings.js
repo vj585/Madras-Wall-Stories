@@ -26,6 +26,10 @@ const StoreSettingsSchema = new mongoose.Schema(
     whatsappNumber: { type: String, default: '' },
     instagramProfile: { type: String, default: '' },
     returnPolicy: { type: String, default: '' },
+    marqueeItems: {
+      type: [{ icon: String, text: String }],
+      default: []
+    }
   },
   {
     timestamps: true,

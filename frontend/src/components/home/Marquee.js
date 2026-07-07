@@ -1,7 +1,9 @@
 "use client";
 import { motion, useReducedMotion } from 'framer-motion';
+import { useState, useEffect } from 'react';
 
-const items = [
+// Default fallback items
+const defaultItems = [
   { icon: "⚡", text: "FLASH SALE — UP TO 50% OFF" },
   { icon: "✦", text: "FREE SHIPPING ABOVE ₹999" },
   { icon: "🎨", text: "PREMIUM AESTHETIC POSTERS" },
@@ -11,9 +13,6 @@ const items = [
   { icon: "💛", text: "MADE WITH LOVE IN CHENNAI" },
   { icon: "✦", text: "RATED 5★ BY 500+ CUSTOMERS" },
 ];
-
-// Triple-duplicate for seamless infinite loop
-const marqueeItems = [...items, ...items, ...items];
 
 // Glowing dot separator
 function Dot() {
@@ -29,6 +28,21 @@ function Dot() {
 
 export default function Marquee() {
   const shouldReduce = useReducedMotion();
+  const [items, setItems] = useState(defaultItems);
+
+  useEffect(() => {
+    fetch('/api/settings')
+      .then(res => res.json())
+      .then(data => {
+        if (data.success && data.data?.marqueeItems?.length > 0) {
+          setItems(data.data.marqueeItems);
+        }
+      })
+      .catch(console.error);
+  }, []);
+
+  // Triple-duplicate for seamless infinite loop
+  const displayItems = [...items, ...items, ...items];
 
   return (
     <div className="w-full relative overflow-hidden z-10 select-none" style={{ background: "linear-gradient(90deg, #111827 0%, #1e2a40 50%, #111827 100%)" }}>
@@ -58,7 +72,7 @@ export default function Marquee() {
           },
         }}
       >
-        {marqueeItems.map((item, idx) => (
+        {displayItems.map((item, idx) => (
           <span key={idx} className="inline-flex items-center">
             {/* Icon chip */}
             <span className="inline-flex items-center gap-1.5 bg-white/5 border border-white/10 rounded-full px-3 py-0.5 mx-2">

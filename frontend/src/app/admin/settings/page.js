@@ -23,6 +23,9 @@ export default function SettingsPage() {
     instagramProfile: '',
     returnPolicy: ''
   });
+  const [marqueeItems, setMarqueeItems] = useState([
+    { icon: "⚡", text: "FLASH SALE — UP TO 50% OFF" }
+  ]);
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
   const [message, setMessage] = useState('');
@@ -56,6 +59,9 @@ export default function SettingsPage() {
           instagramProfile: data.data.instagramProfile || '',
           returnPolicy: data.data.returnPolicy || ''
         });
+        if (data.data.marqueeItems && data.data.marqueeItems.length > 0) {
+          setMarqueeItems(data.data.marqueeItems);
+        }
       }
     } catch (error) {
       console.error("Failed to fetch settings", error);
@@ -79,6 +85,7 @@ export default function SettingsPage() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ 
           framePricing,
+          marqueeItems,
           freeShippingThreshold: Number(deliverySettings.freeShippingThreshold),
           lowCartDeliveryFee: Number(deliverySettings.lowCartDeliveryFee),
           mediumCartDeliveryFee: Number(deliverySettings.mediumCartDeliveryFee),
@@ -167,6 +174,67 @@ export default function SettingsPage() {
                 ))}
               </div>
 
+            </div>
+          </div>
+
+          {/* Marquee Settings */}
+          <div className="bg-white rounded-3xl shadow-sm border border-gray-100 overflow-hidden">
+            <div className="p-6 border-b border-gray-100 flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <Settings className="w-5 h-5 text-gray-400" />
+                <h2 className="text-lg font-bold">Marquee Announcement Bar</h2>
+              </div>
+              <button 
+                onClick={() => setMarqueeItems([...marqueeItems, { icon: '✦', text: 'NEW ANNOUNCEMENT' }])}
+                className="text-sm font-medium text-accent-blue hover:text-blue-700"
+              >
+                + Add Item
+              </button>
+            </div>
+            
+            <div className="p-6 space-y-4">
+              <p className="text-sm text-gray-500 mb-2">
+                Manage the scrolling text banner shown on the home page.
+              </p>
+              {marqueeItems.map((item, index) => (
+                <div key={index} className="flex gap-2 items-center">
+                  <input 
+                    type="text" 
+                    value={item.icon} 
+                    onChange={(e) => {
+                      const updated = [...marqueeItems];
+                      updated[index].icon = e.target.value;
+                      setMarqueeItems(updated);
+                    }}
+                    className="w-16 px-3 py-2 border border-gray-200 rounded-xl outline-none focus:ring-1 focus:ring-accent-blue text-center"
+                    placeholder="Icon (e.g. ⚡)"
+                  />
+                  <input 
+                    type="text" 
+                    value={item.text} 
+                    onChange={(e) => {
+                      const updated = [...marqueeItems];
+                      updated[index].text = e.target.value;
+                      setMarqueeItems(updated);
+                    }}
+                    className="flex-1 px-4 py-2 border border-gray-200 rounded-xl outline-none focus:ring-1 focus:ring-accent-blue"
+                    placeholder="Announcement Text"
+                  />
+                  <button 
+                    onClick={() => {
+                      const updated = marqueeItems.filter((_, i) => i !== index);
+                      setMarqueeItems(updated);
+                    }}
+                    className="p-2 text-red-400 hover:text-red-600 rounded-lg transition-colors"
+                    title="Remove"
+                  >
+                    <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                  </button>
+                </div>
+              ))}
+              {marqueeItems.length === 0 && (
+                <div className="text-sm text-gray-400 italic py-4">No marquee items added.</div>
+              )}
             </div>
           </div>
 

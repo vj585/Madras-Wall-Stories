@@ -42,7 +42,17 @@ export async function GET(request) {
         businessAddress: '',
         whatsappNumber: '',
         instagramProfile: '',
-        returnPolicy: ''
+        returnPolicy: '',
+        marqueeItems: [
+          { icon: "⚡", text: "FLASH SALE — UP TO 50% OFF" },
+          { icon: "✦", text: "FREE SHIPPING ABOVE ₹999" },
+          { icon: "🎨", text: "PREMIUM AESTHETIC POSTERS" },
+          { icon: "📸", text: "CUSTOM POLAROIDS AVAILABLE" },
+          { icon: "🔥", text: "TRENDING DESIGNS RESTOCKED" },
+          { icon: "✦", text: "NEW DROP EVERY FRIDAY" },
+          { icon: "💛", text: "MADE WITH LOVE IN CHENNAI" },
+          { icon: "✦", text: "RATED 5★ BY 500+ CUSTOMERS" }
+        ]
       });
     }
 
@@ -78,7 +88,8 @@ export async function PUT(request) {
       businessAddress,
       whatsappNumber,
       instagramProfile,
-      returnPolicy
+      returnPolicy,
+      marqueeItems
     } = body;
 
     await connectDB();
@@ -106,6 +117,7 @@ export async function PUT(request) {
     if (whatsappNumber !== undefined) settings.whatsappNumber = whatsappNumber;
     if (instagramProfile !== undefined) settings.instagramProfile = instagramProfile;
     if (returnPolicy !== undefined) settings.returnPolicy = returnPolicy;
+    if (marqueeItems && Array.isArray(marqueeItems)) settings.marqueeItems = marqueeItems;
 
     await settings.save();
 
