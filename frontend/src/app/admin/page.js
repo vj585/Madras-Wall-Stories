@@ -123,10 +123,10 @@ export default function AdminDashboard() {
             <ListOrdered className="w-6 h-6 mb-2 text-gray-500 group-hover:text-black" />
             <span className="text-xs font-medium">View Orders</span>
           </Link>
-          <button className="flex flex-col items-center justify-center p-4 bg-gray-50 rounded-xl hover:bg-gray-100 transition-colors text-center group">
+          <Link href="/admin/custom-prints" className="flex flex-col items-center justify-center p-4 bg-gray-50 rounded-xl hover:bg-gray-100 transition-colors text-center group">
             <Printer className="w-6 h-6 mb-2 text-gray-500 group-hover:text-black" />
-            <span className="text-xs font-medium">Print Pending</span>
-          </button>
+            <span className="text-xs font-medium">Custom Prints</span>
+          </Link>
           <Link href="/admin/coupons" className="flex flex-col items-center justify-center p-4 bg-gray-50 rounded-xl hover:bg-gray-100 transition-colors text-center group">
             <Tag className="w-6 h-6 mb-2 text-gray-500 group-hover:text-black" />
             <span className="text-xs font-medium">Coupons</span>
@@ -135,14 +135,14 @@ export default function AdminDashboard() {
             <ImageIcon className="w-6 h-6 mb-2 text-gray-500 group-hover:text-black" />
             <span className="text-xs font-medium">Banners</span>
           </Link>
-          <button className="flex flex-col items-center justify-center p-4 bg-gray-50 rounded-xl hover:bg-gray-100 transition-colors text-center group">
+          <Link href="/admin/customers" className="flex flex-col items-center justify-center p-4 bg-gray-50 rounded-xl hover:bg-gray-100 transition-colors text-center group">
             <Users className="w-6 h-6 mb-2 text-gray-500 group-hover:text-black" />
             <span className="text-xs font-medium">Customers</span>
-          </button>
-          <button className="flex flex-col items-center justify-center p-4 bg-gray-50 rounded-xl hover:bg-gray-100 transition-colors text-center group">
+          </Link>
+          <Link href="/admin/settings" className="flex flex-col items-center justify-center p-4 bg-gray-50 rounded-xl hover:bg-gray-100 transition-colors text-center group">
             <Settings className="w-6 h-6 mb-2 text-gray-500 group-hover:text-black" />
             <span className="text-xs font-medium">Settings</span>
-          </button>
+          </Link>
         </div>
       </div>
 
