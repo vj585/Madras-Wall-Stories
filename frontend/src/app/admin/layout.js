@@ -2,7 +2,7 @@
 import { useState, useEffect } from 'react';
 import { 
   LayoutDashboard, ShoppingCart, Users, Package, Settings, Tag, 
-  ImageIcon, LogOut, Menu, X, BarChart, FileImage
+  ImageIcon, LogOut, Menu, X, BarChart, FileImage, Shield
 } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
@@ -33,6 +33,7 @@ export default function AdminLayout({ children }) {
     { name: 'Coupons', icon: Tag, href: '/admin/coupons' },
     { name: 'Banners', icon: ImageIcon, href: '/admin/banners' },
     { name: 'Analytics', icon: BarChart, href: '/admin/analytics' },
+    { name: 'Admins', icon: Shield, href: '/admin/admins' },
     { name: 'Settings', icon: Settings, href: '/admin/settings' },
   ];
 

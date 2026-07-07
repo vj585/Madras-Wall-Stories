@@ -121,3 +121,50 @@ export const sendVerificationEmail = async (email, token) => {
 
   await transporter.sendMail(mailOptions);
 };
+
+export const sendAdminOTP = async (email, otp, action) => {
+  const actionText = action === 'ADD_ADMIN' ? 'adding a new administrator' : 'removing an administrator';
+  
+  const mailOptions = {
+    from: `"Madras Wall Stories Security" <${process.env.EMAIL_FROM || process.env.EMAIL_USER}>`,
+    to: email,
+    subject: `Admin Action OTP - Madras Wall Stories`,
+    html: `
+      <!DOCTYPE html>
+      <html>
+      <head>
+        <style>
+          body { font-family: -apple-system, sans-serif; background-color: #f9fafb; margin: 0; padding: 0; }
+          .container { max-width: 600px; margin: 40px auto; background-color: #ffffff; border-radius: 16px; overflow: hidden; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); }
+          .header { background-color: #000000; padding: 24px; text-align: center; }
+          .header h1 { color: #ffffff; margin: 0; font-size: 20px; }
+          .content { padding: 40px 32px; text-align: center; }
+          .otp-box { display: inline-block; background-color: #f3f4f6; padding: 16px 32px; border-radius: 8px; font-size: 32px; font-weight: bold; letter-spacing: 8px; margin: 24px 0; color: #000000; }
+          .footer { padding: 24px; text-align: center; background-color: #f9fafb; border-top: 1px solid #f3f4f6; color: #9ca3af; font-size: 14px; }
+        </style>
+      </head>
+      <body>
+        <div class="container">
+          <div class="header">
+            <h1>Madras Wall Stories Admin Security</h1>
+          </div>
+          <div class="content">
+            <h2 style="color: #111827; font-size: 20px; margin-top: 0;">Authorization Required</h2>
+            <p style="color: #374151; font-size: 16px;">You have requested an OTP for <strong>${actionText}</strong>.</p>
+            <p style="color: #374151; font-size: 16px;">Please use the following 6-digit code to confirm this action:</p>
+            
+            <div class="otp-box">${otp}</div>
+            
+            <p style="color: #6b7280; font-size: 14px; margin-top: 24px;">This OTP is valid for 10 minutes.<br>If you did not request this, please secure your account immediately.</p>
+          </div>
+          <div class="footer">
+            <p>&copy; ${new Date().getFullYear()} Madras Wall Stories. All rights reserved.</p>
+          </div>
+        </div>
+      </body>
+      </html>
+    `
+  };
+
+  await transporter.sendMail(mailOptions);
+};
