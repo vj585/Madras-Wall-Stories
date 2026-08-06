@@ -74,30 +74,28 @@ export default function Navbar() {
           <div className="flex flex-col items-center justify-center leading-none select-none">
             {/* MADRAS */}
             <span
-              className="font-logo tracking-[0.12em] text-[1.55rem] md:text-[1.85rem] text-[#D32F2F]"
+              className="font-logo font-black tracking-[0.15em] text-[1.45rem] md:text-[1.7rem] text-[#D32F2F]"
               style={{
-                WebkitTextStroke: '1.2px #1a1a1a',
-                textShadow: '2px 2px 0px #1a1a1a, -1px -1px 0 #1a1a1a',
-                filter: 'drop-shadow(0 1px 0 #8b0000)',
+                fontWeight: 900,
+                textShadow: '3px 3px 0px #1a1a1a',
               }}
             >
               MADRAS
             </span>
             {/* Decorative rule with stars */}
-            <div className="flex items-center gap-1 w-full my-[2px]">
-              <div className="flex-1 h-[1.5px] bg-[#1a1a1a]" />
-              <span className="text-[#FFC107] text-[9px] leading-none" style={{ WebkitTextStroke: '0.5px #1a1a1a' }}>✦</span>
-              <span className="text-[#FFC107] text-[6px] leading-none" style={{ WebkitTextStroke: '0.3px #1a1a1a' }}>✦</span>
-              <span className="text-[#FFC107] text-[9px] leading-none" style={{ WebkitTextStroke: '0.5px #1a1a1a' }}>✦</span>
-              <div className="flex-1 h-[1.5px] bg-[#1a1a1a]" />
+            <div className="flex items-center gap-1 w-full my-[3px]">
+              <div className="flex-1 h-[1px] bg-[#1a1a1a]/40" />
+              <span className="text-[#FFC107] text-[8px] leading-none">✦</span>
+              <span className="text-[#FFC107] text-[5px] leading-none">✦</span>
+              <span className="text-[#FFC107] text-[8px] leading-none">✦</span>
+              <div className="flex-1 h-[1px] bg-[#1a1a1a]/40" />
             </div>
             {/* PRINTS */}
             <span
-              className="font-logo tracking-[0.3em] text-[0.75rem] md:text-[0.85rem] text-[#FFC107]"
+              className="font-logo tracking-[0.45em] text-[0.7rem] md:text-[0.78rem] text-[#FFC107]"
               style={{
-                WebkitTextStroke: '1px #1a1a1a',
-                textShadow: '1.5px 1.5px 0px #1a1a1a',
-                filter: 'drop-shadow(0 1px 0 #996600)',
+                fontWeight: 700,
+                textShadow: '2px 2px 0px #1a1a1a',
               }}
             >
               PRINTS
@@ -201,28 +199,26 @@ export default function Navbar() {
                 {/* Brand Wordmark – Mobile Menu */}
                 <div className="flex flex-col items-center justify-center leading-none select-none">
                   <span
-                    className="font-logo tracking-[0.12em] text-[1.65rem] text-[#D32F2F]"
+                    className="font-logo tracking-[0.15em] text-[1.55rem] text-[#D32F2F]"
                     style={{
-                      WebkitTextStroke: '1.2px #1a1a1a',
-                      textShadow: '2px 2px 0px #1a1a1a, -1px -1px 0 #1a1a1a',
-                      filter: 'drop-shadow(0 1px 0 #8b0000)',
+                      fontWeight: 900,
+                      textShadow: '3px 3px 0px #1a1a1a',
                     }}
                   >
                     MADRAS
                   </span>
-                  <div className="flex items-center gap-1 w-full my-[2px]">
-                    <div className="flex-1 h-[1.5px] bg-[#1a1a1a]" />
-                    <span className="text-[#FFC107] text-[9px] leading-none" style={{ WebkitTextStroke: '0.5px #1a1a1a' }}>✦</span>
-                    <span className="text-[#FFC107] text-[6px] leading-none" style={{ WebkitTextStroke: '0.3px #1a1a1a' }}>✦</span>
-                    <span className="text-[#FFC107] text-[9px] leading-none" style={{ WebkitTextStroke: '0.5px #1a1a1a' }}>✦</span>
-                    <div className="flex-1 h-[1.5px] bg-[#1a1a1a]" />
+                  <div className="flex items-center gap-1 w-full my-[3px]">
+                    <div className="flex-1 h-[1px] bg-[#1a1a1a]/40" />
+                    <span className="text-[#FFC107] text-[8px] leading-none">✦</span>
+                    <span className="text-[#FFC107] text-[5px] leading-none">✦</span>
+                    <span className="text-[#FFC107] text-[8px] leading-none">✦</span>
+                    <div className="flex-1 h-[1px] bg-[#1a1a1a]/40" />
                   </div>
                   <span
-                    className="font-logo tracking-[0.3em] text-[0.85rem] text-[#FFC107]"
+                    className="font-logo tracking-[0.45em] text-[0.75rem] text-[#FFC107]"
                     style={{
-                      WebkitTextStroke: '1px #1a1a1a',
-                      textShadow: '1.5px 1.5px 0px #1a1a1a',
-                      filter: 'drop-shadow(0 1px 0 #996600)',
+                      fontWeight: 700,
+                      textShadow: '2px 2px 0px #1a1a1a',
                     }}
                   >
                     PRINTS
