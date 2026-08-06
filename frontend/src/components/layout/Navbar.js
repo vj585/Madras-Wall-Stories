@@ -70,9 +70,9 @@ export default function Navbar() {
               priority
             />
           </div>
-          <div className={`flex flex-col justify-center ${isScrolled ? 'text-white' : 'text-gray-900'} transition-colors`}>
-            <span className="font-heading font-bold text-lg md:text-xl tracking-tight leading-none">MADRAS</span>
-            <span className="font-sans text-[10px] md:text-xs tracking-[0.2em] font-medium text-accent-yellow">WALL STORIES</span>
+          <div className="flex flex-col justify-center text-center -space-y-1 pt-1">
+            <span className="font-logo text-2xl md:text-3xl tracking-wide text-[#D32F2F]" style={{ WebkitTextStroke: '1px #111', textShadow: '2px 2px 0 #111' }}>MADRAS</span>
+            <span className="font-logo text-[13px] md:text-sm tracking-widest text-[#FFC107]" style={{ WebkitTextStroke: '1px #111', textShadow: '2px 2px 0 #111' }}>- PRINTS -</span>
           </div>
         </Link>
 
@@ -169,9 +169,9 @@ export default function Navbar() {
                 <div className="relative h-10 w-10">
                   <Image src="/images/logo mws.png" alt="Madras Wall Stories" fill sizes="40px" className="object-contain" />
                 </div>
-                <div className="flex flex-col justify-center text-gray-900">
-                  <span className="font-heading font-bold text-xl tracking-tight leading-none">MADRAS</span>
-                  <span className="font-sans text-[11px] tracking-[0.2em] font-medium text-accent-yellow">WALL STORIES</span>
+                <div className="flex flex-col justify-center text-center -space-y-1 pt-1">
+                  <span className="font-logo text-2xl tracking-wide text-[#D32F2F]" style={{ WebkitTextStroke: '1px #111', textShadow: '2px 2px 0 #111' }}>MADRAS</span>
+                  <span className="font-logo text-[13px] tracking-widest text-[#FFC107]" style={{ WebkitTextStroke: '1px #111', textShadow: '2px 2px 0 #111' }}>- PRINTS -</span>
                 </div>
               </Link>
               <button onClick={() => setMobileMenuOpen(false)} className="p-2 hover:bg-gray-100 rounded-full transition-colors">

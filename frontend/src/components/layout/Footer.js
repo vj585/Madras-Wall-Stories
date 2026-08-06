@@ -21,9 +21,9 @@ export default function Footer() {
                     className="object-contain"
                   />
                 </div>
-                <div className="flex flex-col justify-center text-white">
-                  <span className="font-heading font-bold text-xl tracking-tight leading-none">MADRAS</span>
-                  <span className="font-sans text-[11px] tracking-[0.2em] font-medium text-accent-yellow">WALL STORIES</span>
+                <div className="flex flex-col justify-center text-center -space-y-1 pt-1">
+                  <span className="font-logo text-3xl tracking-wide text-[#D32F2F]" style={{ WebkitTextStroke: '1px #111', textShadow: '2px 2px 0 #111' }}>MADRAS</span>
+                  <span className="font-logo text-sm tracking-widest text-[#FFC107]" style={{ WebkitTextStroke: '1px #111', textShadow: '2px 2px 0 #111' }}>- PRINTS -</span>
                 </div>
               </div>
             </Link>
