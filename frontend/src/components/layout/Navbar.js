@@ -59,16 +59,20 @@ export default function Navbar() {
         </button>
 
         {/* Logo */}
-        <Link href="/" className="flex-shrink-0 z-10">
-          <div className="relative h-16 w-52 md:h-20 md:w-60">
+        <Link href="/" className="flex-shrink-0 z-10 flex items-center gap-2 md:gap-3 group">
+          <div className="relative h-12 w-12 md:h-14 md:w-14">
             <Image
               src="/images/logo mws.png"
               alt="Madras Wall Stories"
               fill
-              sizes="(max-width: 768px) 208px, 240px"
-              className="object-contain transition-transform duration-300"
+              sizes="(max-width: 768px) 48px, 56px"
+              className="object-contain transition-transform duration-300 group-hover:scale-105"
               priority
             />
+          </div>
+          <div className={`flex flex-col justify-center ${isScrolled ? 'text-white' : 'text-gray-900'} transition-colors`}>
+            <span className="font-heading font-bold text-lg md:text-xl tracking-tight leading-none">MADRAS</span>
+            <span className="font-sans text-[10px] md:text-xs tracking-[0.2em] font-medium text-accent-yellow">WALL STORIES</span>
           </div>
         </Link>
 
@@ -161,9 +165,13 @@ export default function Navbar() {
             className="fixed inset-0 z-[100] bg-white text-gray-900 md:hidden flex flex-col"
           >
             <div className="p-4 flex justify-between items-center border-b border-gray-100">
-              <Link href="/" onClick={() => setMobileMenuOpen(false)}>
-                <div className="relative h-10 w-36">
-                  <Image src="/images/logo mws.png" alt="Madras Wall Stories" fill sizes="144px" className="object-contain" />
+              <Link href="/" onClick={() => setMobileMenuOpen(false)} className="flex items-center gap-3">
+                <div className="relative h-10 w-10">
+                  <Image src="/images/logo mws.png" alt="Madras Wall Stories" fill sizes="40px" className="object-contain" />
+                </div>
+                <div className="flex flex-col justify-center text-gray-900">
+                  <span className="font-heading font-bold text-xl tracking-tight leading-none">MADRAS</span>
+                  <span className="font-sans text-[11px] tracking-[0.2em] font-medium text-accent-yellow">WALL STORIES</span>
                 </div>
               </Link>
               <button onClick={() => setMobileMenuOpen(false)} className="p-2 hover:bg-gray-100 rounded-full transition-colors">

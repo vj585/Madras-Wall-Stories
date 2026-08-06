@@ -11,14 +11,20 @@ export default function Footer() {
           {/* Brand */}
           <div className="space-y-6">
             <Link href="/" className="inline-block">
-              <div className="relative h-14 w-48">
-                <Image
-                  src="/images/logo mws.png"
-                  alt="Madras Wall Stories"
-                  fill
-                  sizes="192px"
-                  className="object-contain"
-                />
+              <div className="flex items-center gap-3">
+                <div className="relative h-14 w-14">
+                  <Image
+                    src="/images/logo mws.png"
+                    alt="Madras Wall Stories"
+                    fill
+                    sizes="56px"
+                    className="object-contain"
+                  />
+                </div>
+                <div className="flex flex-col justify-center text-white">
+                  <span className="font-heading font-bold text-xl tracking-tight leading-none">MADRAS</span>
+                  <span className="font-sans text-[11px] tracking-[0.2em] font-medium text-accent-yellow">WALL STORIES</span>
+                </div>
               </div>
             </Link>
             <p className="text-gray-400 text-sm leading-relaxed max-w-xs">
