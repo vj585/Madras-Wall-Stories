@@ -70,9 +70,38 @@ export default function Navbar() {
               priority
             />
           </div>
-          <div className="flex flex-col justify-center text-center -space-y-1 pt-1">
-            <span className="font-logo text-2xl md:text-3xl tracking-wide text-[#D32F2F]" style={{ WebkitTextStroke: '1px #111', textShadow: '2px 2px 0 #111' }}>MADRAS</span>
-            <span className="font-logo text-[13px] md:text-sm tracking-widest text-[#FFC107]" style={{ WebkitTextStroke: '1px #111', textShadow: '2px 2px 0 #111' }}>- PRINTS -</span>
+          {/* Brand Wordmark */}
+          <div className="flex flex-col items-center justify-center leading-none select-none">
+            {/* MADRAS */}
+            <span
+              className="font-logo tracking-[0.12em] text-[1.55rem] md:text-[1.85rem] text-[#D32F2F]"
+              style={{
+                WebkitTextStroke: '1.2px #1a1a1a',
+                textShadow: '2px 2px 0px #1a1a1a, -1px -1px 0 #1a1a1a',
+                filter: 'drop-shadow(0 1px 0 #8b0000)',
+              }}
+            >
+              MADRAS
+            </span>
+            {/* Decorative rule with stars */}
+            <div className="flex items-center gap-1 w-full my-[2px]">
+              <div className="flex-1 h-[1.5px] bg-[#1a1a1a]" />
+              <span className="text-[#FFC107] text-[9px] leading-none" style={{ WebkitTextStroke: '0.5px #1a1a1a' }}>✦</span>
+              <span className="text-[#FFC107] text-[6px] leading-none" style={{ WebkitTextStroke: '0.3px #1a1a1a' }}>✦</span>
+              <span className="text-[#FFC107] text-[9px] leading-none" style={{ WebkitTextStroke: '0.5px #1a1a1a' }}>✦</span>
+              <div className="flex-1 h-[1.5px] bg-[#1a1a1a]" />
+            </div>
+            {/* PRINTS */}
+            <span
+              className="font-logo tracking-[0.3em] text-[0.75rem] md:text-[0.85rem] text-[#FFC107]"
+              style={{
+                WebkitTextStroke: '1px #1a1a1a',
+                textShadow: '1.5px 1.5px 0px #1a1a1a',
+                filter: 'drop-shadow(0 1px 0 #996600)',
+              }}
+            >
+              PRINTS
+            </span>
           </div>
         </Link>
 
@@ -169,9 +198,35 @@ export default function Navbar() {
                 <div className="relative h-10 w-10">
                   <Image src="/images/logo mws.png" alt="Madras Wall Stories" fill sizes="40px" className="object-contain" />
                 </div>
-                <div className="flex flex-col justify-center text-center -space-y-1 pt-1">
-                  <span className="font-logo text-2xl tracking-wide text-[#D32F2F]" style={{ WebkitTextStroke: '1px #111', textShadow: '2px 2px 0 #111' }}>MADRAS</span>
-                  <span className="font-logo text-[13px] tracking-widest text-[#FFC107]" style={{ WebkitTextStroke: '1px #111', textShadow: '2px 2px 0 #111' }}>- PRINTS -</span>
+                {/* Brand Wordmark – Mobile Menu */}
+                <div className="flex flex-col items-center justify-center leading-none select-none">
+                  <span
+                    className="font-logo tracking-[0.12em] text-[1.65rem] text-[#D32F2F]"
+                    style={{
+                      WebkitTextStroke: '1.2px #1a1a1a',
+                      textShadow: '2px 2px 0px #1a1a1a, -1px -1px 0 #1a1a1a',
+                      filter: 'drop-shadow(0 1px 0 #8b0000)',
+                    }}
+                  >
+                    MADRAS
+                  </span>
+                  <div className="flex items-center gap-1 w-full my-[2px]">
+                    <div className="flex-1 h-[1.5px] bg-[#1a1a1a]" />
+                    <span className="text-[#FFC107] text-[9px] leading-none" style={{ WebkitTextStroke: '0.5px #1a1a1a' }}>✦</span>
+                    <span className="text-[#FFC107] text-[6px] leading-none" style={{ WebkitTextStroke: '0.3px #1a1a1a' }}>✦</span>
+                    <span className="text-[#FFC107] text-[9px] leading-none" style={{ WebkitTextStroke: '0.5px #1a1a1a' }}>✦</span>
+                    <div className="flex-1 h-[1.5px] bg-[#1a1a1a]" />
+                  </div>
+                  <span
+                    className="font-logo tracking-[0.3em] text-[0.85rem] text-[#FFC107]"
+                    style={{
+                      WebkitTextStroke: '1px #1a1a1a',
+                      textShadow: '1.5px 1.5px 0px #1a1a1a',
+                      filter: 'drop-shadow(0 1px 0 #996600)',
+                    }}
+                  >
+                    PRINTS
+                  </span>
                 </div>
               </Link>
               <button onClick={() => setMobileMenuOpen(false)} className="p-2 hover:bg-gray-100 rounded-full transition-colors">
