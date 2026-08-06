@@ -12,12 +12,12 @@ export default function Footer() {
           <div className="space-y-6">
             <Link href="/" className="inline-block">
               <div className="flex items-center gap-3">
-                <div className="relative h-14 w-14">
+                <div className="relative h-20 w-20">
                   <Image
                     src="/images/logo mws.png"
                     alt="Madras Wall Stories"
                     fill
-                    sizes="56px"
+                    sizes="80px"
                     className="object-contain"
                   />
                 </div>
