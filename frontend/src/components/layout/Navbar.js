@@ -72,13 +72,13 @@ export default function Navbar() {
           </div>
           {/* Brand Wordmark */}
           <div className="flex flex-col items-center justify-center leading-none select-none">
-            {/* Madras – Great Vibes cursive */}
+            {/* Madras – Pacifico retro cursive */}
             <span
-              className="font-logo text-[2.1rem] md:text-[2.4rem] text-[#C62828]"
+              className="font-logo text-[1.55rem] md:text-[1.75rem] text-[#CC1A1A]"
               style={{
-                lineHeight: 1.1,
+                lineHeight: 1.15,
                 textShadow:
-                  '0 0 6px rgba(198,40,40,0.7), 0 0 14px rgba(198,40,40,0.45), 0 0 30px rgba(198,40,40,0.2)',
+                  '0 0 5px rgba(220,38,38,0.85), 0 0 12px rgba(220,38,38,0.55), 0 0 28px rgba(220,38,38,0.25), 0 0 50px rgba(220,38,38,0.1)',
               }}
             >
               Madras
@@ -201,11 +201,11 @@ export default function Navbar() {
                 {/* Brand Wordmark – Mobile Menu */}
                 <div className="flex flex-col items-center justify-center leading-none select-none">
                   <span
-                    className="font-logo text-[2.2rem] text-[#C62828]"
+                    className="font-logo text-[1.65rem] text-[#CC1A1A]"
                     style={{
-                      lineHeight: 1.1,
+                      lineHeight: 1.15,
                       textShadow:
-                        '0 0 6px rgba(198,40,40,0.7), 0 0 14px rgba(198,40,40,0.45), 0 0 30px rgba(198,40,40,0.2)',
+                        '0 0 5px rgba(220,38,38,0.85), 0 0 12px rgba(220,38,38,0.55), 0 0 28px rgba(220,38,38,0.25), 0 0 50px rgba(220,38,38,0.1)',
                     }}
                   >
                     Madras
