@@ -37,3 +37,4 @@ const ReviewSchema = new mongoose.Schema(
 ReviewSchema.index({ product: 1, customer: 1 }, { unique: true });
 
 export default mongoose.models.Review || mongoose.model('Review', ReviewSchema);
+

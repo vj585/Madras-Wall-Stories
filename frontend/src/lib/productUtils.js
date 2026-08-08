@@ -26,3 +26,4 @@ export function getProductDesignType(product) {
   // 3. Default fallback
   return 'posters';
 }
+

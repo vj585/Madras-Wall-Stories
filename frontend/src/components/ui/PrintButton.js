@@ -13,3 +13,4 @@ export default function PrintButton({ label = "Print" }) {
     </div>
   );
 }
+

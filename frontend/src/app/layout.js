@@ -6,20 +6,20 @@ import './globals.css';
 
 export const metadata = {
   metadataBase: new URL('https://madraswallstories.com'),
-  title: 'Madras Wall Stories | Premium Aesthetic Posters & Memory Prints',
+  title: 'Madras Prints | Premium Aesthetic Posters & Memory Prints',
   description: 'Transform your space with premium aesthetic posters, vintage polaroids, and custom framed prints. High-quality decor crafted for modern lifestyle and memories.',
   keywords: 'posters, wall decor, aesthetic prints, polaroids, custom frames, room decor',
   openGraph: {
-    title: 'Madras Wall Stories | Premium Aesthetic Posters',
+    title: 'Madras Prints | Premium Aesthetic Posters',
     description: 'Transform your space with premium aesthetic posters and custom polaroids.',
     url: 'https://madraswallstories.com',
-    siteName: 'Madras Wall Stories',
+    siteName: 'Madras Prints',
     images: [
       {
         url: '/images/og-image.jpg',
         width: 1200,
         height: 630,
-        alt: 'Madras Wall Stories',
+        alt: 'Madras Prints',
       },
     ],
     locale: 'en_IN',
@@ -27,7 +27,7 @@ export const metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Madras Wall Stories | Premium Aesthetic Posters',
+    title: 'Madras Prints | Premium Aesthetic Posters',
     description: 'Transform your space with premium aesthetic posters and custom polaroids.',
     images: ['/images/og-image.jpg'],
   },
@@ -54,3 +54,4 @@ export default function RootLayout({ children }) {
     </html>
   );
 }
+

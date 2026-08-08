@@ -31,8 +31,8 @@ export async function generateMetadata({ params, searchParams }) {
 
   const displayName = categoryNames[slug] || slug?.replace(/-/g, ' ');
   const displayType = type === 'stickers' ? 'Stickers' : type === 'polaroids' ? 'Polaroids' : 'Posters';
-  const title = `${displayName} ${displayType} | Madras Wall Stories`;
-  const description = `Shop the best premium ${displayName} ${displayType.toLowerCase()} and prints at Madras Wall Stories. Upgrade your decor today!`;
+  const title = `${displayName} ${displayType} | Madras Prints`;
+  const description = `Shop the best premium ${displayName} ${displayType.toLowerCase()} and prints at Madras Prints. Upgrade your decor today!`;
 
   return {
     title,

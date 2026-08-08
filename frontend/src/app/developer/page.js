@@ -47,7 +47,7 @@ export default function MeetTheDeveloper() {
               className="max-w-2xl mx-auto text-gray-600 leading-relaxed mb-10"
             >
               <p>
-                The architect behind the Madras Wall Stories digital experience. 
+                The architect behind the Madras Prints digital experience. 
                 Passionate about crafting beautiful, high-performance web applications 
                 that blend modern aesthetics with seamless functionality.
               </p>
@@ -115,3 +115,4 @@ export default function MeetTheDeveloper() {
     </div>
   );
 }
+

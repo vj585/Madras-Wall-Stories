@@ -19,7 +19,7 @@ export default async function InvoicePage({ params }) {
           <p className="text-gray-500 text-sm">Date: {new Date(order.createdAt).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' })}</p>
         </div>
         <div className="text-right">
-          <h2 className="text-xl font-bold font-heading">Madras Wall Stories</h2>
+          <h2 className="text-xl font-bold font-heading">Madras Prints</h2>
           <p className="text-sm text-gray-500 mt-1">Chennai, Tamil Nadu</p>
           <p className="text-sm text-gray-500">support@madraswallstories.com</p>
         </div>
@@ -95,7 +95,7 @@ export default async function InvoicePage({ params }) {
       </div>
 
       <div className="mt-16 text-center text-xs text-gray-400 border-t pt-8">
-        <p>Thank you for shopping with Madras Wall Stories!</p>
+        <p>Thank you for shopping with Madras Prints!</p>
         <p className="mt-1">This is a computer-generated invoice.</p>
       </div>
 

@@ -192,3 +192,4 @@ export async function sendStatusUpdateNotification(order, newStatus) {
     console.error('[Notifications] Failed to send status update notification:', error);
   }
 }
+

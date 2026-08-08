@@ -30,7 +30,7 @@ export default function PrivacyPage() {
           <p className="text-sm text-gray-500 font-medium">Effective Date: [01/06/2026]</p>
           
           <p className="text-lg text-gray-900 font-medium">
-            Madras Wall Stories values your privacy and is committed to protecting your information.
+            Madras Prints values your privacy and is committed to protecting your information.
           </p>
 
           <section>
@@ -94,7 +94,7 @@ export default function PrivacyPage() {
           <section>
             <h2 className="text-2xl font-bold text-gray-900 mb-4">Payment Security</h2>
             <p className="mb-2">Payments are processed securely through third-party payment providers.</p>
-            <p className="font-medium text-gray-900">Madras Wall Stories does not store complete card information.</p>
+            <p className="font-medium text-gray-900">Madras Prints does not store complete card information.</p>
           </section>
 
           <section>
@@ -131,3 +131,4 @@ export default function PrivacyPage() {
     </div>
   );
 }
+

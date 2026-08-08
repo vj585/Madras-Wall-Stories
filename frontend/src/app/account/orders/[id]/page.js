@@ -10,7 +10,7 @@ import CancelOrderButton from './CancelOrderButton';
 import TrackingDetails from './TrackingDetails';
 
 export const metadata = {
-  title: 'Order Details | Madras Wall Stories',
+  title: 'Order Details | Madras Prints',
 };
 
 const getStatusColor = (status) => {

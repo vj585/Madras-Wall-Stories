@@ -14,9 +14,9 @@ export const sendVerificationEmail = async (email, token) => {
   const verifyUrl = `${process.env.NEXTAUTH_URL}/verify?token=${token}`;
   
   const mailOptions = {
-    from: `"Madras Wall Stories" <${process.env.EMAIL_FROM || process.env.EMAIL_USER}>`,
+    from: `"Madras Prints" <${process.env.EMAIL_FROM || process.env.EMAIL_USER}>`,
     to: email,
-    subject: "Verify your email - Madras Wall Stories",
+    subject: "Verify your email - Madras Prints",
     html: `
       <!DOCTYPE html>
       <html>
@@ -97,11 +97,11 @@ export const sendVerificationEmail = async (email, token) => {
       <body>
         <div class="container">
           <div class="header">
-            <h1>Madras Wall Stories</h1>
+            <h1>Madras Prints</h1>
           </div>
           <div class="content">
             <h2 style="color: #111827; font-size: 20px; font-weight: 600; margin-top: 0; margin-bottom: 16px;">Welcome to the family!</h2>
-            <p>Thank you for creating an account with Madras Wall Stories. We're excited to help you turn your blank walls into emotional stories.</p>
+            <p>Thank you for creating an account with Madras Prints. We're excited to help you turn your blank walls into emotional stories.</p>
             <p>Please verify your email address to activate your account and start shopping.</p>
             
             <div style="margin: 32px 0;">
@@ -111,7 +111,7 @@ export const sendVerificationEmail = async (email, token) => {
             <p class="fine-print">This link will expire in 15 minutes.<br>If you did not create this account, you can safely ignore this email.</p>
           </div>
           <div class="footer">
-            <p>&copy; ${new Date().getFullYear()} Madras Wall Stories. All rights reserved.</p>
+            <p>&copy; ${new Date().getFullYear()} Madras Prints. All rights reserved.</p>
           </div>
         </div>
       </body>
@@ -126,9 +126,9 @@ export const sendAdminOTP = async (email, otp, action) => {
   const actionText = action === 'ADD_ADMIN' ? 'adding a new administrator' : 'removing an administrator';
   
   const mailOptions = {
-    from: `"Madras Wall Stories Security" <${process.env.EMAIL_FROM || process.env.EMAIL_USER}>`,
+    from: `"Madras Prints Security" <${process.env.EMAIL_FROM || process.env.EMAIL_USER}>`,
     to: email,
-    subject: `Admin Action OTP - Madras Wall Stories`,
+    subject: `Admin Action OTP - Madras Prints`,
     html: `
       <!DOCTYPE html>
       <html>
@@ -146,7 +146,7 @@ export const sendAdminOTP = async (email, otp, action) => {
       <body>
         <div class="container">
           <div class="header">
-            <h1>Madras Wall Stories Admin Security</h1>
+            <h1>Madras Prints Admin Security</h1>
           </div>
           <div class="content">
             <h2 style="color: #111827; font-size: 20px; margin-top: 0;">Authorization Required</h2>
@@ -158,7 +158,7 @@ export const sendAdminOTP = async (email, otp, action) => {
             <p style="color: #6b7280; font-size: 14px; margin-top: 24px;">This OTP is valid for 10 minutes.<br>If you did not request this, please secure your account immediately.</p>
           </div>
           <div class="footer">
-            <p>&copy; ${new Date().getFullYear()} Madras Wall Stories. All rights reserved.</p>
+            <p>&copy; ${new Date().getFullYear()} Madras Prints. All rights reserved.</p>
           </div>
         </div>
       </body>
@@ -168,3 +168,4 @@ export const sendAdminOTP = async (email, otp, action) => {
 
   await transporter.sendMail(mailOptions);
 };
+

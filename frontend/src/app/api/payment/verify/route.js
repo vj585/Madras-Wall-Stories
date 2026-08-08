@@ -77,3 +77,4 @@ export async function POST(request) {
     return NextResponse.json({ success: false, error: 'We encountered a temporary issue while verifying your payment. Please contact support if your account was charged.' }, { status: 500 });
   }
 }
+

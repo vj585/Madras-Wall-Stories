@@ -76,3 +76,4 @@ const CustomerSchema = new mongoose.Schema(
 );
 
 export default mongoose.models.Customer || mongoose.model('Customer', CustomerSchema);
+

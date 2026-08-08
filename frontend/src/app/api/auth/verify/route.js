@@ -49,3 +49,4 @@ export async function POST(req) {
     return NextResponse.json({ error: 'Failed to verify email. Please try again later.' }, { status: 500 });
   }
 }
+

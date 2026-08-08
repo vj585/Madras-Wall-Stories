@@ -14,7 +14,7 @@ export default function SettingsPage() {
     pickupLng: 80.2707
   });
   const [businessDetails, setBusinessDetails] = useState({
-    businessName: 'Madras Wall Stories',
+    businessName: 'Madras Prints',
     gstNumber: '',
     supportEmail: 'support@madraswallstories.com',
     phone: '+91 ',
@@ -50,7 +50,7 @@ export default function SettingsPage() {
           pickupLng: data.data.pickupCoordinates?.longitude || 80.2707,
         });
         setBusinessDetails({
-          businessName: data.data.businessName || 'Madras Wall Stories',
+          businessName: data.data.businessName || 'Madras Prints',
           gstNumber: data.data.gstNumber || '',
           supportEmail: data.data.supportEmail || 'support@madraswallstories.com',
           phone: data.data.phone || '+91 ',
@@ -349,3 +349,4 @@ export default function SettingsPage() {
     </div>
   );
 }
+

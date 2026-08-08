@@ -29,7 +29,7 @@ export default function ReturnsPage() {
           className="bg-white p-8 md:p-12 rounded-3xl border border-gray-100 shadow-sm text-gray-700 leading-relaxed space-y-8"
         >
           <p className="text-lg text-gray-900 font-medium">
-            At Madras Wall Stories, every wall piece is crafted with care and attention to quality. We want you to love your purchase, but if something isn't right, we're here to help.
+            At Madras Prints, every wall piece is crafted with care and attention to quality. We want you to love your purchase, but if something isn't right, we're here to help.
           </p>
 
           <section>
@@ -82,7 +82,7 @@ export default function ReturnsPage() {
               Email: <a href="mailto:madraswallstories.orders@gmail.com" className="font-semibold text-accent-blue hover:underline">madraswallstories.orders@gmail.com</a>
             </p>
             <p className="text-sm text-gray-500 italic">
-              Madras Wall Stories reserves the right to evaluate refund eligibility on a case-by-case basis.
+              Madras Prints reserves the right to evaluate refund eligibility on a case-by-case basis.
             </p>
           </section>
 
@@ -91,3 +91,4 @@ export default function ReturnsPage() {
     </div>
   );
 }
+

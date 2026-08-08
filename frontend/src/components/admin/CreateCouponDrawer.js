@@ -212,3 +212,4 @@ export default function CreateCouponDrawer({ isOpen, onClose, onSuccess }) {
     </AnimatePresence>
   );
 }
+

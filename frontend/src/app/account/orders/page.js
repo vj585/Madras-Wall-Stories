@@ -8,7 +8,7 @@ import { connectDB } from '@/lib/mongodb';
 import Image from 'next/image';
 
 export const metadata = {
-  title: 'My Orders | Madras Wall Stories',
+  title: 'My Orders | Madras Prints',
 };
 
 // Helper for status colors
@@ -138,3 +138,4 @@ export default async function OrdersPage() {
     </div>
   );
 }
+

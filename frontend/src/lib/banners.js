@@ -36,3 +36,4 @@ export async function getStorefrontBanners() {
   
   return parsedBanners;
 }
+

@@ -313,3 +313,4 @@ export default function UploadBannerDrawer({ isOpen, onClose, onSave }) {
     </AnimatePresence>
   );
 }
+

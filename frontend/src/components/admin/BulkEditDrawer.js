@@ -278,3 +278,4 @@ export default function BulkEditDrawer({ isOpen, onClose, selectedIds, existingP
     </AnimatePresence>
   );
 }
+

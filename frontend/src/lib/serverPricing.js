@@ -127,3 +127,4 @@ export async function calculateSecureOrderTotal(cartItems, couponCode = null) {
 
   return { subtotal, discountAmount, recalculatedProducts };
 }
+

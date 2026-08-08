@@ -304,3 +304,4 @@ export default function Categories({ products = [] }) {
     </section>
   );
 }
+

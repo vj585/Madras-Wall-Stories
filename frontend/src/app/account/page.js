@@ -10,7 +10,7 @@ import VerifyEmailButton from './VerifyEmailButton';
 import { ShieldCheck, ShieldAlert } from 'lucide-react';
 
 export const metadata = {
-  title: 'My Account | Madras Wall Stories',
+  title: 'My Account | Madras Prints',
 };
 
 export default async function AccountPage() {
@@ -109,3 +109,4 @@ export default async function AccountPage() {
     </div>
   );
 }
+

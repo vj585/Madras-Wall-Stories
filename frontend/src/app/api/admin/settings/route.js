@@ -35,7 +35,7 @@ export async function GET(request) {
           latitude: 13.0827,
           longitude: 80.2707
         },
-        businessName: 'Madras Wall Stories',
+        businessName: 'Madras Prints',
         gstNumber: '',
         supportEmail: 'support@madraswallstories.com',
         phone: '+91 ',
@@ -128,3 +128,4 @@ export async function PUT(request) {
     return NextResponse.json({ success: false, error: 'Failed to update settings' }, { status: 500 });
   }
 }
+

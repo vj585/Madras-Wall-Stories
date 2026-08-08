@@ -11,11 +11,11 @@ export async function generateMetadata({ params }) {
   const product = await getProductBySlug(slug);
 
   if (!product) {
-    return { title: 'Product Not Found | Madras Wall Stories' };
+    return { title: 'Product Not Found | Madras Prints' };
   }
 
-  const title = `${product.title} | Madras Wall Stories`;
-  const description = product.shortDescription || product.description || `Buy ${product.title} premium poster at Madras Wall Stories.`;
+  const title = `${product.title} | Madras Prints`;
+  const description = product.shortDescription || product.description || `Buy ${product.title} premium poster at Madras Prints.`;
   const image = product.images?.[0] || '/images/og-default.jpg';
 
   return {

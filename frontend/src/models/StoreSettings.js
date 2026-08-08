@@ -18,7 +18,7 @@ const StoreSettingsSchema = new mongoose.Schema(
       latitude: { type: Number, default: 13.0827 }, // Chennai default
       longitude: { type: Number, default: 80.2707 },
     },
-    businessName: { type: String, default: 'Madras Wall Stories' },
+    businessName: { type: String, default: 'Madras Prints' },
     gstNumber: { type: String, default: '' },
     supportEmail: { type: String, default: 'support@madraswallstories.com' },
     phone: { type: String, default: '+91 ' },
@@ -37,3 +37,4 @@ const StoreSettingsSchema = new mongoose.Schema(
 );
 
 export default mongoose.models.StoreSettings || mongoose.model('StoreSettings', StoreSettingsSchema);
+

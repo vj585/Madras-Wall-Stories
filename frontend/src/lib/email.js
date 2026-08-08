@@ -66,7 +66,7 @@ function buildOrderEmailHTML({ order, isAdmin = false }) {
         <!-- Header -->
         <tr>
           <td style="background:linear-gradient(135deg,#1a1a2e 0%,#16213e 100%);padding:40px 48px;text-align:center;">
-            <div style="font-size:24px;font-weight:900;letter-spacing:2px;color:#d4af37;text-transform:uppercase;margin-bottom:4px;">Madras Wall Stories</div>
+            <div style="font-size:24px;font-weight:900;letter-spacing:2px;color:#d4af37;text-transform:uppercase;margin-bottom:4px;">Madras Prints</div>
             <div style="font-size:11px;letter-spacing:4px;color:#8899aa;text-transform:uppercase;">Premium Art Prints</div>
           </td>
         </tr>
@@ -171,9 +171,9 @@ function buildOrderEmailHTML({ order, isAdmin = false }) {
         <tr>
           <td style="padding:32px 48px;text-align:center;background:#1a1a2e;">
             <div style="font-size:13px;color:#8899aa;line-height:1.8;">
-              Thank you for supporting <span style="color:#d4af37;font-weight:700;">Madras Wall Stories</span><br/>
+              Thank you for supporting <span style="color:#d4af37;font-weight:700;">Madras Prints</span><br/>
               Questions? Reply to this email or contact us on Instagram.<br/>
-              <span style="font-size:11px;color:#556677;margin-top:8px;display:block;">© ${new Date().getFullYear()} Madras Wall Stories. All rights reserved.</span>
+              <span style="font-size:11px;color:#556677;margin-top:8px;display:block;">© ${new Date().getFullYear()} Madras Prints. All rights reserved.</span>
             </div>
           </td>
         </tr>
@@ -191,13 +191,13 @@ export async function sendOrderConfirmationEmail(order) {
   try {
     const transporter = createTransport();
     const orderId = shortOrderId(order);
-    const from = process.env.EMAIL_FROM || `Madras Wall Stories <${process.env.EMAIL_USER}>`;
+    const from = process.env.EMAIL_FROM || `Madras Prints <${process.env.EMAIL_USER}>`;
 
     // Customer email
     await transporter.sendMail({
       from,
       to: order.email,
-      subject: `Your Madras Wall Stories order is confirmed 🎉 #${orderId}`,
+      subject: `Your Madras Prints order is confirmed 🎉 #${orderId}`,
       html: buildOrderEmailHTML({ order, isAdmin: false }),
     });
     console.log(`[Email] Customer confirmation sent to ${order.email} for order #${orderId}`);
@@ -223,7 +223,7 @@ export async function sendOrderConfirmationEmail(order) {
 export async function sendEmail({ to, subject, text, html }) {
   try {
     const transporter = createTransport();
-    const from = process.env.EMAIL_FROM || `Madras Wall Stories <${process.env.EMAIL_USER}>`;
+    const from = process.env.EMAIL_FROM || `Madras Prints <${process.env.EMAIL_USER}>`;
 
     await transporter.sendMail({
       from,
@@ -273,7 +273,7 @@ function buildTrackingEmailHTML({ order, status }) {
         <!-- Header -->
         <tr>
           <td style="background:linear-gradient(135deg,#1a1a2e 0%,#16213e 100%);padding:40px 48px;text-align:center;">
-            <div style="font-size:24px;font-weight:900;letter-spacing:2px;color:#d4af37;text-transform:uppercase;margin-bottom:4px;">Madras Wall Stories</div>
+            <div style="font-size:24px;font-weight:900;letter-spacing:2px;color:#d4af37;text-transform:uppercase;margin-bottom:4px;">Madras Prints</div>
             <div style="font-size:11px;letter-spacing:4px;color:#8899aa;text-transform:uppercase;">Premium Art Prints</div>
           </td>
         </tr>
@@ -320,7 +320,7 @@ function buildTrackingEmailHTML({ order, status }) {
           <td style="padding:32px 48px;text-align:center;background:#1a1a2e;">
             <div style="font-size:13px;color:#8899aa;line-height:1.8;">
               Track your complete order timeline in your account.<br/>
-              <span style="font-size:11px;color:#556677;margin-top:8px;display:block;">© ${new Date().getFullYear()} Madras Wall Stories. All rights reserved.</span>
+              <span style="font-size:11px;color:#556677;margin-top:8px;display:block;">© ${new Date().getFullYear()} Madras Prints. All rights reserved.</span>
             </div>
           </td>
         </tr>
@@ -336,13 +336,13 @@ function buildTrackingEmailHTML({ order, status }) {
 export async function sendTrackingEmail(order, status) {
   try {
     const transporter = createTransport();
-    const from = process.env.EMAIL_FROM || `Madras Wall Stories <${process.env.EMAIL_USER}>`;
+    const from = process.env.EMAIL_FROM || `Madras Prints <${process.env.EMAIL_USER}>`;
     const orderId = shortOrderId(order);
 
     await transporter.sendMail({
       from,
       to: order.email,
-      subject: `Update on your Madras Wall Stories Order: ${status} 📦`,
+      subject: `Update on your Madras Prints Order: ${status} 📦`,
       html: buildTrackingEmailHTML({ order, status }),
     });
     console.log(`[Email] Tracking email (${status}) sent to ${order.email} for order #${orderId}`);
@@ -350,3 +350,4 @@ export async function sendTrackingEmail(order, status) {
     console.error('[Email] Failed to send tracking email:', err.message);
   }
 }
+

@@ -1,5 +1,5 @@
 /**
- * SMS Notification — Madras Wall Stories
+ * SMS Notification — Madras Prints
  *
  * Provider: Fast2SMS (India — simple, no DLT hassle for transactional SMS)
  * Fallback: Configurable via SMS_PROVIDER env var ('fast2sms' | 'twilio' | 'msg91')
@@ -100,7 +100,7 @@ export async function sendOrderSMS(order) {
     const amount  = formatCurrency(order.amount);
     const method  = order.paymentMethod === 'COD' ? 'Cash on Delivery' : 'Paid';
 
-    const message = `Madras Wall Stories: Order #${orderId} confirmed! Amount ${amount} (${method}). We'll notify you when your order moves forward. Thank you! 🎨`;
+    const message = `Madras Prints: Order #${orderId} confirmed! Amount ${amount} (${method}). We'll notify you when your order moves forward. Thank you! 🎨`;
 
     const provider = (process.env.SMS_PROVIDER || 'fast2sms').toLowerCase();
 
@@ -132,11 +132,11 @@ export async function sendTrackingSMS(order, status) {
     let message = '';
 
     if (status === 'Shipped') {
-      message = `Great news! Your Madras Wall Stories order #${orderId} has been shipped via ${order.courierName || 'our partner'}. Track it using AWB: ${order.trackingId || 'soon'}`;
+      message = `Great news! Your Madras Prints order #${orderId} has been shipped via ${order.courierName || 'our partner'}. Track it using AWB: ${order.trackingId || 'soon'}`;
     } else if (status === 'Out For Delivery') {
-      message = `Your Madras Wall Stories order #${orderId} is out for delivery and will reach you today! 🎉`;
+      message = `Your Madras Prints order #${orderId} is out for delivery and will reach you today! 🎉`;
     } else if (status === 'Delivered') {
-      message = `Your Madras Wall Stories order #${orderId} has been delivered! We hope you love your premium prints. 🎨`;
+      message = `Your Madras Prints order #${orderId} has been delivered! We hope you love your premium prints. 🎨`;
     } else {
       return; // Do not send SMS for other statuses to avoid spam
     }
@@ -158,3 +158,4 @@ export async function sendTrackingSMS(order, status) {
     console.error('[SMS] Failed to send tracking SMS:', err.message);
   }
 }
+

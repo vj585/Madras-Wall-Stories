@@ -15,7 +15,7 @@ export default function Footer() {
                 <div className="relative h-20 w-20">
                   <Image
                     src="/images/logo mws.png"
-                    alt="Madras Wall Stories"
+                    alt="Madras Prints"
                     fill
                     sizes="80px"
                     className="object-contain"
@@ -48,7 +48,7 @@ export default function Footer() {
                       textTransform: 'uppercase',
                     }}
                   >
-                    Wall Stories
+                    Prints
                   </span>
                 </div>
               </div>
@@ -107,7 +107,7 @@ export default function Footer() {
         <div className="border-t border-white/10 pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
           <div className="flex flex-col items-center md:items-start gap-1">
             <p className="text-gray-500 text-sm">
-              © {new Date().getFullYear()} Madras Wall Stories. All rights reserved.
+              © {new Date().getFullYear()} Madras Prints. All rights reserved.
             </p>
             <p className="text-gray-600 text-xs flex items-center gap-1">
               Made with <span className="text-red-400">♥</span> in Chennai, India
@@ -123,3 +123,4 @@ export default function Footer() {
     </footer>
   );
 }
+

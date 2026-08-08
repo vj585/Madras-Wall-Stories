@@ -63,7 +63,7 @@ export default function Navbar() {
           <div className="relative h-16 w-16 md:h-20 md:w-20">
             <Image
               src="/images/logo mws.png"
-              alt="Madras Wall Stories"
+              alt="Madras Prints"
               fill
               sizes="(max-width: 768px) 64px, 80px"
               className="object-contain transition-transform duration-300 group-hover:scale-105"
@@ -100,7 +100,7 @@ export default function Navbar() {
                 textTransform: 'uppercase',
               }}
             >
-              Wall Stories
+              Prints
             </span>
           </div>
         </Link>
@@ -196,7 +196,7 @@ export default function Navbar() {
             <div className="p-4 flex justify-between items-center border-b border-gray-100">
               <Link href="/" onClick={() => setMobileMenuOpen(false)} className="flex items-center gap-3">
                 <div className="relative h-14 w-14">
-                  <Image src="/images/logo mws.png" alt="Madras Wall Stories" fill sizes="56px" className="object-contain" />
+                  <Image src="/images/logo mws.png" alt="Madras Prints" fill sizes="56px" className="object-contain" />
                 </div>
                 {/* Brand Wordmark – Mobile Menu */}
                 <div className="flex flex-col items-center justify-center leading-none select-none">
@@ -225,7 +225,7 @@ export default function Navbar() {
                       textTransform: 'uppercase',
                     }}
                   >
-                    Wall Stories
+                    Prints
                   </span>
                 </div>
               </Link>
@@ -251,3 +251,4 @@ export default function Navbar() {
     </>
   );
 }
+

@@ -63,3 +63,4 @@ export async function POST(request) {
     return NextResponse.json({ success: false, error: 'Server error during validation' }, { status: 500 });
   }
 }
+

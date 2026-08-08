@@ -873,3 +873,4 @@ export default function AddProductDrawer({ isOpen, onClose, editingProduct = nul
     </AnimatePresence>
   );
 }
+

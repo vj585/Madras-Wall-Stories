@@ -28,7 +28,7 @@ export default function ShippingPage() {
           className="bg-white p-8 md:p-12 rounded-3xl border border-gray-100 shadow-sm text-gray-700 leading-relaxed space-y-8"
         >
           <p className="text-lg text-gray-900 font-medium border-b border-gray-100 pb-6">
-            Madras Wall Stories currently ships across India.
+            Madras Prints currently ships across India.
           </p>
 
           <section>
@@ -103,3 +103,4 @@ export default function ShippingPage() {
     </div>
   );
 }
+

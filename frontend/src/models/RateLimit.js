@@ -14,3 +14,4 @@ RateLimitSchema.index({ ip: 1, endpoint: 1 }, { unique: true });
 const RateLimit = mongoose.models.RateLimit || mongoose.model('RateLimit', RateLimitSchema);
 
 export default RateLimit;
+

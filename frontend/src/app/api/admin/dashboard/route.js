@@ -139,3 +139,4 @@ export async function GET(request) {
     return NextResponse.json({ success: false, error: 'Failed to fetch dashboard data' }, { status: 500 });
   }
 }
+

@@ -44,3 +44,4 @@ export default function MagneticButton({ children, className = "" }) {
     </motion.div>
   );
 }
+

@@ -92,3 +92,4 @@ export async function DELETE(request) {
     return NextResponse.json({ success: false, error: 'Failed to delete image.' }, { status: 500 });
   }
 }
+

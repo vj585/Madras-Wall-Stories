@@ -120,3 +120,4 @@ export default React.memo(function Trending({ products = [] }) {
     </section>
   );
 });
+

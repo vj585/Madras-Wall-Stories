@@ -117,3 +117,4 @@ export async function getRelatedProducts(currentProduct, limit = 4) {
     return p;
   });
 }
+

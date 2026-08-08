@@ -425,7 +425,7 @@ export default function Checkout() {
         key: razorpayKey,
         amount: orderDataApi.amount,
         currency: orderDataApi.currency,
-        name: "Madras Wall Stories",
+        name: "Madras Prints",
         description: "Premium Art Prints",
         image: "/logo.png",
         order_id: orderDataApi.orderId,
@@ -512,7 +512,7 @@ export default function Checkout() {
             <CheckCircle2 className="w-10 h-10 text-green-500" />
           </motion.div>
           <h1 className="text-3xl font-heading font-bold text-gray-900 mb-3">Order Placed! 🎉</h1>
-          <p className="text-gray-500 mb-2">Thank you for shopping with Madras Wall Stories ❤️</p>
+          <p className="text-gray-500 mb-2">Thank you for shopping with Madras Prints ❤️</p>
           <p className="text-gray-500 mb-6 text-sm">We are now preparing your artwork. You will receive an email when your order has been dispatched.</p>
           
           {placedOrder && (
@@ -1013,3 +1013,4 @@ export default function Checkout() {
     </div>
   );
 }
+

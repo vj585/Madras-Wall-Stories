@@ -36,3 +36,4 @@ const CustomPricingSchema = new mongoose.Schema(
 );
 
 export default mongoose.models.CustomPricing || mongoose.model('CustomPricing', CustomPricingSchema);
+

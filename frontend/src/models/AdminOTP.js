@@ -27,3 +27,4 @@ const AdminOTPSchema = new mongoose.Schema(
 );
 
 export default mongoose.models.AdminOTP || mongoose.model('AdminOTP', AdminOTPSchema);
+

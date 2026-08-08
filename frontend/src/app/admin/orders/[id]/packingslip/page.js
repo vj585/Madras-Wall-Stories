@@ -19,7 +19,7 @@ export default async function PackingSlipPage({ params }) {
           <p className="text-gray-500 text-sm">Date: {new Date(order.createdAt).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' })}</p>
         </div>
         <div className="text-right">
-          <h2 className="text-xl font-bold font-heading">Madras Wall Stories</h2>
+          <h2 className="text-xl font-bold font-heading">Madras Prints</h2>
         </div>
       </div>
 

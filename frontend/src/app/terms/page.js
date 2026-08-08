@@ -28,13 +28,13 @@ export default function TermsPage() {
           className="bg-white p-8 md:p-12 rounded-3xl border border-gray-100 shadow-sm text-gray-700 leading-relaxed space-y-8"
         >
           <p className="text-lg text-gray-900 font-medium">
-            By accessing or purchasing from Madras Wall Stories, you agree to these terms.
+            By accessing or purchasing from Madras Prints, you agree to these terms.
           </p>
 
           <section>
             <h2 className="text-2xl font-bold text-gray-900 mb-4">Products & Pricing</h2>
             <p className="mb-4">We strive to ensure accurate product information and pricing.</p>
-            <p className="font-semibold mb-2 text-gray-900">Madras Wall Stories reserves the right to:</p>
+            <p className="font-semibold mb-2 text-gray-900">Madras Prints reserves the right to:</p>
             <ul className="list-disc pl-5 space-y-2 mb-4">
               <li>Update pricing</li>
               <li>Modify products</li>
@@ -52,7 +52,7 @@ export default function TermsPage() {
               <li>Do not contain prohibited material</li>
               <li>Are owned or authorized by the customer</li>
             </ul>
-            <p className="font-medium text-gray-900">Madras Wall Stories reserves the right to reject inappropriate submissions.</p>
+            <p className="font-medium text-gray-900">Madras Prints reserves the right to reject inappropriate submissions.</p>
           </section>
 
           <section>
@@ -72,13 +72,13 @@ export default function TermsPage() {
 
           <section>
             <h2 className="text-2xl font-bold text-gray-900 mb-4">Intellectual Property</h2>
-            <p className="mb-2">All website designs, branding, content, graphics, and visual assets remain property of Madras Wall Stories.</p>
+            <p className="mb-2">All website designs, branding, content, graphics, and visual assets remain property of Madras Prints.</p>
             <p className="font-medium text-gray-900">Unauthorized reproduction or use is prohibited.</p>
           </section>
 
           <section>
             <h2 className="text-2xl font-bold text-gray-900 mb-4">Limitation of Liability</h2>
-            <p>Madras Wall Stories shall not be liable for indirect, incidental, or consequential damages arising from use of the platform.</p>
+            <p>Madras Prints shall not be liable for indirect, incidental, or consequential damages arising from use of the platform.</p>
           </section>
 
           <section>
@@ -105,3 +105,4 @@ export default function TermsPage() {
     </div>
   );
 }
+

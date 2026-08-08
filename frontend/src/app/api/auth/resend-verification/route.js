@@ -75,3 +75,4 @@ export async function POST(req) {
     return NextResponse.json({ error: 'Failed to resend verification email. Please try again later.' }, { status: 500 });
   }
 }
+

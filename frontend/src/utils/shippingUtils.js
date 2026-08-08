@@ -8,3 +8,4 @@ export function calculateShippingFee(cartTotal) {
     ? 0
     : STANDARD_SHIPPING_FEE;
 }
+

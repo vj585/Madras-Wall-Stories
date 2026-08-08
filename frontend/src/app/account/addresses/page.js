@@ -8,7 +8,7 @@ import { connectDB } from '@/lib/mongodb';
 import AddressClient from './AddressClient';
 
 export const metadata = {
-  title: 'Saved Addresses | Madras Wall Stories',
+  title: 'Saved Addresses | Madras Prints',
 };
 
 export default async function AddressesPage() {
@@ -54,3 +54,4 @@ export default async function AddressesPage() {
     </div>
   );
 }
+

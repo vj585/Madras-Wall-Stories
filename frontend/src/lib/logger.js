@@ -22,3 +22,4 @@ export function logStructured(category, data) {
     console.log(logEntry);
   }
 }
+

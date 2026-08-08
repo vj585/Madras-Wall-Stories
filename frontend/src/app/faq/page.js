@@ -6,7 +6,7 @@ import Link from 'next/link';
 
 const faqs = [
   {
-    q: "What products does Madras Wall Stories offer?",
+    q: "What products does Madras Prints offer?",
     a: "We offer premium-quality posters, custom prints, polaroids, and artistic wall décor designed to add personality and stories to your space."
   },
   {
@@ -50,8 +50,8 @@ const faqs = [
     a: "We work hard to ensure color accuracy, but slight variations can occur because of screen settings and print processes."
   },
   {
-    q: "Why choose Madras Wall Stories?",
-    a: "Madras Wall Stories combines premium aesthetics, quality materials, custom creativity, and carefully crafted designs to help every wall tell a story."
+    q: "Why choose Madras Prints?",
+    a: "Madras Prints combines premium aesthetics, quality materials, custom creativity, and carefully crafted designs to help every wall tell a story."
   },
   {
     q: "Do you deliver across India?",
@@ -157,3 +157,4 @@ export default function FAQ() {
     </div>
   );
 }
+

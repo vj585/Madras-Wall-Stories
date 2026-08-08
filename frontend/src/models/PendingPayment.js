@@ -10,3 +10,4 @@ const PendingPaymentSchema = new mongoose.Schema({
 const PendingPayment = mongoose.models.PendingPayment || mongoose.model('PendingPayment', PendingPaymentSchema);
 
 export default PendingPayment;
+
