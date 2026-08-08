@@ -24,27 +24,27 @@ export default function Footer() {
                 {/* Brand Wordmark – Footer */}
                 <div className="flex flex-col items-center justify-center leading-none select-none">
                   <span
-                    className="font-logo text-[1.75rem] text-[#CC1A1A]"
+                    className="font-logo brand-fill text-[2rem]"
                     style={{
                       lineHeight: 1.15,
-                      textShadow:
-                        '0 0 6px rgba(220,38,38,0.95), 0 0 16px rgba(220,38,38,0.7), 0 0 35px rgba(220,38,38,0.4), 0 0 60px rgba(220,38,38,0.15)',
+                      filter:
+                        'drop-shadow(0 0 5px rgba(200,20,20,0.95)) drop-shadow(0 0 14px rgba(200,20,20,0.7)) drop-shadow(0 0 30px rgba(200,20,20,0.4))',
                     }}
                   >
-                    Madras
+                    மெட்ராஸ்
                   </span>
                   <div className="flex items-center gap-1 w-full my-[3px]">
                     <div className="flex-1 h-[0.5px] bg-white/20" />
-                    <span className="text-[#E53935]/60 text-[6px] leading-none">◆</span>
+                    <span className="text-white/35 text-[6px] leading-none">◆</span>
                     <div className="flex-1 h-[0.5px] bg-white/20" />
                   </div>
                   <span
-                    className="text-[0.63rem] text-white/65"
+                    className="text-[0.58rem] text-white/60"
                     style={{
                       fontFamily: "'Playfair Display', serif",
                       fontStyle: 'italic',
                       fontWeight: 600,
-                      letterSpacing: '0.28em',
+                      letterSpacing: '0.3em',
                       textTransform: 'uppercase',
                     }}
                   >

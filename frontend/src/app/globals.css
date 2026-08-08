@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@700;900&family=Great+Vibes&family=Lobster&family=Pacifico&family=Poppins:wght@300;400;500;600;700&family=Outfit:wght@300;400;500;600;700;800&family=Inter:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Dancing+Script:wght@400..700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Baloo+Thambi+2:wght@400;500;600;700;800&family=Cinzel:wght@700;900&family=Great+Vibes&family=Lobster&family=Pacifico&family=Poppins:wght@300;400;500;600;700&family=Outfit:wght@300;400;500;600;700;800&family=Inter:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Dancing+Script:wght@400..700&display=swap');
 @import "tailwindcss";
 
 @theme inline {
@@ -15,7 +15,7 @@
   --color-surface-warm: #F7F2E8;    /* Warmer — closer to turmeric cream */
   --font-sans: 'Inter', sans-serif;
   --font-heading: 'Poppins', sans-serif;
-  --font-logo: 'Pacifico', cursive;
+  --font-logo: 'Baloo Thambi 2', cursive;
 }
 
 :root {
@@ -82,9 +82,26 @@ body::after {
   padding-top: env(safe-area-inset-top, 0px);
 }
 
+/* Tamil retro poster brand fill — deep crimson gradient clipped to text */
+.brand-fill {
+  background: radial-gradient(ellipse at 35% 35%, #D91A1A 0%, #8B0000 55%, #5C0000 100%),
+              repeating-linear-gradient(
+                45deg,
+                transparent,
+                transparent 3px,
+                rgba(80,0,0,0.18) 3px,
+                rgba(80,0,0,0.18) 6px
+              );
+  background-blend-mode: multiply;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
 h1, h2, h3, h4, h5, h6 {
   font-family: var(--font-heading);
 }
+
 
 .glass {
   background: rgba(255, 255, 255, 0.7);
