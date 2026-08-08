@@ -30,6 +30,8 @@ export default function Footer() {
                       fontStyle: 'italic',
                       letterSpacing: '0.06em',
                       lineHeight: 1.1,
+                      transform: 'translateX(-4px)',
+                      display: 'block',
                     }}
                   >
                     Madras
@@ -40,7 +42,7 @@ export default function Footer() {
                     <div className="flex-1 h-[0.5px] bg-white/20" />
                   </div>
                   <span
-                    className="text-[0.58rem] text-white/60"
+                    className="text-[0.78rem] text-white/60"
                     style={{
                       fontFamily: "'Playfair Display', serif",
                       fontStyle: 'italic',

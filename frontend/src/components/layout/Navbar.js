@@ -80,6 +80,8 @@ export default function Navbar() {
                 fontStyle: 'italic',
                 letterSpacing: '0.06em',
                 lineHeight: 1.1,
+                transform: 'translateX(-4px)',
+                display: 'block',
               }}
             >
               Madras
@@ -90,9 +92,9 @@ export default function Navbar() {
               <span className="text-[#8B0000]/50 text-[6px] leading-none">◆</span>
               <div className="flex-1 h-[0.5px] bg-[#8B0000]/25" />
             </div>
-            {/* Wall Stories */}
+            {/* Prints */}
             <span
-              className="text-[0.52rem] md:text-[0.58rem] text-[#1a1a1a]/65"
+              className="text-[0.75rem] md:text-[0.82rem] text-[#1a1a1a]/65"
               style={{
                 fontFamily: "'Playfair Display', serif",
                 fontStyle: 'italic',
@@ -208,6 +210,8 @@ export default function Navbar() {
                       fontStyle: 'italic',
                       letterSpacing: '0.06em',
                       lineHeight: 1.1,
+                      transform: 'translateX(-4px)',
+                      display: 'block',
                     }}
                   >
                     Madras
@@ -218,7 +222,7 @@ export default function Navbar() {
                     <div className="flex-1 h-[0.5px] bg-[#8B0000]/25" />
                   </div>
                   <span
-                    className="text-[0.55rem] text-[#1a1a1a]/65"
+                    className="text-[0.78rem] text-[#1a1a1a]/65"
                     style={{
                       fontFamily: "'Playfair Display', serif",
                       fontStyle: 'italic',
