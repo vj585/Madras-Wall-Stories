@@ -15,7 +15,7 @@
   --color-surface-warm: #F7F2E8;    /* Warmer — closer to turmeric cream */
   --font-sans: 'Inter', sans-serif;
   --font-heading: 'Poppins', sans-serif;
-  --font-logo: 'Lobster', cursive;
+  --font-logo: 'Playfair Display', serif;
 }
 
 :root {

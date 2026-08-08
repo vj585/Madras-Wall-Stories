@@ -24,24 +24,28 @@ export default function Footer() {
                 {/* Brand Wordmark – Footer */}
                 <div className="flex flex-col items-center justify-center leading-none select-none">
                   <span
-                    className="font-logo tracking-[0.02em] text-[1.95rem] text-[#D32F2F]"
+                    className="font-logo text-[2rem] text-[#C62828]"
                     style={{
-                      textShadow: '2px 2px 0px #1a1a1a',
+                      fontWeight: 800,
+                      fontStyle: 'italic',
+                      letterSpacing: '0.04em',
+                      textShadow: '1px 1px 0px rgba(0,0,0,0.25), 0 2px 16px rgba(198,40,40,0.2)',
                     }}
                   >
                     Madras
                   </span>
-                  <div className="flex items-center gap-1 w-full my-[2px]">
-                    <div className="flex-1 h-[1px] bg-white/40" />
-                    <span className="text-white/70 text-[8px] leading-none">✦</span>
-                    <span className="text-white/70 text-[5px] leading-none">✦</span>
-                    <span className="text-white/70 text-[8px] leading-none">✦</span>
-                    <div className="flex-1 h-[1px] bg-white/40" />
+                  <div className="flex items-center gap-1 w-full my-[3px]">
+                    <div className="flex-1 h-[0.5px] bg-white/20" />
+                    <span className="text-white/40 text-[7px] leading-none">◆</span>
+                    <div className="flex-1 h-[0.5px] bg-white/20" />
                   </div>
                   <span
-                    className="font-logo tracking-[0.08em] text-[0.82rem] text-white/90"
+                    className="font-logo text-[0.75rem] text-white/80"
                     style={{
-                      textShadow: '1px 1px 0px rgba(211,47,47,0.5)',
+                      fontWeight: 500,
+                      fontStyle: 'italic',
+                      letterSpacing: '0.32em',
+                      textTransform: 'uppercase',
                     }}
                   >
                     Wall Stories

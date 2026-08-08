@@ -74,26 +74,30 @@ export default function Navbar() {
           <div className="flex flex-col items-center justify-center leading-none select-none">
             {/* MADRAS */}
             <span
-              className="font-logo tracking-[0.02em] text-[1.55rem] md:text-[1.8rem] text-[#D32F2F]"
+              className="font-logo text-[1.6rem] md:text-[1.85rem] text-[#C62828]"
               style={{
-                textShadow: '2px 2px 0px #1a1a1a',
+                fontWeight: 800,
+                fontStyle: 'italic',
+                letterSpacing: '0.04em',
+                textShadow: '1px 1px 0px rgba(0,0,0,0.18), 0 2px 12px rgba(198,40,40,0.15)',
               }}
             >
               Madras
             </span>
-            {/* Decorative rule with stars */}
-            <div className="flex items-center gap-1 w-full my-[2px]">
-              <div className="flex-1 h-[1px] bg-[#1a1a1a]/40" />
-              <span className="text-[#1a1a1a] text-[8px] leading-none">✦</span>
-              <span className="text-[#1a1a1a] text-[5px] leading-none">✦</span>
-              <span className="text-[#1a1a1a] text-[8px] leading-none">✦</span>
-              <div className="flex-1 h-[1px] bg-[#1a1a1a]/40" />
+            {/* Decorative rule */}
+            <div className="flex items-center gap-1 w-full my-[3px]">
+              <div className="flex-1 h-[0.5px] bg-[#C62828]/30" />
+              <span className="text-[#C62828]/60 text-[7px] leading-none">◆</span>
+              <div className="flex-1 h-[0.5px] bg-[#C62828]/30" />
             </div>
             {/* Wall Stories */}
             <span
-              className="font-logo tracking-[0.08em] text-[0.72rem] md:text-[0.8rem] text-[#1a1a1a]"
+              className="font-logo text-[0.7rem] md:text-[0.76rem] text-[#1a1a1a]"
               style={{
-                textShadow: '1px 1px 0px rgba(211,47,47,0.4)',
+                fontWeight: 500,
+                fontStyle: 'italic',
+                letterSpacing: '0.32em',
+                textTransform: 'uppercase',
               }}
             >
               Wall Stories
@@ -197,24 +201,28 @@ export default function Navbar() {
                 {/* Brand Wordmark – Mobile Menu */}
                 <div className="flex flex-col items-center justify-center leading-none select-none">
                   <span
-                    className="font-logo tracking-[0.02em] text-[1.65rem] text-[#D32F2F]"
+                    className="font-logo text-[1.7rem] text-[#C62828]"
                     style={{
-                      textShadow: '2px 2px 0px #1a1a1a',
+                      fontWeight: 800,
+                      fontStyle: 'italic',
+                      letterSpacing: '0.04em',
+                      textShadow: '1px 1px 0px rgba(0,0,0,0.18), 0 2px 12px rgba(198,40,40,0.15)',
                     }}
                   >
                     Madras
                   </span>
-                  <div className="flex items-center gap-1 w-full my-[2px]">
-                    <div className="flex-1 h-[1px] bg-[#1a1a1a]/40" />
-                    <span className="text-[#1a1a1a] text-[8px] leading-none">✦</span>
-                    <span className="text-[#1a1a1a] text-[5px] leading-none">✦</span>
-                    <span className="text-[#1a1a1a] text-[8px] leading-none">✦</span>
-                    <div className="flex-1 h-[1px] bg-[#1a1a1a]/40" />
+                  <div className="flex items-center gap-1 w-full my-[3px]">
+                    <div className="flex-1 h-[0.5px] bg-[#C62828]/30" />
+                    <span className="text-[#C62828]/60 text-[7px] leading-none">◆</span>
+                    <div className="flex-1 h-[0.5px] bg-[#C62828]/30" />
                   </div>
                   <span
-                    className="font-logo tracking-[0.08em] text-[0.78rem] text-[#1a1a1a]"
+                    className="font-logo text-[0.72rem] text-[#1a1a1a]"
                     style={{
-                      textShadow: '1px 1px 0px rgba(211,47,47,0.4)',
+                      fontWeight: 500,
+                      fontStyle: 'italic',
+                      letterSpacing: '0.32em',
+                      textTransform: 'uppercase',
                     }}
                   >
                     Wall Stories
