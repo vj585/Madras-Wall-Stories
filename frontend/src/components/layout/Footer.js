@@ -24,29 +24,27 @@ export default function Footer() {
                 {/* Brand Wordmark – Footer */}
                 <div className="flex flex-col items-center justify-center leading-none select-none">
                   <span
-                    className="font-logo tracking-[0.15em] text-[1.85rem] text-[#D32F2F]"
+                    className="font-logo tracking-[0.02em] text-[1.95rem] text-[#D32F2F]"
                     style={{
-                      fontWeight: 900,
-                      textShadow: '3px 3px 0px #1a1a1a',
-                    }}
-                  >
-                    MADRAS
-                  </span>
-                  <div className="flex items-center gap-1 w-full my-[3px]">
-                    <div className="flex-1 h-[1px] bg-white/40" />
-                    <span className="text-[#FFC107] text-[8px] leading-none">✦</span>
-                    <span className="text-[#FFC107] text-[5px] leading-none">✦</span>
-                    <span className="text-[#FFC107] text-[8px] leading-none">✦</span>
-                    <div className="flex-1 h-[1px] bg-white/40" />
-                  </div>
-                  <span
-                    className="font-logo tracking-[0.45em] text-[0.78rem] text-[#FFC107]"
-                    style={{
-                      fontWeight: 700,
                       textShadow: '2px 2px 0px #1a1a1a',
                     }}
                   >
-                    PRINTS
+                    Madras
+                  </span>
+                  <div className="flex items-center gap-1 w-full my-[2px]">
+                    <div className="flex-1 h-[1px] bg-white/40" />
+                    <span className="text-white/70 text-[8px] leading-none">✦</span>
+                    <span className="text-white/70 text-[5px] leading-none">✦</span>
+                    <span className="text-white/70 text-[8px] leading-none">✦</span>
+                    <div className="flex-1 h-[1px] bg-white/40" />
+                  </div>
+                  <span
+                    className="font-logo tracking-[0.08em] text-[0.82rem] text-white/90"
+                    style={{
+                      textShadow: '1px 1px 0px rgba(211,47,47,0.5)',
+                    }}
+                  >
+                    Wall Stories
                   </span>
                 </div>
               </div>
