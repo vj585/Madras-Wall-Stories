@@ -24,11 +24,12 @@ export default function Footer() {
                 {/* Brand Wordmark – Footer */}
                 <div className="flex flex-col items-center justify-center leading-none select-none">
                   <span
-                    className="font-logo text-[1.85rem]"
+                    className="font-logo text-[2.2rem] text-[#8B1A1A]"
                     style={{
                       fontWeight: 700,
-                      lineHeight: 1.15,
-                      color: '#8B1A1A',
+                      fontStyle: 'italic',
+                      letterSpacing: '0.06em',
+                      lineHeight: 1.1,
                     }}
                   >
                     Madras

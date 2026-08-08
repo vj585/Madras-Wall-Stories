@@ -72,13 +72,14 @@ export default function Navbar() {
           </div>
           {/* Brand Wordmark */}
           <div className="flex flex-col items-center justify-center leading-none select-none">
-            {/* Madras – Rowdies: South Indian poster typography in Latin */}
+            {/* Madras – Cormorant Garamond: high-contrast calligraphic serif */}
             <span
-              className="font-logo text-[1.65rem] md:text-[1.85rem]"
+              className="font-logo text-[2rem] md:text-[2.25rem] text-[#8B1A1A]"
               style={{
                 fontWeight: 700,
-                lineHeight: 1.15,
-                color: '#8B1A1A',
+                fontStyle: 'italic',
+                letterSpacing: '0.06em',
+                lineHeight: 1.1,
               }}
             >
               Madras
@@ -201,11 +202,12 @@ export default function Navbar() {
                 {/* Brand Wordmark – Mobile Menu */}
                 <div className="flex flex-col items-center justify-center leading-none select-none">
                   <span
-                    className="font-logo text-[1.75rem]"
+                    className="font-logo text-[2.1rem] text-[#8B1A1A]"
                     style={{
                       fontWeight: 700,
-                      lineHeight: 1.15,
-                      color: '#8B1A1A',
+                      fontStyle: 'italic',
+                      letterSpacing: '0.06em',
+                      lineHeight: 1.1,
                     }}
                   >
                     Madras
