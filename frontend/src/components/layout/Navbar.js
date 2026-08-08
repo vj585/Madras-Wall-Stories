@@ -72,16 +72,17 @@ export default function Navbar() {
           </div>
           {/* Brand Wordmark */}
           <div className="flex flex-col items-center justify-center leading-none select-none">
-            {/* மெட்ராஸ் – Baloo Thambi 2, Tamil retro poster style */}
+            {/* Madras – Rowdies: South Indian poster typography in Latin */}
             <span
-              className="font-logo brand-fill text-[1.9rem] md:text-[2.15rem]"
+              className="font-logo brand-fill text-[1.65rem] md:text-[1.85rem]"
               style={{
+                fontWeight: 700,
                 lineHeight: 1.15,
                 filter:
                   'drop-shadow(0 0 4px rgba(200,20,20,0.85)) drop-shadow(0 0 10px rgba(200,20,20,0.55)) drop-shadow(0 0 22px rgba(200,20,20,0.25))',
               }}
             >
-              மெட்ராஸ்
+              Madras
             </span>
             {/* Decorative rule */}
             <div className="flex items-center gap-1 w-full my-[2px]">
@@ -201,14 +202,15 @@ export default function Navbar() {
                 {/* Brand Wordmark – Mobile Menu */}
                 <div className="flex flex-col items-center justify-center leading-none select-none">
                   <span
-                    className="font-logo brand-fill text-[2rem]"
+                    className="font-logo brand-fill text-[1.75rem]"
                     style={{
+                      fontWeight: 700,
                       lineHeight: 1.15,
                       filter:
                         'drop-shadow(0 0 4px rgba(200,20,20,0.85)) drop-shadow(0 0 10px rgba(200,20,20,0.55)) drop-shadow(0 0 22px rgba(200,20,20,0.25))',
                     }}
                   >
-                    மெட்ராஸ்
+                    Madras
                   </span>
                   <div className="flex items-center gap-1 w-full my-[2px]">
                     <div className="flex-1 h-[0.5px] bg-[#8B0000]/25" />

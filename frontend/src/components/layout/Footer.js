@@ -24,14 +24,15 @@ export default function Footer() {
                 {/* Brand Wordmark – Footer */}
                 <div className="flex flex-col items-center justify-center leading-none select-none">
                   <span
-                    className="font-logo brand-fill text-[2rem]"
+                    className="font-logo brand-fill text-[1.85rem]"
                     style={{
+                      fontWeight: 700,
                       lineHeight: 1.15,
                       filter:
                         'drop-shadow(0 0 5px rgba(200,20,20,0.95)) drop-shadow(0 0 14px rgba(200,20,20,0.7)) drop-shadow(0 0 30px rgba(200,20,20,0.4))',
                     }}
                   >
-                    மெட்ராஸ்
+                    Madras
                   </span>
                   <div className="flex items-center gap-1 w-full my-[3px]">
                     <div className="flex-1 h-[0.5px] bg-white/20" />
