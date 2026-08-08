@@ -72,31 +72,31 @@ export default function Navbar() {
           </div>
           {/* Brand Wordmark */}
           <div className="flex flex-col items-center justify-center leading-none select-none">
-            {/* MADRAS */}
+            {/* Madras – Great Vibes cursive */}
             <span
-              className="font-logo text-[1.6rem] md:text-[1.85rem] text-[#C62828]"
+              className="font-logo text-[2.1rem] md:text-[2.4rem] text-[#C62828]"
               style={{
-                fontWeight: 800,
-                fontStyle: 'italic',
-                letterSpacing: '0.04em',
-                textShadow: '1px 1px 0px rgba(0,0,0,0.18), 0 2px 12px rgba(198,40,40,0.15)',
+                lineHeight: 1.1,
+                textShadow:
+                  '0 0 6px rgba(198,40,40,0.7), 0 0 14px rgba(198,40,40,0.45), 0 0 30px rgba(198,40,40,0.2)',
               }}
             >
               Madras
             </span>
             {/* Decorative rule */}
-            <div className="flex items-center gap-1 w-full my-[3px]">
-              <div className="flex-1 h-[0.5px] bg-[#C62828]/30" />
-              <span className="text-[#C62828]/60 text-[7px] leading-none">◆</span>
-              <div className="flex-1 h-[0.5px] bg-[#C62828]/30" />
+            <div className="flex items-center gap-1 w-full my-[2px]">
+              <div className="flex-1 h-[0.5px] bg-[#C62828]/25" />
+              <span className="text-[#C62828]/50 text-[6px] leading-none">◆</span>
+              <div className="flex-1 h-[0.5px] bg-[#C62828]/25" />
             </div>
-            {/* Wall Stories */}
+            {/* Wall Stories – Playfair italic for contrast */}
             <span
-              className="font-logo text-[0.7rem] md:text-[0.76rem] text-[#1a1a1a]"
+              className="text-[0.58rem] md:text-[0.63rem] text-[#1a1a1a]/70"
               style={{
-                fontWeight: 500,
+                fontFamily: "'Playfair Display', serif",
                 fontStyle: 'italic',
-                letterSpacing: '0.32em',
+                fontWeight: 600,
+                letterSpacing: '0.28em',
                 textTransform: 'uppercase',
               }}
             >
@@ -201,27 +201,27 @@ export default function Navbar() {
                 {/* Brand Wordmark – Mobile Menu */}
                 <div className="flex flex-col items-center justify-center leading-none select-none">
                   <span
-                    className="font-logo text-[1.7rem] text-[#C62828]"
+                    className="font-logo text-[2.2rem] text-[#C62828]"
                     style={{
-                      fontWeight: 800,
-                      fontStyle: 'italic',
-                      letterSpacing: '0.04em',
-                      textShadow: '1px 1px 0px rgba(0,0,0,0.18), 0 2px 12px rgba(198,40,40,0.15)',
+                      lineHeight: 1.1,
+                      textShadow:
+                        '0 0 6px rgba(198,40,40,0.7), 0 0 14px rgba(198,40,40,0.45), 0 0 30px rgba(198,40,40,0.2)',
                     }}
                   >
                     Madras
                   </span>
-                  <div className="flex items-center gap-1 w-full my-[3px]">
-                    <div className="flex-1 h-[0.5px] bg-[#C62828]/30" />
-                    <span className="text-[#C62828]/60 text-[7px] leading-none">◆</span>
-                    <div className="flex-1 h-[0.5px] bg-[#C62828]/30" />
+                  <div className="flex items-center gap-1 w-full my-[2px]">
+                    <div className="flex-1 h-[0.5px] bg-[#C62828]/25" />
+                    <span className="text-[#C62828]/50 text-[6px] leading-none">◆</span>
+                    <div className="flex-1 h-[0.5px] bg-[#C62828]/25" />
                   </div>
                   <span
-                    className="font-logo text-[0.72rem] text-[#1a1a1a]"
+                    className="text-[0.6rem] text-[#1a1a1a]/70"
                     style={{
-                      fontWeight: 500,
+                      fontFamily: "'Playfair Display', serif",
                       fontStyle: 'italic',
-                      letterSpacing: '0.32em',
+                      fontWeight: 600,
+                      letterSpacing: '0.28em',
                       textTransform: 'uppercase',
                     }}
                   >
