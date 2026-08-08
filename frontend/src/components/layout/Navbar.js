@@ -72,9 +72,9 @@ export default function Navbar() {
           </div>
           {/* Brand Wordmark */}
           <div className="flex flex-col items-center justify-center leading-none select-none">
-            {/* Madras – Cormorant Garamond: high-contrast calligraphic serif */}
+            {/* Madras – scroll-aware color + offset shadow */}
             <span
-              className="font-logo text-[2rem] md:text-[2.25rem] text-[#8B1A1A]"
+              className="font-logo text-[2rem] md:text-[2.25rem]"
               style={{
                 fontWeight: 700,
                 fontStyle: 'italic',
@@ -82,25 +82,35 @@ export default function Navbar() {
                 lineHeight: 1.1,
                 transform: 'translateX(-4px)',
                 display: 'block',
+                color: isScrolled ? '#FF4C4C' : '#8B1A1A',
+                textShadow: isScrolled
+                  ? '2px 2px 0px rgba(0,0,0,0.55), 0 0 20px rgba(255,60,60,0.2)'
+                  : '1px 1px 0px rgba(0,0,0,0.18)',
+                transition: 'color 0.3s ease, text-shadow 0.3s ease',
               }}
             >
               Madras
             </span>
             {/* Decorative rule */}
             <div className="flex items-center gap-1 w-full my-[2px]">
-              <div className="flex-1 h-[0.5px] bg-[#8B0000]/25" />
-              <span className="text-[#8B0000]/50 text-[6px] leading-none">◆</span>
-              <div className="flex-1 h-[0.5px] bg-[#8B0000]/25" />
+              <div className={`flex-1 h-[0.5px] ${isScrolled ? 'bg-white/20' : 'bg-[#8B0000]/25'}`} />
+              <span className={`text-[6px] leading-none ${isScrolled ? 'text-white/40' : 'text-[#8B0000]/50'}`}>◆</span>
+              <div className={`flex-1 h-[0.5px] ${isScrolled ? 'bg-white/20' : 'bg-[#8B0000]/25'}`} />
             </div>
-            {/* Prints */}
+            {/* Prints – scroll-aware color + offset shadow */}
             <span
-              className="text-[0.75rem] md:text-[0.82rem] text-[#1a1a1a]/65"
+              className="text-[0.75rem] md:text-[0.82rem]"
               style={{
                 fontFamily: "'Playfair Display', serif",
                 fontStyle: 'italic',
                 fontWeight: 600,
                 letterSpacing: '0.3em',
                 textTransform: 'uppercase',
+                color: isScrolled ? 'rgba(255,255,255,0.92)' : 'rgba(26,26,26,0.65)',
+                textShadow: isScrolled
+                  ? '1px 1px 0px rgba(0,0,0,0.5)'
+                  : '1px 1px 0px rgba(0,0,0,0.12)',
+                transition: 'color 0.3s ease, text-shadow 0.3s ease',
               }}
             >
               Prints
