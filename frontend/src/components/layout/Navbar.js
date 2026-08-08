@@ -71,7 +71,7 @@ export default function Navbar() {
             />
           </div>
           {/* Brand Wordmark */}
-          <div className="flex flex-col items-center justify-center leading-none select-none">
+          <div className="relative flex flex-col items-center justify-center leading-none select-none">
             {/* Madras – scroll-aware color + offset shadow */}
             <span
               className="font-logo text-[2rem] md:text-[2.25rem]"
@@ -90,6 +90,26 @@ export default function Navbar() {
               }}
             >
               Madras
+            </span>
+            {/* Est. 2026 badge */}
+            <span
+              style={{
+                position: 'absolute',
+                top: '-2px',
+                right: '-2px',
+                fontFamily: "'Inter', sans-serif",
+                fontSize: '0.42rem',
+                fontWeight: 500,
+                letterSpacing: '0.08em',
+                textTransform: 'uppercase',
+                color: isScrolled ? 'rgba(255,200,200,0.6)' : 'rgba(139,26,26,0.45)',
+                transform: 'rotate(6deg)',
+                transformOrigin: 'top right',
+                whiteSpace: 'nowrap',
+                transition: 'color 0.3s ease',
+              }}
+            >
+              Est. 2026
             </span>
             {/* Decorative rule */}
             <div className="flex items-center gap-1 w-full my-[2px]">
@@ -212,7 +232,7 @@ export default function Navbar() {
                   <Image src="/images/logo mws.png" alt="Madras Prints" fill sizes="56px" className="object-contain" />
                 </div>
                 {/* Brand Wordmark – Mobile Menu */}
-                <div className="flex flex-col items-center justify-center leading-none select-none">
+                <div className="relative flex flex-col items-center justify-center leading-none select-none">
                   <span
                     className="font-logo text-[2.1rem] text-[#8B1A1A]"
                     style={{
@@ -225,6 +245,25 @@ export default function Navbar() {
                     }}
                   >
                     Madras
+                  </span>
+                  {/* Est. 2026 badge */}
+                  <span
+                    style={{
+                      position: 'absolute',
+                      top: '-2px',
+                      right: '-2px',
+                      fontFamily: "'Inter', sans-serif",
+                      fontSize: '0.44rem',
+                      fontWeight: 500,
+                      letterSpacing: '0.08em',
+                      textTransform: 'uppercase',
+                      color: 'rgba(139,26,26,0.45)',
+                      transform: 'rotate(6deg)',
+                      transformOrigin: 'top right',
+                      whiteSpace: 'nowrap',
+                    }}
+                  >
+                    Est. 2026
                   </span>
                   <div className="flex items-center gap-1 w-full my-[2px]">
                     <div className="flex-1 h-[0.5px] bg-[#8B0000]/25" />

@@ -22,7 +22,7 @@ export default function Footer() {
                   />
                 </div>
                 {/* Brand Wordmark – Footer */}
-                <div className="flex flex-col items-center justify-center leading-none select-none">
+                <div className="relative flex flex-col items-center justify-center leading-none select-none">
                   <span
                     className="font-logo text-[2.2rem] text-[#8B1A1A]"
                     style={{
@@ -35,6 +35,25 @@ export default function Footer() {
                     }}
                   >
                     Madras
+                  </span>
+                  {/* Est. 2026 badge */}
+                  <span
+                    style={{
+                      position: 'absolute',
+                      top: '-2px',
+                      right: '-2px',
+                      fontFamily: "'Inter', sans-serif",
+                      fontSize: '0.42rem',
+                      fontWeight: 500,
+                      letterSpacing: '0.08em',
+                      textTransform: 'uppercase',
+                      color: 'rgba(255,180,180,0.5)',
+                      transform: 'rotate(6deg)',
+                      transformOrigin: 'top right',
+                      whiteSpace: 'nowrap',
+                    }}
+                  >
+                    Est. 2026
                   </span>
                   <div className="flex items-center gap-1 w-full my-[3px]">
                     <div className="flex-1 h-[0.5px] bg-white/20" />
